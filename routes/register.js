@@ -3,6 +3,7 @@ const router = express.Router()
 const auth = require('../middleware/auth')
 const bcrypt = require('bcrypt')
 const User = require('../models/User')
+const FEEDS = ['https://hnrss.org/frontpage', 'https://www.reddit.com/r/LivestreamFail.rss']
     
 router.get('/', auth.checkNotAuthenticated, (req, res) => {
     res.render('register.ejs')
@@ -14,7 +15,8 @@ router.post('/', auth.checkNotAuthenticated, async (req, res) => {
         const user = await User.create({
             name: req.body.name,
             email: req.body.email,
-            password: hashedPassword
+            password: hashedPassword,
+            feeds: FEEDS 
         })
         console.log(user)
         res.redirect('/login')
