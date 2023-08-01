@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const auth = require('../middleware/auth')
-const passport = require('../server')
+const passport = require('passport')
 
 router.get('/', auth.checkNotAuthenticated, (req, res) => {
     res.render('login.ejs')

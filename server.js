@@ -3,19 +3,24 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const express = require('express')
-const app = express()
 const passport = require('passport')
 const flash = require('express-flash') 
 const session = require('express-session')
 const methodOverride = require('method-override')
+const mongoose = require('mongoose')
+const initializePassport = require('./config/passportConfig')
+const connectDB = require('./config/dbConnConfig')
 
-const initializePassport = require('./passport-config')
+connectDB()
+mongoose.connection.once('open', () => console.log('Connected to Database'))
+
 initializePassport(
     passport,
     email => users.find(user => user.email === email),
     id => users.find(user => user.id === id)
 )
 
+const app = express()
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 app.use(express.static('public'))
@@ -30,18 +35,9 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
 
-const index = require('./routes/index')
-const login = require('./routes/login')
-const logout = require('./routes/logout')
-const register = require('./routes/register')
-
-app.use('/', index)
-app.use('/login', login)
-app.use('/logout', logout)
-app.use('/register', register)
-
-const users = []
+app.use('/', require('./routes/index'))
+app.use('/login', require('./routes/login'))
+app.use('/logout', require('./routes/logout'))
+app.use('/register', require('./routes/register'))
 
 app.listen(3000)
-
-module.exports = passport
