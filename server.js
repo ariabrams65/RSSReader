@@ -14,11 +14,7 @@ const connectDB = require('./config/dbConnConfig')
 connectDB()
 mongoose.connection.once('open', () => console.log('Connected to Database'))
 
-initializePassport(
-    passport,
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
-)
+initializePassport(passport)
 
 const app = express()
 app.set('view engine', 'ejs')
