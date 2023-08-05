@@ -5,7 +5,7 @@ async function renderFeed() {
     const articleList = document.getElementById('articleList') 
     posts.forEach(post => {
         const li = document.createElement('li')
-        li.textContent = post['title']
+        li.textContent = post['title'] +  '     ' + post['link']
         articleList.appendChild(li) 
     })
 }

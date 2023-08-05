@@ -6,7 +6,12 @@ async function getAllPosts(feeds) {
         posts.push(...await getPosts(feed))
     }
     console.log(posts)
-    return posts.sort((a, b) => b.isoDate.localeCompare(a.isoDate))
+    return posts.sort((a, b) => {
+        if (a.isoDate === undefined || b.isoDate === undefined) {
+            return Math.floor(Math.random() * 3) - 1
+        }
+        return b.isoDate.localeCompare(a.isoDate)
+    })
 }
 
 async function getPosts(feedURL) {
