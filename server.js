@@ -30,11 +30,13 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
+app.use(express.json())
 
 app.use('/', require('./routes/index'))
 app.use('/login', require('./routes/login'))
 app.use('/logout', require('./routes/logout'))
 app.use('/register', require('./routes/register'))
 app.use('/get-feed', require('./routes/feed'))
+app.use('/subscriptions', require('./routes/subscriptions'))
 
 app.listen(3000)

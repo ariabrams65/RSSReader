@@ -8,11 +8,14 @@
         <script src="javascript/index.js" defer></script>
     </head>
     <body>
+        <div class="topnav">
+            <a href="/">Feeds</a>
+            <a id="user-btn" href="#Account">Account</a>
+        </div>
         <div class="container">
             <div class="sidebar">
                 <div class="add-feed">
                     <input type="text" id="newFeedInput" placeholder="Enter RSS feed URL">
-                    <button id="addFeedBtn">Add Feed</button>
                 </div>
                 <ul id="subscribedFeeds">
                     <!-- List of subscribed feeds will be dynamically added here -->
@@ -24,8 +27,10 @@
                 </ul>
             </div>
         </div>
+        <!--
         <form action="/logout?_method=DELETE" method="POST">
             <button type="submit">Log Out</button>
         </form>
+        -->
     </body>
 </html>
