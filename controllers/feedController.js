@@ -5,6 +5,7 @@ async function getAllPosts(feeds) {
     for (const feed of feeds) {
         posts.push(...await getPosts(feed))
     }
+    console.log(posts)
     return posts.sort((a, b) => b.isoDate.localeCompare(a.isoDate))
 }
 

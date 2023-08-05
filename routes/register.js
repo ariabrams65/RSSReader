@@ -3,7 +3,7 @@ const router = express.Router()
 const auth = require('../middleware/auth')
 const bcrypt = require('bcrypt')
 const User = require('../models/User')
-const FEEDS = ['https://hnrss.org/frontpage', 'https://www.reddit.com/r/LivestreamFail.rss']
+const FEEDS = ['https://hnrss.org/frontpage', 'https://www.reddit.com/r/LivestreamFail.rss', 'http://rss.cnn.com/rss/cnn_topstories.rss']
     
 router.get('/', auth.checkNotAuthenticated, (req, res) => {
     res.render('register.ejs')

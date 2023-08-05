@@ -1,9 +1,31 @@
-<h1>Hi <%= name %> </h1>
-<ul>
-    <% posts.forEach((post) => { %>
-        <li><%= post.title + " " + post.isoDate %></li>
-    <% }) %>
-</ul>
-<form action="/logout?_method=DELETE" method="POST">
-    <button type="submit">Log Out</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RSS Reader</title>
+        <link rel="stylesheet" href="stylesheets/index.css">
+        <script src="javascript/index.js" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="sidebar">
+                <div class="add-feed">
+                    <input type="text" id="newFeedInput" placeholder="Enter RSS feed URL">
+                    <button id="addFeedBtn">Add Feed</button>
+                </div>
+                <ul id="subscribedFeeds">
+                    <!-- List of subscribed feeds will be dynamically added here -->
+                </ul>
+            </div>
+            <div class="main-content">
+                <ul id="articleList">
+                    <!-- List of retrieved articles will be dynamically added here -->
+                </ul>
+            </div>
+        </div>
+        <form action="/logout?_method=DELETE" method="POST">
+            <button type="submit">Log Out</button>
+        </form>
+    </body>
+</html>
