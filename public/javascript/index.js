@@ -2,11 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFeed()
     renderSubscribedFeeds()
 })
-const newFeedInput = document.getElementById('newFeedInput')
-newFeedInput.addEventListener('keydown', event => {
+const newSubInput = document.getElementById('newSubInput')
+newSubInput.addEventListener('keydown', event => {
     if (event.key === 'Enter') {
-        const newSubscription = newFeedInput.value
-        newFeedInput.value = ''
+        const newSubscription = newSubInput.value
+        newSubInput.value = ''
         addSubscription(document.getElementById('subscribedFeeds'), newSubscription)
         postNewSubscription(newSubscription)
     }
@@ -39,9 +39,9 @@ async function renderFeed() {
 }
 
 async function renderSubscribedFeeds() {
-    const feeds = await getSubscribedFeeds()
+    const subscriptions = await getSubscribedFeeds()
     const subscribedFeeds = document.getElementById('subscribedFeeds')
-    feeds.forEach(feed => {addSubscription(subscribedFeeds, feed)})
+    subscriptions.forEach(subscription=> {addSubscription(subscribedFeeds, subscription)})
 }
 
 async function getSubscribedFeeds() {
@@ -55,4 +55,3 @@ async function getPosts() {
     const json = await response.json()
     return json['posts']
 }
-

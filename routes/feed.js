@@ -4,7 +4,7 @@ const auth = require('../middleware/auth')
 const getAllPosts = require('../controllers/feedController')
 
 router.get('/', auth.checkAuthenticated, async (req, res) => {
-    json = {posts: await getAllPosts(req.user.feeds)}
+    json = {posts: await getAllPosts(req.user.subscriptions)}
     res.json(json)
 })
 
