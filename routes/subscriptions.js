@@ -8,7 +8,6 @@ router.get('/', auth.checkAuthenticated, (req, res) => {
 
 router.post('/', auth.checkAuthenticated, async (req, res) => {
     const newSubscription = req.body.newSubscription
-    console.log(newSubscription)
     req.user.subscriptions.push(newSubscription)
     try {
         await req.user.save()

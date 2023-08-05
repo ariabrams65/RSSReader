@@ -3,17 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSubscribedFeeds()
 })
 const newSubInput = document.getElementById('newSubInput')
-newSubInput.addEventListener('keydown', event => {
+newSubInput.addEventListener('keydown', async event => {
     if (event.key === 'Enter') {
         const newSubscription = newSubInput.value
         newSubInput.value = ''
         addSubscription(document.getElementById('subscribedFeeds'), newSubscription)
-        postNewSubscription(newSubscription)
+        await postNewSubscription(newSubscription)
+        renderFeed()
     }
 })
 
-function postNewSubscription(newSubscription) {
-    fetch('/subscriptions', {
+async function postNewSubscription(newSubscription) {
+    await fetch('/subscriptions', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -29,8 +30,9 @@ function addSubscription(subscribedFeeds, newSubscription) {
 }
 
 async function renderFeed() {
-    const posts = await getPosts()
     const articleList = document.getElementById('articleList') 
+    articleList.innerHTML = ''
+    const posts = await getPosts()
     posts.forEach(post => {
         const li = document.createElement('li')
         li.textContent = post['title']
