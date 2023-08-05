@@ -16,7 +16,6 @@ router.post('/', auth.checkNotAuthenticated, async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
-            subscriptions: FEEDS 
         })
         res.redirect('/login')
     } catch {
