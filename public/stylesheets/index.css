@@ -60,3 +60,21 @@ body, html {
 #newSubInput {
     width: 100%
 }
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+#subscribedFeeds button {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+#subscribedFeeds button.active {
+    background-color: rgb(129, 203, 216);
+}

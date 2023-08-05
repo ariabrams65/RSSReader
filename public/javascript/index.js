@@ -1,16 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     renderFeed()
     renderSubscribedFeeds()
-})
-const newSubInput = document.getElementById('newSubInput')
-newSubInput.addEventListener('keydown', async event => {
-    if (event.key === 'Enter') {
-        const newSubscription = newSubInput.value
-        newSubInput.value = ''
-        addSubscription(document.getElementById('subscribedFeeds'), newSubscription)
-        await postNewSubscription(newSubscription)
-        renderFeed()
-    }
+    const newSubInput = document.getElementById('newSubInput')
+    newSubInput.addEventListener('keydown', async event => {
+        if (event.key === 'Enter') {
+            const newSubscription = newSubInput.value
+            newSubInput.value = ''
+            addSubscription(document.getElementById('subscribedFeeds'), newSubscription)
+            await postNewSubscription(newSubscription)
+            renderFeed()
+        }
+    })
+    const allFeedsBtn = document.getElementById('all-feeds')
+    allFeedsBtn.addEventListener('click', () => onButtonClick(allFeedsBtn))
 })
 
 async function postNewSubscription(newSubscription) {
@@ -25,8 +27,20 @@ async function postNewSubscription(newSubscription) {
 
 function addSubscription(subscribedFeeds, newSubscription) {
     const li = document.createElement('li')
-    li.textContent = newSubscription
+    const button = document.createElement('button')
+    button.addEventListener('click', () => onButtonClick(button))
+    button.textContent = newSubscription
+    button.classList.add('feed')
+    button.dataset.url = newSubscription
+    li.appendChild(button)
     subscribedFeeds.appendChild(li)
+}
+
+function onButtonClick(button) {
+    const buttons = document.getElementsByClassName("feed");
+    [...buttons].forEach(btn => btn.classList.remove('active'))
+    button.classList.add('active')
+    renderFeed()
 }
 
 async function renderFeed() {
@@ -43,7 +57,7 @@ async function renderFeed() {
 async function renderSubscribedFeeds() {
     const subscriptions = await getSubscribedFeeds()
     const subscribedFeeds = document.getElementById('subscribedFeeds')
-    subscriptions.forEach(subscription=> {addSubscription(subscribedFeeds, subscription)})
+    subscriptions.forEach(subscription => {addSubscription(subscribedFeeds, subscription)})
 }
 
 async function getSubscribedFeeds() {
@@ -53,7 +67,12 @@ async function getSubscribedFeeds() {
 }
 
 async function getPosts() {
-    const response = await fetch('/get-feed')
+    let params = ''
+    const activeButton = document.querySelector('#subscribedFeeds button.active')
+    if (activeButton.dataset.url !== undefined) {
+        params = `?url=${activeButton.dataset.url}`
+    }
+    const response = await fetch(`/get-feed${params}`)
     const json = await response.json()
     return json['posts']
 }
