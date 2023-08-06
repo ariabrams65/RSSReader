@@ -78,3 +78,8 @@ ul {
 #subscribedFeeds button.active {
     background-color: rgb(129, 203, 216);
 }
+
+.item {
+    border-style: solid;
+    margin-bottom: 10px;
+}

@@ -14,9 +14,17 @@ async function getAllPosts(feeds) {
 }
 
 async function getPosts(feedURL) {
-    const parser = new Parser()
+    const parser = new Parser({
+        customFields: {
+            item: [
+                ['media:thumbnail', 'media'], 
+                ['media:group', 'mediaGroup']
+            ] 
+        }
+    })
     try {
         const feed = await parser.parseURL(feedURL)
+        feed.items.forEach(item => {item.sourceTitle = feed.title})
         return feed.items
     } catch (e) {
         console.error(e)

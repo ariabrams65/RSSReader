@@ -44,14 +44,33 @@ function onButtonClick(button) {
 }
 
 async function renderFeed() {
-    const articleList = document.getElementById('articleList') 
-    articleList.innerHTML = ''
-    const posts = await getPosts()
-    posts.forEach(post => {
-        const li = document.createElement('li')
-        li.textContent = post['title']
-        articleList.appendChild(li) 
+    const itemList = document.getElementById('itemList') 
+    itemList.innerHTML = ''
+    const items = await getPosts()
+    items.forEach(item => {
+        const itemElement = createItemElement(item)
+        itemList.appendChild(itemElement) 
     })
+}
+
+function createItemElement(item) {
+    const li = document.createElement('li')    
+    li.classList.add('item')
+
+    const titleAnchor = document.createElement('a')
+    titleAnchor.href = item.link
+    titleAnchor.innerText = item.title
+    li.appendChild(titleAnchor)
+    if (item.comments !== undefined) {
+        const commentAnchor = document.createElement('a')
+        commentAnchor.href = item.comments
+        commentAnchor.innerText = 'Comments'
+        li.appendChild(commentAnchor)
+    }
+    const source = document.createElement('p')
+    source.innerText = item.sourceTitle
+    li.appendChild(source)
+    return li
 }
 
 async function renderSubscribedFeeds() {
