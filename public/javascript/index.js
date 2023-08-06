@@ -90,6 +90,19 @@ function createItemElement(item) {
     const source = document.createElement('div');
     source.innerText = item.sourceTitle;
     li.appendChild(source);
+    if (item.media !== undefined) {
+        const img = document.createElement('img');
+        img.classList.add('image');
+        img.src = item.media['$'].url;
+        img.alt = 'Image unavailable';
+        li.appendChild(img);
+    } else if (item.mediaGroup !== undefined) {
+        const img = document.createElement('img');
+        img.classList.add('image');
+        img.src = item.mediaGroup['media:content'][0]['$'].url;
+        img.alt = 'Image unavailable';
+        li.appendChild(img);
+    }
     return li;
 }
 

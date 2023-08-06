@@ -17,18 +17,18 @@ body, html {
 .sidebar{
     flex: 1; /* Take up remaining space */
     padding: 20px; /* Adjust padding as needed */
-    background-color: #f0f0f0; /* Customize the background color */
     overflow: auto; /* Add scrollability */
     height: 100vh;
+    background-color: #2D353B;
 }
 
 /* Style the right div (main content) */
 .main-content {
     flex: 4; /* Take up twice the space of the left div */
     padding: 20px; /* Adjust padding as needed */
-    background-color: #ffffff; /* Customize the background color */
     overflow: auto; /* Add scrollability */
     height: 100vh;
+    background-color: #2F383E;
 }
 
 /* Add a black background color to the top navigation */
@@ -58,7 +58,13 @@ body, html {
 }
 
 #newSubInput {
-    width: 100%
+    width: 100%;
+    font-size: 1.1em;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding: 5px;
+    background-color: #b8b8b8;
+    border: none;
 }
 
 ul {
@@ -68,22 +74,25 @@ ul {
 }
 
 #subscribedFeeds button {
-    height: 100%;
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
     border: none;
-    padding: 0;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 1.1em;
+    background-color: inherit;
+    color: #b8b8b8;
 }
 
 #subscribedFeeds button:hover {
-    background-color: lightblue;
+    background-color: #313a41;
 }
 
 #subscribedFeeds button.active {
-    background-color: rgb(129, 203, 216);
+    background-color: #3A4349;
 }
 
 .item {
@@ -98,4 +107,8 @@ ul {
 
 .item a {
     display: block;
+}
+
+.image {
+    max-width: 100%;
 }
