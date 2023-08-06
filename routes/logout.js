@@ -1,11 +1,11 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
 router.delete('/', (req, res) => {
     req.logout(err => {
-        if (err) return next(err)
+        if (err) return next(err);
     })
-    res.redirect('/login')
+    res.redirect('/login');
 })
 
-module.exports = router
+module.exports = router;
