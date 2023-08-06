@@ -1,9 +1,9 @@
 const Parser = require('rss-parser');
 
-async function getAllPosts(feeds) {
+async function getAllPosts(subscriptionUrls) {
     const posts = [];
-    for (const feed of feeds) {
-        posts.push(...await getPosts(feed));
+    for (const sub of subscriptionUrls) {
+        posts.push(...await getPosts(sub));
     }
     return posts.sort((a, b) => {
         if (a.isoDate === undefined || b.isoDate === undefined) {
@@ -32,4 +32,11 @@ async function getPosts(feedURL) {
     } 
 }
 
-module.exports = getAllPosts;
+async function getRssHeaders(feedURL) {
+    const parser = new Parser();    
+    const feed = await parser.parseURL(feedURL);
+    delete feed.items;
+    return feed;
+}
+
+module.exports =  { getAllPosts, getRssHeaders };

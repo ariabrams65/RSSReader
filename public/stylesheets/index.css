@@ -1,5 +1,5 @@
 * {
-    box-sizing: border-box
+    box-sizing: border-box;
 }
 
 /* Reset some default styles for better layout control */
@@ -19,7 +19,7 @@ body, html {
     padding: 20px; /* Adjust padding as needed */
     background-color: #f0f0f0; /* Customize the background color */
     overflow: auto; /* Add scrollability */
-    height: 93vh;
+    height: 100vh;
 }
 
 /* Style the right div (main content) */
@@ -28,7 +28,7 @@ body, html {
     padding: 20px; /* Adjust padding as needed */
     background-color: #ffffff; /* Customize the background color */
     overflow: auto; /* Add scrollability */
-    height: 93vh;
+    height: 100vh;
 }
 
 /* Add a black background color to the top navigation */
@@ -68,11 +68,18 @@ ul {
 }
 
 #subscribedFeeds button {
+    height: 100%;
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
+    border: none;
+    padding: 0;
+}
+
+#subscribedFeeds button:hover {
+    background-color: lightblue;
 }
 
 #subscribedFeeds button.active {
@@ -80,6 +87,15 @@ ul {
 }
 
 .item {
-    border-style: solid;
-    margin-bottom: 10px;
+    border: solid 1px lightgray;
+    border-radius: 5px;
+    padding: 10px;
+    width: 50%;
+    margin: auto;
+    margin-bottom: 40px;
+    min-width: 300px;
+}
+
+.item a {
+    display: block;
 }

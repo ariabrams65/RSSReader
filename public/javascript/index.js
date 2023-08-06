@@ -1,37 +1,57 @@
 document.addEventListener('DOMContentLoaded', () => {
     renderFeed();
     renderSubscribedFeeds();
+    addnewSubEventListener();
+    addAllFeedsBtnEventListener();
+});
+
+function addAllFeedsBtnEventListener() {
+    const allFeedsBtn = document.getElementById('all-feeds');
+    allFeedsBtn.addEventListener('click', () => onButtonClick(allFeedsBtn));
+}
+
+async function addnewSubEventListener() {
     const newSubInput = document.getElementById('newSubInput');
     newSubInput.addEventListener('keydown', async event => {
         if (event.key === 'Enter') {
-            const newSubscription = newSubInput.value;
-            newSubInput.value = '';
-            addSubscription(document.getElementById('subscribedFeeds'), newSubscription);
-            await postNewSubscription(newSubscription);
-            renderFeed();
+            try {
+                const feedHeaders = await postNewSubscription(newSubInput.value);
+                addSubscription(document.getElementById('subscribedFeeds'), feedHeaders);
+                newSubInput.value = '';
+                renderFeed();
+            } catch (e) {
+                //alert error message to user
+                console.log(e);
+                return;
+            }
         }
     });
-    const allFeedsBtn = document.getElementById('all-feeds');
-    allFeedsBtn.addEventListener('click', () => onButtonClick(allFeedsBtn));
-});
+}
 
 async function postNewSubscription(newSubscription) {
-    await fetch('/subscriptions', {
+    const response = await fetch('/subscriptions', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({newSubscription: newSubscription})
     });
+    if (response.status === 400) {
+        throw new Error('URL is not a valid rss feed');
+    } else if (!response.ok) {
+        throw new Error('Cannot add new feed');
+    }
+    const json = await response.json();
+    return json['subscription'];
 }
 
-function addSubscription(subscribedFeeds, newSubscription) {
+function addSubscription(subscribedFeeds, feedHeaders) {
     const li = document.createElement('li');
     const button = document.createElement('button');
     button.addEventListener('click', () => onButtonClick(button));
-    button.textContent = newSubscription;
+    button.textContent = feedHeaders.title;
     button.classList.add('feed');
-    button.dataset.url = newSubscription;
+    button.dataset.url = feedHeaders.feedUrl;
     li.appendChild(button);
     subscribedFeeds.appendChild(li);
 }
@@ -67,7 +87,7 @@ function createItemElement(item) {
         commentAnchor.innerText = 'Comments';
         li.appendChild(commentAnchor);
     }
-    const source = document.createElement('p');
+    const source = document.createElement('div');
     source.innerText = item.sourceTitle;
     li.appendChild(source);
     return li;
