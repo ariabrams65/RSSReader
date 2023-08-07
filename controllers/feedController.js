@@ -29,9 +29,19 @@ async function getPosts(feedURL) {
         feed.items.forEach(item => {
             item.sourceTitle = feed.title;
             if (feed.icon !== undefined) {
-                item.feedIconUrl = feed.icon;
+                item.feedIcon = feed.icon;
             } else if (feed.image !== undefined) {
-                item.feedIconUrl = feed.image.url[0];
+                item.feedIcon = feed.image.url[0];
+            }
+            if (item.mediaThumbnail !== undefined) {
+                item.media = item.mediaThumbnail['$'].url;
+                delete item.mediaThumbnail;
+            } else if (item.mediaGroup !== undefined) {
+                item.media = item.mediaGroup['media:content'][0]['$'].url;
+                delete item.mediaGroup;
+            } else if (item.mediaContent !== undefined) {
+                item.media = item.mediaContent['$'].url;
+                delete item.mediaContent;
             }
         });
         console.log(feed);
