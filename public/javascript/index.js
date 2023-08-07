@@ -87,7 +87,16 @@ async function renderFeed() {
 function createItemElement(item) {
     const li = document.createElement('li');
     li.classList.add('item');
-
+    
+    if (item.feedIcon !== undefined) {
+        const icon = document.createElement('img');
+        icon.addEventListener('error', function () {
+            this.src = '/images/default-feed-icon.png';
+        });
+        icon.classList.add('item-icon');
+        icon.src = item.feedIcon;
+        li.appendChild(icon);
+    }
     const titleAnchor = document.createElement('a');
     titleAnchor.href = item.link;
     titleAnchor.innerText = item.title;

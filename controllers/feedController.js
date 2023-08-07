@@ -33,6 +33,7 @@ async function getPosts(feedURL) {
             } else if (feed.image !== undefined) {
                 item.feedIcon = feed.image.url[0];
             }
+            item.feedIcon = removeTrailingSlash(item.feedIcon);
             if (item.mediaThumbnail !== undefined) {
                 item.media = item.mediaThumbnail['$'].url;
                 delete item.mediaThumbnail;
@@ -57,8 +58,16 @@ async function getRssHeaders(feedUrl) {
     if (feed.image !== undefined) {
         feed.icon = feed.image.url[0];
     }
+    feed.icon = removeTrailingSlash(feed.icon);
     delete feed.items;
     return feed;
+}
+
+function removeTrailingSlash(iconUrl) {
+    if (iconUrl !== undefined && iconUrl.slice(-1) === '/') {
+        return iconUrl.substring(0, iconUrl.length - 1);
+    }
+    return iconUrl;
 }
 
 module.exports =  { getAllPosts, getRssHeaders };
