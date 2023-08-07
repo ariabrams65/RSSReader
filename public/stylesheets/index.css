@@ -8,6 +8,11 @@ body, html {
     padding: 0;
 }
 
+body {
+    /* font-family: "Fira Sans", "helvetica neue", arial, sans-serif; */
+    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 /* Set up the flex container */
 .container {
     display: flex;
@@ -59,12 +64,13 @@ body, html {
 
 #newSubInput {
     width: 100%;
-    font-size: 1.1em;
+    font-size: .9em;
     border-radius: 5px;
     margin-bottom: 20px;
     padding: 5px;
     background-color: #b8b8b8;
     border: none;
+    font-family: inherit;
 }
 
 ul {
@@ -82,9 +88,10 @@ ul {
     border: none;
     border-radius: 5px;
     padding: 5px;
-    font-size: 1.1em;
+    font-size: .9em;
     background-color: inherit;
     color: #b8b8b8;
+    font-family: inherit;
 }
 
 #subscribedFeeds button:hover {
@@ -116,22 +123,21 @@ ul {
 
 .item-title {
     font-weight: bold;
-    font-size: 1em;
-    margin-bottom: 10px;
+    font-size: 1.2em;
 }
 
 .item-image {
     width: 50%;
     display: block;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .item-comments {
     font-size: .8em;
-    margin-bottom: 10px;
+    margin-top: 10px
 }
 
 .item-source {
     font-size: .8em;
-    margin-bottom: 10px;
+    margin-top: 20px;
 }

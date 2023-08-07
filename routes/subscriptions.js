@@ -11,7 +11,6 @@ router.post('/', auth.checkAuthenticated, async (req, res) => {
     let rssHeaders;
     try {
         rssHeaders = await getRssHeaders(req.body.newSubscription);
-        rssHeaders.feedUrl = req.body.newSubscription;
     } catch {
         //URL is invalid
         return res.sendStatus(400);
