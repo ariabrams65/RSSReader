@@ -16,10 +16,10 @@ async function getAllPosts(subscriptionUrls) {
         posts.push(...await getPosts(sub));
     }
     return posts.sort((a, b) => {
-        if (a.isoDate === undefined || b.isoDate === undefined) {
-            return Math.floor(Math.random() * 3) - 1;
-        }
-        return b.isoDate.localeCompare(a.isoDate);
+        const defaultDate = new Date(0);
+        const aDate = a.isoDate ? new Date(a.isoDate) : defaultDate;
+        const bDate = b.isoDate ? new Date(b.isoDate) : defaultDate;
+        return bDate - aDate;
     });
 }
 

@@ -38,18 +38,19 @@ body {
 
 /* Add a black background color to the top navigation */
 .topnav {
-    background-color: #333;
+    background-color: #2D353B;
     overflow: hidden;
 }
   
   /* Style the links inside the navigation bar */
 .topnav a {
     float: left;
-    color: #f2f2f2;
+    color: #b8b8b8;
     text-align: center;
     padding: 10px 16px;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 1.1em;
+    border-radius: 5px;
   }
   
 #user-btn {
@@ -58,8 +59,7 @@ body {
   
   /* Change the color of links on hover */
 .topnav a:hover {
-    background-color: #ddd;
-    color: black;
+    background-color: #313a41;
 }
 
 #newSubInput {
@@ -82,7 +82,6 @@ ul {
 #all-feeds {
     margin-bottom: 10px;
     /* border: 1px solid gray; */
-    border-radius: 10px;
 }
 
 #subscribedFeeds button {
@@ -111,15 +110,17 @@ ul {
 }
 
 .item {
-    /* #2D353B */
-    border: solid 5px #2D353B;
-    border-radius: 5px;
-    padding: 10px;
     width: 50%;
     margin: auto;
-    margin-bottom: 40px;
     min-width: 300px;
     color: #b8b8b8;
+    
+    padding: 20px 10px;
+    border-bottom: solid 3px #282f35;
+}
+
+.item:hover {
+    background-color: #2D353B;
 }
 
 .item a {
@@ -134,6 +135,10 @@ ul {
     font-size: 1.2em;
 }
 
+.item-title:hover {
+    text-decoration: underline;
+}
+
 .item-image {
     width: 50%;
     display: block;
@@ -143,6 +148,10 @@ ul {
 .item-comments {
     font-size: .8em;
     margin-top: 10px
+}
+
+.item-comments:hover {
+    text-decoration: underline;
 }
 
 .item-source {
