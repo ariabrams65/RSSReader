@@ -120,14 +120,27 @@ function createItemElement(item) {
     source.innerText = item.sourceTitle;
     source.classList.add('item-source');
     li.appendChild(source);
-    const time = document.createElement('time');
+
     if (item.isoDate !== undefined) {
+        const time = document.createElement('time');
         time.datetime = item.isoDate;
-        time.innerText = item.isoDate;
+        time.innerText = formatTimeSince(item.isoDate);
         time.classList.add('item-time')
         li.appendChild(time);
     }
     return li;
+}
+function formatTimeSince(isoDate) {
+    const timeDifference = new Date() - new Date(isoDate);
+    if (timeDifference < 60000) { 
+        return Math.floor(timeDifference / 1000) + 's';
+    } else if (timeDifference < 3600000) {
+        return Math.floor(timeDifference / 60000) + 'm';
+    } else if (timeDifference < 86400000) {
+        return Math.floor(timeDifference / 3600000) + 'h';
+    } else {
+        return Math.floor(timeDifference / 86400000) + 'd';
+    }
 }
 
 async function renderSubscribedFeeds() {

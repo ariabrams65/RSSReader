@@ -79,6 +79,12 @@ ul {
     list-style-type: none;
 }
 
+#all-feeds {
+    margin-bottom: 10px;
+    /* border: 1px solid gray; */
+    border-radius: 10px;
+}
+
 #subscribedFeeds button {
     display: flex;
     align-items: center;
@@ -148,7 +154,6 @@ ul {
     margin-right: 10px;
     height: 20px;
     width: 20px;
-    /* height: 100%; */
     border-radius: 2px;
 }
 
