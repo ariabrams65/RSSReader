@@ -10,6 +10,7 @@ router.get('/', auth.checkAuthenticated, async (req, res) => {
     } else {
         json = {posts: await getAllPosts([req.query.url])};
     }
+    console.log(JSON.stringify(json, null, 4));
     res.json(json);
 });
 

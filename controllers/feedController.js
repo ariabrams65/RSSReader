@@ -17,8 +17,9 @@ async function getPosts(feedURL) {
     const parser = new Parser({
         customFields: {
             item: [
-                ['media:thumbnail', 'media'], 
-                ['media:group', 'mediaGroup']
+                ['media:thumbnail', 'mediaThumbnail'], 
+                ['media:group', 'mediaGroup'],
+                ['media:content', 'mediaContent']
             ] 
         }
     });

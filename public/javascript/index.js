@@ -80,28 +80,44 @@ function createItemElement(item) {
     const titleAnchor = document.createElement('a');
     titleAnchor.href = item.link;
     titleAnchor.innerText = item.title;
+    titleAnchor.classList.add('item-title');
     li.appendChild(titleAnchor);
     if (item.comments !== undefined) {
         const commentAnchor = document.createElement('a');
         commentAnchor.href = item.comments;
         commentAnchor.innerText = 'Comments';
+        commentAnchor.classList.add('item-comments');
         li.appendChild(commentAnchor);
     }
-    const source = document.createElement('div');
-    source.innerText = item.sourceTitle;
-    li.appendChild(source);
-    if (item.media !== undefined) {
+    if (item.mediaThumbnail !== undefined) {
         const img = document.createElement('img');
-        img.classList.add('image');
-        img.src = item.media['$'].url;
+        img.classList.add('item-image');
+        img.src = item.mediaThumbnail['$'].url;
         img.alt = 'Image unavailable';
         li.appendChild(img);
     } else if (item.mediaGroup !== undefined) {
         const img = document.createElement('img');
-        img.classList.add('image');
+        img.classList.add('item-image');
         img.src = item.mediaGroup['media:content'][0]['$'].url;
         img.alt = 'Image unavailable';
         li.appendChild(img);
+    } else if (item.mediaContent !== undefined) {
+        const img = document.createElement('img');
+        img.classList.add('item-image');
+        img.src = item.mediaContent['$'].url;
+        img.alt = 'Image unavailable';
+        li.appendChild(img);
+    }
+    const source = document.createElement('div');
+    source.innerText = item.sourceTitle;
+    source.classList.add('item-source');
+    li.appendChild(source);
+    const time = document.createElement('time');
+    if (item.isoDate !== undefined) {
+        time.datetime = item.isoDate;
+        time.innerText = item.isoDate;
+        time.classList.add('item-time')
+        li.appendChild(time);
     }
     return li;
 }
