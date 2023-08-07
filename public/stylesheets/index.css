@@ -141,3 +141,10 @@ ul {
     font-size: .8em;
     margin-top: 20px;
 }
+
+.feed-icon {
+    margin-right: 10px;
+    height: 15px;
+    width: 15px;
+    border-radius: 2px;
+}

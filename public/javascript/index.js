@@ -49,7 +49,18 @@ function addSubscription(subscribedFeeds, feedHeaders) {
     const li = document.createElement('li');
     const button = document.createElement('button');
     button.addEventListener('click', () => onButtonClick(button));
-    button.textContent = feedHeaders.title;
+
+    const img = document.createElement('img');
+    img.addEventListener('error', function () {
+        this.src = '/images/default-feed-icon.png';
+    });
+    img.classList.add('feed-icon');
+    img.src = feedHeaders.icon;
+    button.appendChild(img);
+
+    const span = document.createElement('span');
+    span.innerText = feedHeaders.title;
+    button.appendChild(span);
     button.classList.add('feed');
     button.dataset.url = feedHeaders.feedUrl;
     li.appendChild(button);
