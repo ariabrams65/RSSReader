@@ -11,11 +11,14 @@ const parser = new Parser({
 });
 
 async function getAllPosts(subscriptionUrls) {
-    const posts = [];
-    for (const sub of subscriptionUrls) {
-        posts.push(...await getPosts(sub));
-    }
-    return posts.sort((a, b) => {
+    // const posts = [];
+    // for (const sub of subscriptionUrls) {
+    //     posts.push(...await getPosts(sub));
+    // }
+
+    const posts = await Promise.all(subscriptionUrls.map(url => getPosts(url)));
+
+    return posts.flat().sort((a, b) => {
         const defaultDate = new Date(0);
         const aDate = a.isoDate ? new Date(a.isoDate) : defaultDate;
         const bDate = b.isoDate ? new Date(b.isoDate) : defaultDate;
