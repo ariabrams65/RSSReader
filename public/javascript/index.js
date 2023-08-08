@@ -47,7 +47,9 @@ async function postNewSubscription(newSubscription) {
 
 function addSubscription(subscribedFeeds, feedHeaders) {
     const li = document.createElement('li');
+    
     const button = document.createElement('button');
+    button.classList.add('feed');
     button.addEventListener('click', () => onButtonClick(button));
 
     const img = document.createElement('img');
@@ -61,7 +63,6 @@ function addSubscription(subscribedFeeds, feedHeaders) {
     const span = document.createElement('span');
     span.innerText = feedHeaders.title;
     button.appendChild(span);
-    button.classList.add('feed');
     button.dataset.url = feedHeaders.feedUrl;
     li.appendChild(button);
     subscribedFeeds.appendChild(li);

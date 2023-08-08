@@ -85,7 +85,7 @@ ul {
     /* border: 1px solid gray; */
 }
 
-#subscribedFeeds button {
+.feed {
     display: flex;
     align-items: center;
     width: 100%;

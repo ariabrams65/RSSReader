@@ -26,26 +26,31 @@ async function getAllPosts(subscriptionUrls) {
 async function getPosts(feedURL) {
     try {
         const feed = await parser.parseURL(feedURL);
+        const posts = [];
         feed.items.forEach(item => {
-            item.sourceTitle = feed.title;
+            const post = {};
+            post.sourceTitle = feed.title;
             if (feed.icon !== undefined) {
-                item.feedIcon = feed.icon;
+                post.feedIcon = feed.icon;
             } else if (feed.image !== undefined) {
-                item.feedIcon = feed.image.url[0];
+                post.feedIcon = feed.image.url[0];
             }
-            item.feedIcon = removeTrailingSlash(item.feedIcon);
+            post.feedIcon = removeTrailingSlash(post.feedIcon);
             if (item.mediaThumbnail !== undefined) {
-                item.media = item.mediaThumbnail['$'].url;
-                delete item.mediaThumbnail;
+                post.media = item.mediaThumbnail['$'].url;
             } else if (item.mediaGroup !== undefined) {
-                item.media = item.mediaGroup['media:content'][0]['$'].url;
-                delete item.mediaGroup;
+                post.media = item.mediaGroup['media:content'][0]['$'].url;
             } else if (item.mediaContent !== undefined) {
-                item.media = item.mediaContent['$'].url;
-                delete item.mediaContent;
+                post.media = item.mediaContent['$'].url;
             }
+            post.link = item.link;
+            post.title = item.title;
+            post.comments = item.comments;
+            post.isoDate = item.isoDate;
+
+            posts.push(post);
         });
-        return feed.items;
+        return posts;
     } catch (e) {
         console.error(e);
         return [];
