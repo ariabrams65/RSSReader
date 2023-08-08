@@ -16,7 +16,7 @@ async function addnewSubEventListener() {
         if (event.key === 'Enter') {
             try {
                 const feedHeaders = await postNewSubscription(newSubInput.value);
-                addSubscription(document.getElementById('subscribedFeeds'), feedHeaders);
+                renderSubscribedFeeds();
                 newSubInput.value = '';
                 renderFeed();
             } catch (e) {
@@ -64,6 +64,13 @@ function addSubscription(subscribedFeeds, feedHeaders) {
     button.dataset.url = feedHeaders.feedUrl;
     li.appendChild(button);
     subscribedFeeds.appendChild(li);
+}
+
+async function unsubscribe(subscriptionUrl) {
+    await fetch(`/subscriptions?subscription=${subscriptionUrl}`, {
+        method: 'DELETE'
+    });
+    renderSubscribedFeeds();
 }
 
 function onButtonClick(button) {
@@ -145,6 +152,7 @@ function formatTimeSince(isoDate) {
 async function renderSubscribedFeeds() {
     const subscriptions = await getSubscribedFeeds();
     const subscribedFeeds = document.getElementById('subscribedFeeds');
+    subscribedFeeds.replaceChildren();
     subscriptions.forEach(subscription => {addSubscription(subscribedFeeds, subscription)});
 }
 
@@ -156,7 +164,7 @@ async function getSubscribedFeeds() {
 
 async function getPosts() {
     let params = '';
-    const activeButton = document.querySelector('#subscribedFeeds button.active');
+    const activeButton = document.querySelector('.feed.active');
     if (activeButton.dataset.url !== undefined) {
         params = `?url=${activeButton.dataset.url}`;
     }

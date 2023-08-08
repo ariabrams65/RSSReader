@@ -33,7 +33,7 @@ router.post('/', auth.checkAuthenticated, async (req, res) => {
 });
 
 router.delete('/', auth.checkAuthenticated, async (req, res) => {
-    req.user.subscriptions = req.user.subscriptions.filter(sub => sub.feedUrl !== req.subscription);
+    req.user.subscriptions = req.user.subscriptions.filter(sub => sub.feedUrl !== req.query.subscription);
     try {
         await req.user.save();    
         res.sendStatus(200);

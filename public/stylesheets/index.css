@@ -102,11 +102,12 @@ ul {
     font-family: inherit;
 }
 
-#subscribedFeeds button:hover {
+.feed:hover {
     background-color: #313a41;
+    
 }
 
-#subscribedFeeds button.active {
+.feed.active {
     background-color: #3A4349;
 }
 
