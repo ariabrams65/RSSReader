@@ -18,12 +18,13 @@ async function getAllPosts(subscriptionUrls) {
 
     const posts = await Promise.all(subscriptionUrls.map(url => getPosts(url)));
 
-    return posts.flat().sort((a, b) => {
+    const sortedPosts = posts.flat().sort((a, b) => {
         const defaultDate = new Date(0);
         const aDate = a.isoDate ? new Date(a.isoDate) : defaultDate;
         const bDate = b.isoDate ? new Date(b.isoDate) : defaultDate;
         return bDate - aDate;
     });
+    return sortedPosts;
 }
 
 async function getPosts(feedURL) {

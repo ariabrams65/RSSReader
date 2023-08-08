@@ -36,12 +36,10 @@ async function postNewSubscription(newSubscription) {
         },
         body: JSON.stringify({newSubscription: newSubscription})
     });
-    if (response.status === 400) {
-        throw new Error('URL is not a valid rss feed');
-    } else if (!response.ok) {
-        throw new Error('Cannot add new feed');
-    }
     const json = await response.json();
+    if (!response.ok) {
+        throw new Error(json.message);
+    }
     return json['subscription'];
 }
 
