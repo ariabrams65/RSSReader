@@ -54,6 +54,7 @@ async function getPosts(feedURL) {
 
 async function getRssHeaders(feedUrl) {
     const feed = await parser.parseURL(feedUrl);
+    console.log('here');
     feed.feedUrl = feedUrl;
     if (feed.image !== undefined) {
         feed.icon = feed.image.url[0];
