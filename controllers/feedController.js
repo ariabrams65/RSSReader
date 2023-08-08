@@ -59,14 +59,17 @@ async function getPosts(feedURL) {
 
 async function getRssHeaders(feedUrl) {
     const feed = await parser.parseURL(feedUrl);
-    console.log('here');
-    feed.feedUrl = feedUrl;
+    const headers = {};
+    headers.feedUrl = feedUrl;
     if (feed.image !== undefined) {
-        feed.icon = feed.image.url[0];
+        headers.icon = feed.image.url[0];
+    } else {
+        headers.icon = feed.icon;
     }
-    feed.icon = removeTrailingSlash(feed.icon);
-    delete feed.items;
-    return feed;
+    headers.icon = removeTrailingSlash(headers.icon);
+    headers.title = feed.title;
+
+    return headers;
 }
 
 function removeTrailingSlash(iconUrl) {
