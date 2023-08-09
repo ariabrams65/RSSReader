@@ -2,47 +2,43 @@
     box-sizing: border-box;
 }
 
-/* Reset some default styles for better layout control */
 body, html {
     margin: 0;
     padding: 0;
 }
 
 body {
-    /* font-family: "Fira Sans", "helvetica neue", arial, sans-serif; */
     font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Set up the flex container */
 .container {
     display: flex;
 }
 
-/* Style the left div (subscriptions) */
 .sidebar{
-    flex: 1; /* Take up remaining space */
-    padding: 20px; /* Adjust padding as needed */
+    flex: 1; 
+    padding: 10px 20px; 
     overflow: auto; /* Add scrollability */
     height: 100vh;
     background-color: #2D353B;
 }
 
-/* Style the right div (main content) */
 .main-content {
-    flex: 4; /* Take up twice the space of the left div */
-    padding: 20px; /* Adjust padding as needed */
+    flex: 4; 
     overflow: auto; /* Add scrollability */
     height: 100vh;
     background-color: #2F383E;
+    position: relative;
 }
 
-/* Add a black background color to the top navigation */
 .topnav {
     background-color: #2D353B;
     overflow: hidden;
+    position: sticky;
+    top: 0;
+    width: 100%;
 }
   
-  /* Style the links inside the navigation bar */
 .topnav a {
     float: left;
     color: #b8b8b8;
@@ -58,7 +54,6 @@ body {
     float: right;
 }
   
-  /* Change the color of links on hover */
 .topnav a:hover {
     background-color: #313a41;
 }
@@ -82,16 +77,12 @@ ul {
 
 #all-feeds {
     margin-bottom: 20px;
-    /* border: 1px solid gray; */
 }
 
 .feed {
     display: flex;
     align-items: center;
     width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     text-align: left;
     border: none;
     border-radius: 5px;
@@ -100,6 +91,12 @@ ul {
     background-color: inherit;
     color: #b8b8b8;
     font-family: inherit;
+}
+
+.feed-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .feed:hover {

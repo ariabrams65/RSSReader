@@ -8,21 +8,23 @@
         <script src="javascript/index.js" defer></script>
     </head>
     <body>
-        <ul class="topnav">
-            <a href="/">Feeds</a>
-            <a id="user-btn" href="#Account">Account</a>
-        </ul>
         <div class="container">
             <div class="sidebar">
                 <div class="add-feed">
                     <input type="text" id="newSubInput" placeholder="Enter RSS feed URL">
                 </div>
-                <button id='all-feeds' class="feed active"><img class='feed-icon' src="/images/all-feeds-icon.png">All Feeds</button>
+                <button id='all-feeds' class="feed active"><img class='feed-icon' src="/images/all-feeds-icon.png">
+                    <span class="feed-name">All Feeds</span>
+                </button>
                 <ul id="subscribedFeeds">
                     <!-- List of subscribed feeds will be dynamically added here -->
                 </ul>
             </div>
             <div class="main-content">
+                <ul class="topnav">
+                    <a href="/">Feeds</a>
+                    <a id="user-btn" href="#Account">Account</a>
+                </ul>
                 <ul id="itemList">
                     <!-- List of retrieved articles will be dynamically added here -->
                 </ul>

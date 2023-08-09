@@ -59,6 +59,7 @@ function addSubscription(subscribedFeeds, feedHeaders) {
     button.appendChild(img);
 
     const span = document.createElement('span');
+    span.classList.add('feed-name');
     span.innerText = feedHeaders.title;
     button.appendChild(span);
     button.dataset.url = feedHeaders.feedUrl;
