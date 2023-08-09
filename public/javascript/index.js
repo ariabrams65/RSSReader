@@ -15,7 +15,7 @@ async function addnewSubEventListener() {
     newSubInput.addEventListener('keydown', async event => {
         if (event.key === 'Enter') {
             try {
-                const feedHeaders = await postNewSubscription(newSubInput.value);
+                await postNewSubscription(newSubInput.value);
                 renderSubscribedFeeds();
                 newSubInput.value = '';
                 renderFeed();
