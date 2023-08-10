@@ -94,7 +94,9 @@ async function renderFeed() {
 function createItemElement(item) {
     const li = document.createElement('li');
     li.classList.add('item');
-    
+   
+    const source = document.createElement('div');
+    source.classList.add('item-source');
     if (item.feedIcon !== undefined) {
         const icon = document.createElement('img');
         icon.addEventListener('error', function () {
@@ -102,8 +104,13 @@ function createItemElement(item) {
         });
         icon.classList.add('item-icon');
         icon.src = item.feedIcon;
-        li.appendChild(icon);
+        source.appendChild(icon);
     }
+    const sourceTitle = document.createElement('span');
+    sourceTitle.innerText = item.sourceTitle;
+    source.appendChild(sourceTitle);
+    li.appendChild(source);
+
     const titleAnchor = document.createElement('a');
     titleAnchor.href = item.link;
     titleAnchor.innerText = item.title;
@@ -123,13 +130,9 @@ function createItemElement(item) {
         img.alt = 'Image unavailable';
         li.appendChild(img);
     }
-    const source = document.createElement('div');
-    source.innerText = item.sourceTitle;
-    source.classList.add('item-source');
-    li.appendChild(source);
 
     if (item.isoDate !== undefined) {
-        const time = document.createElement('time');
+        const time = document.createElement('h3');
         time.datetime = item.isoDate;
         time.innerText = formatTimeSince(item.isoDate);
         time.classList.add('item-time')

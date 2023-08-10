@@ -129,6 +129,11 @@ ul {
     text-decoration: none;
 }
 
+.item-source {
+    font-size: .8em;
+    display: flex;
+    align-items: center;
+}
 
 .item-title {
     font-weight: bold;
@@ -154,11 +159,6 @@ ul {
     text-decoration: underline;
 }
 
-.item-source {
-    font-size: .8em;
-    margin-top: 20px;
-}
-
 .feed-icon {
     margin-right: 10px;
     height: 20px;
@@ -168,4 +168,10 @@ ul {
 
 .item-icon {
     max-height: 30px;
+}
+
+.item-time {
+    margin: 20px 0 0 0; 
+    font-size: .8em;
+    font-weight: normal;
 }
