@@ -1,21 +1,17 @@
 const Parser = require('rss-parser');
-const parser = new Parser({
-    customFields: {
-        feed: ['image', 'icon'],
-        item: [
-            ['media:thumbnail', 'mediaThumbnail'], 
-            ['media:group', 'mediaGroup'],
-            ['media:content', 'mediaContent']
-        ] 
+const removeTrailingSlash = require('../helpers/commonHelpers');
+
+async function getFeed(req, res) {
+    let json;
+    if (req.query.url === undefined) {
+        json = {posts: await getAllPosts(req.user.subscriptions.map(sub => sub.feedUrl))};
+    } else {
+        json = {posts: await getAllPosts([req.query.url])};
     }
-});
+    res.json(json);
+}
 
 async function getAllPosts(subscriptionUrls) {
-    // const posts = [];
-    // for (const sub of subscriptionUrls) {
-    //     posts.push(...await getPosts(sub));
-    // }
-
     const posts = await Promise.all(subscriptionUrls.map(url => getPosts(url)));
 
     const sortedPosts = posts.flat().sort((a, b) => {
@@ -28,6 +24,16 @@ async function getAllPosts(subscriptionUrls) {
 }
 
 async function getPosts(feedURL) {
+    const parser = new Parser({
+        customFields: {
+            feed: ['image', 'icon'],
+            item: [
+                ['media:thumbnail', 'mediaThumbnail'], 
+                ['media:group', 'mediaGroup'],
+                ['media:content', 'mediaContent']
+            ] 
+        }
+    });
     try {
         const feed = await parser.parseURL(feedURL);
         const posts = [];
@@ -51,7 +57,7 @@ async function getPosts(feedURL) {
             post.title = item.title;
             post.comments = item.comments;
             post.isoDate = item.isoDate;
-
+            
             posts.push(post);
         });
         return posts;
@@ -61,26 +67,4 @@ async function getPosts(feedURL) {
     } 
 }
 
-async function getRssHeaders(feedUrl) {
-    const feed = await parser.parseURL(feedUrl);
-    const headers = {};
-    headers.feedUrl = feedUrl;
-    if (feed.image !== undefined) {
-        headers.icon = feed.image.url[0];
-    } else {
-        headers.icon = feed.icon;
-    }
-    headers.icon = removeTrailingSlash(headers.icon);
-    headers.title = feed.title;
-
-    return headers;
-}
-
-function removeTrailingSlash(iconUrl) {
-    if (iconUrl !== undefined && iconUrl.slice(-1) === '/') {
-        return iconUrl.substring(0, iconUrl.length - 1);
-    }
-    return iconUrl;
-}
-
-module.exports =  { getAllPosts, getRssHeaders };
+module.exports =  getFeed;

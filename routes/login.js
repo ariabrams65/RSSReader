@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const passport = require('passport');
+const { getLoginView } = require('../controllers/authController');
 
-router.get('/', auth.checkNotAuthenticated, (req, res) => {
-    res.render('login.ejs');
-});
+router.get('/', auth.checkNotAuthenticated, getLoginView);
 
 router.post('/', auth.checkNotAuthenticated, passport.authenticate('local', {
     successRedirect: '/',
