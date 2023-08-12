@@ -10,12 +10,12 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const initializePassport = require('./config/passportConfig');
 const connectDB = require('./config/dbConnConfig');
-const createTables = require('./db/tables');
+const query = require('./db/queries');
 
 connectDB();
 mongoose.connection.once('open', () => console.log('Connected to Database'));
 
-createTables();
+query.createTables();
 
 initializePassport(passport);
 
