@@ -62,19 +62,21 @@ async function addUserSubscription(userId, subscription) {
     const insertSubscriptionQuery =
     `
     INSERT INTO subscriptions (userId, feedId)
-    VALUES ($1, $2);
+    VALUES ($1, $2)
+    RETURNING id;
     `;
     await query(insertFeedQuery, [
         subscription.feedUrl,
         subscription.iconUrl,
         subscription.title
     ]);
-    const res = await query(getFeedIdQuery, [subscription.feedUrl]);
-    const feedId = res.rows[0].id;
-    await query(insertSubscriptionQuery, [userId, feedId]);
+    const feedIdRes = await query(getFeedIdQuery, [subscription.feedUrl]);
+    const feedId = feedIdRes.rows[0].id;
+    const subIdRes = await query(insertSubscriptionQuery, [userId, feedId]);
+    return subIdRes.rows[0];
 }
 
-async function deleteUserSubscription(userId, subscriptionId) {
+async function deleteUserSubscription(subscriptionId) {
     const getFeedIdQuery =
     `
     SELECT feedId
@@ -100,7 +102,11 @@ async function deleteUserSubscription(userId, subscriptionId) {
     await query(deleteFeedQuery, [feedId]);
 }
 
-async function addUser(email, password) {
+async function subscriptionExists(userId, feedUrl) {
+    
+}
+
+async function createUser(email, password) {
     const addUserQuery =
     `
     INSERT INTO users (email, password)
@@ -109,16 +115,27 @@ async function addUser(email, password) {
     await query(addUserQuery, [email, password]);
 }
 
-async function getUser(email) {
+async function getUserByEmail(email) {
     const getUserQuery =
     `
-    SELECT email, password
+    SELECT id, email, password
     FROM users
     WHERE email = $1;
     `;
     const res = await query(getUserQuery, [email]);
-    return res[0]
+    return res.rows[0];
 } 
+
+async function getUserById(id) {
+    const getUserQuery = 
+    `
+    SELECT id, email, password
+    FROM users
+    WHERE id = $1;
+    `;   
+    const res = await query(getUserQuery, [id]);
+    return res.rows[0];
+}
 
 async function getFeedPosts(subscriptionId) {
     
@@ -133,8 +150,10 @@ module.exports = {
     getUserSubscriptions,
     addUserSubscription,
     deleteUserSubscription,
-    addUser,
-    getUser,
+    subscriptionExists,
+    createUser,
+    getUserByEmail,
+    getUserById,
     getFeedPosts,
     getAllPosts
 }

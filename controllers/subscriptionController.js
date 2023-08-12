@@ -1,28 +1,31 @@
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
+const query = require('../db/dbConn');
 
 function getSubscriptions(req, res) {
-    res.json({subscriptions: req.user.subscriptions});
+    res.json({subscriptions: query.getUserSubscriptions(req.user.id)});
 }
 
 async function addSubscription(req, res) {
-    if (req.user.subscriptions.some(sub => sub.feedUrl === req.body.newSubscription)) {
+    if (query.subscriptionExists(req.user.id, req.body.newSubscription)) {
         return res.status(400).send({
             message: 'Cannot add duplucate subscriptions'
         });
     }
-    let rssHeaders;
+    let feedHeaders;
     try {
-        rssHeaders = await getRssHeaders(req.body.newSubscription);
+        feedHeaders = await getFeedHeaders(req.body.newSubscription);
     } catch {
         return res.status(400).send({
             message: 'URL is invalid'
         });
     }
-    req.user.subscriptions.push(rssHeaders);
     try {
-        await req.user.save();
-        res.status(200).json({subscription: rssHeaders});
+        const subscription = await query.addUserSubscription(req.user.id, feedHeaders);
+        res.status(200).json({
+            subscription: feedHeaders,
+            subscriptionId: subscription.id
+        });
     } catch {
         return res.status(500).send({
             message: 'Cannot add new feed'
@@ -31,16 +34,14 @@ async function addSubscription(req, res) {
 }
 
 async function deleteSubscription(req, res) {
-    req.user.subscriptions = req.user.subscriptions.filter(sub => sub.feedUrl !== req.query.subscription);
     try {
-        await req.user.save();    
-        res.sendStatus(200);
+        query.deleteUserSubscription(req.query.subscriptionId);
     } catch {
         return res.sendStatus(500);
     }
 }
 
-async function getRssHeaders(feedUrl) {
+async function getFeedHeaders(feedUrl) {
     const parser = new Parser({
         customFields: {
             feed: ['image', 'icon']
@@ -50,11 +51,11 @@ async function getRssHeaders(feedUrl) {
     const headers = {};
     headers.feedUrl = feedUrl;
     if (feed.image !== undefined) {
-        headers.icon = feed.image.url[0];
+        headers.iconUrl = feed.image.url[0];
     } else {
-        headers.icon = feed.icon;
+        headers.iconUrl = feed.icon;
     }
-    headers.icon = removeTrailingSlash(headers.icon);
+    headers.iconUrl = removeTrailingSlash(headers.iconUrl);
     headers.title = feed.title;
 
     return headers;
