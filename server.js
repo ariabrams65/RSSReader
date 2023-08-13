@@ -9,11 +9,21 @@ const session = require('express-session');
 const methodOverride = require('method-override');
 const initializePassport = require('./config/passportConfig');
 const query = require('./db/queries');
-
+const Bree = require('bree');
 
 query.createTables();
 
 initializePassport(passport);
+
+const bree = new Bree({
+    jobs: [{
+        name: 'updatePosts',
+        cron: '0 * * * *'
+    }]
+});
+(async () => {
+    await bree.start();
+})();
 
 const app = express();
 app.set('view engine', 'ejs');
