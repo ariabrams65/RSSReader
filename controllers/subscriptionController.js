@@ -1,13 +1,13 @@
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
-const query = require('../db/dbConn');
+const query = require('../db/queries');
 
-function getSubscriptions(req, res) {
-    res.json({subscriptions: query.getUserSubscriptions(req.user.id)});
+async function getSubscriptions(req, res) {
+    res.json({subscriptions: await query.getUserSubscriptions(req.user.id)});
 }
 
 async function addSubscription(req, res) {
-    if (query.subscriptionExists(req.user.id, req.body.newSubscription)) {
+    if (await query.subscriptionExists(req.user.id, req.body.newSubscription)) {
         return res.status(400).send({
             message: 'Cannot add duplucate subscriptions'
         });
@@ -21,11 +21,8 @@ async function addSubscription(req, res) {
         });
     }
     try {
-        const subscription = await query.addUserSubscription(req.user.id, feedHeaders);
-        res.status(200).json({
-            subscription: feedHeaders,
-            subscriptionId: subscription.id
-        });
+        await query.addUserSubscription(req.user.id, feedHeaders);
+        res.sendStatus(200);
     } catch {
         return res.status(500).send({
             message: 'Cannot add new feed'
@@ -35,27 +32,29 @@ async function addSubscription(req, res) {
 
 async function deleteSubscription(req, res) {
     try {
-        query.deleteUserSubscription(req.query.subscriptionId);
-    } catch {
+        await query.deleteUserSubscription(req.query.subscriptionid);
+        res.sendStatus(200);
+    } catch (e){
+        console.log(e);
         return res.sendStatus(500);
     }
 }
 
-async function getFeedHeaders(feedUrl) {
+async function getFeedHeaders(feedurl) {
     const parser = new Parser({
         customFields: {
             feed: ['image', 'icon']
         }
     });
-    const feed = await parser.parseURL(feedUrl);
+    const feed = await parser.parseURL(feedurl);
     const headers = {};
-    headers.feedUrl = feedUrl;
+    headers.feedurl = feedurl;
     if (feed.image !== undefined) {
-        headers.iconUrl = feed.image.url[0];
+        headers.iconurl = feed.image.url[0];
     } else {
-        headers.iconUrl = feed.icon;
+        headers.iconurl = feed.icon;
     }
-    headers.iconUrl = removeTrailingSlash(headers.iconUrl);
+    headers.iconurl = removeTrailingSlash(headers.iconurl);
     headers.title = feed.title;
 
     return headers;

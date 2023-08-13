@@ -36,14 +36,13 @@ async function postNewSubscription(newSubscription) {
         },
         body: JSON.stringify({newSubscription: newSubscription})
     });
-    const json = await response.json();
     if (!response.ok) {
+        const json = await response.json();
         throw new Error(json.message);
     }
-    return json['subscription'];
 }
 
-function addSubscription(subscribedFeeds, feedHeaders) {
+function addSubscription(subscribedFeeds, subscription) {
     const li = document.createElement('li');
     
     const button = document.createElement('button');
@@ -55,20 +54,20 @@ function addSubscription(subscribedFeeds, feedHeaders) {
         this.src = '/images/default-feed-icon.png';
     });
     img.classList.add('feed-icon');
-    img.src = feedHeaders.icon;
+    img.src = subscription.iconurl;
     button.appendChild(img);
 
     const span = document.createElement('span');
     span.classList.add('feed-name');
-    span.innerText = feedHeaders.title;
+    span.innerText = subscription.title;
     button.appendChild(span);
-    button.dataset.url = feedHeaders.feedUrl;
+    button.dataset.subscriptionid = subscription.subscriptionid;
     li.appendChild(button);
     subscribedFeeds.appendChild(li);
 }
 
-async function unsubscribe(subscriptionUrl) {
-    await fetch(`/subscriptions?subscription=${subscriptionUrl}`, {
+async function unsubscribe(subscriptionid) {
+    await fetch(`/subscriptions?subscriptionid=${subscriptionid}`, {
         method: 'DELETE'
     });
     renderSubscribedFeeds();
@@ -169,8 +168,8 @@ async function getSubscribedFeeds() {
 async function getPosts() {
     let params = '';
     const activeButton = document.querySelector('.feed.active');
-    if (activeButton.dataset.url !== undefined) {
-        params = `?url=${activeButton.dataset.url}`;
+    if (activeButton.dataset.subscriptionid !== undefined) {
+        params = `?subscriptionid=${activeButton.dataset.subscriptionid}`;
     }
     const response = await fetch(`/get-feed${params}`);
     const json = await response.json();

@@ -7,13 +7,9 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
-const mongoose = require('mongoose');
 const initializePassport = require('./config/passportConfig');
-const connectDB = require('./config/dbConnConfig');
 const query = require('./db/queries');
 
-connectDB();
-mongoose.connection.once('open', () => console.log('Connected to Database'));
 
 query.createTables();
 

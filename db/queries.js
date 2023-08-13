@@ -11,99 +11,106 @@ async function createTables() {
 
     CREATE TABLE IF NOT EXISTS feeds (
         id SERIAL PRIMARY KEY,
-        feedUrl TEXT UNIQUE,
-        iconUrl TEXT,
+        feedurl TEXT UNIQUE,
+        iconurl TEXT,
         title TEXT
     );
 
     CREATE TABLE IF NOT EXISTS subscriptions (
         id SERIAL PRIMARY KEY,
-        userId INT REFERENCES users(user_id),
-        feedId INT REFERENCES feeds(feed_id)
+        userid INT REFERENCES users(id),
+        feedid INT REFERENCES feeds(id)
     );
 
     CREATE TABLE IF NOT EXISTS posts (
         id SERIAL PRIMARY KEY,
-        feedId INT REFERENCES feeds(feed_id),
+        feedid INT REFERENCES feeds(id),
         title TEXT,
         url TEXT,
-        comments_url TEXT,
-        mediaUrl TEXT,
+        commentsurl TEXT,
+        mediaurl TEXT,
         date TIMESTAMPTZ
     );
     `;
     await query(createTablesQuery);
 }
 
-async function getUserSubscriptions(userId) {
+async function getUserSubscriptions(userid) {
     const getSubscriptionsQuery = 
     `
-    SELECT feed.id AS feedId, feedUrl, iconUrl, title
-    FROM feeds JOIN subscriptions ON feeds.id = subscriptions.feedId
-    WHERE userId = $1;
+    SELECT subscriptions.id as subscriptionid, iconurl, title
+    FROM feeds JOIN subscriptions ON feeds.id = subscriptions.feedid
+    WHERE userid = $1;
     `;
-    const res = await query(getSubscriptionsQuery, [userId]);
+    const res = await query(getSubscriptionsQuery, [userid]);
     return res.rows;
 }
 
-async function addUserSubscription(userId, subscription) {
+async function addUserSubscription(userid, subscription) {
     const insertFeedQuery = 
     `
-    INSERT INTO feeds (feedUrl, iconUrl, title)
+    INSERT INTO feeds (feedurl, iconurl, title)
     VALUES ($1, $2, $3)
-    ON CONFLICT (feedUrl) DO NOTHING;
+    ON CONFLICT (feedurl) DO NOTHING;
     `;
     const getFeedIdQuery=
     `
     SELECT id
     FROM feeds
-    WHERE feedUrl = $1;
+    WHERE feedurl = $1;
     `;
     const insertSubscriptionQuery =
     `
-    INSERT INTO subscriptions (userId, feedId)
+    INSERT INTO subscriptions (userid, feedid)
     VALUES ($1, $2)
-    RETURNING id;
     `;
     await query(insertFeedQuery, [
-        subscription.feedUrl,
-        subscription.iconUrl,
+        subscription.feedurl,
+        subscription.iconurl,
         subscription.title
     ]);
-    const feedIdRes = await query(getFeedIdQuery, [subscription.feedUrl]);
-    const feedId = feedIdRes.rows[0].id;
-    const subIdRes = await query(insertSubscriptionQuery, [userId, feedId]);
-    return subIdRes.rows[0];
+    const res = await query(getFeedIdQuery, [subscription.feedurl]);
+    const feedid = res.rows[0].id;
+    await query(insertSubscriptionQuery, [userid, feedid]);
 }
 
-async function deleteUserSubscription(subscriptionId) {
-    const getFeedIdQuery =
-    `
-    SELECT feedId
-    FROM subscriptions
-    WHERE id = $1;
-    `;
+async function deleteUserSubscription(subscriptionid) {
+    // const getFeedIdQuery =
+    // `
+    // SELECT feedid
+    // FROM subscriptions
+    // WHERE id = $1;
+    // `;
     const deleteSubscriptionQuery =
     `
     DELETE FROM subscriptions WHERE id = $1;
     `;
+
+    //deletes all feeds that aren't subscribed to by any users
     const deleteFeedQuery =
     `
     DELETE FROM feeds
     WHERE NOT EXISTS (
-        SELECT feedId
+        SELECT * 
         FROM subscriptions
-        WHERE feedId = feeds.id
+        WHERE feeds.id = subscriptions.feedid
     );
     `;
-    const res = await query(getFeedIdQuery, [subscriptionId]);
-    const feedId = res.rows[0].feedId;
-    await query(deleteSubscriptionQuery, [subscriptionId]);
-    await query(deleteFeedQuery, [feedId]);
+    // const res = await query(getFeedIdQuery, [subscriptionid]);
+    // const feedid = res.rows[0].feedid;
+    await query(deleteSubscriptionQuery, [subscriptionid]);
+    await query(deleteFeedQuery);
 }
 
-async function subscriptionExists(userId, feedUrl) {
-    
+async function subscriptionExists(userid, feedurl) {
+    const subscriptionExistsQuery = 
+    `
+    SELECT COUNT(*)
+    FROM subscriptions JOIN feeds ON subscriptions.feedid = feeds.id
+    WHERE userid = $1 AND feedurl = $2;
+    `;
+    const res = await query(subscriptionExistsQuery, [userid, feedurl]);
+    return parseInt(res.rows[0].count);
 }
 
 async function createUser(email, password) {
@@ -137,11 +144,11 @@ async function getUserById(id) {
     return res.rows[0];
 }
 
-async function getFeedPosts(subscriptionId) {
+async function getFeedPosts(subscriptionid) {
     
 }
 
-async function getAllPosts(userId) {
+async function getAllPosts(userid) {
     
 }
 

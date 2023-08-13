@@ -3,11 +3,12 @@ const removeTrailingSlash = require('../helpers/commonHelpers');
 
 async function getFeed(req, res) {
     let json;
-    if (req.query.url === undefined) {
-        json = {posts: await getAllPosts(req.user.subscriptions.map(sub => sub.feedUrl))};
-    } else {
-        json = {posts: await getAllPosts([req.query.url])};
-    }
+    // if (req.query.url === undefined) {
+    //     json = {posts: await getAllPosts(req.user.subscriptions.map(sub => sub.feedUrl))};
+    // } else {
+    //     json = {posts: await getAllPosts([req.query.url])};
+    // }
+    json = {posts: [{title: 'Test title', link: 'https://old.reddit.com/r/startups/comments/15p8qrx/my_0100m0_in_5_years_story/', isoDate: '2015-11-12T21:16:39.000Z'}]};
     res.json(json);
 }
 
