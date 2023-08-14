@@ -25,6 +25,13 @@ const bree = new Bree({
     await bree.start();
 })();
 
+bree.on('worker created', (name) => {
+    console.log('worker created', name);
+});
+bree.on('worker deleted', (name) => {
+    console.log('worker deleted', name);
+});
+
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');

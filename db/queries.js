@@ -144,12 +144,21 @@ async function getUserById(id) {
     return res.rows[0];
 }
 
+async function getAllFeeds() {
+    const getAllFeedsQuery = 
+    `
+    SELECT id, iconurl, feedurl, title
+    FROM feeds;
+    `;
+    const res = await query(getAllFeedsQuery);
+    return res.rows;
+}
+
 async function getFeedPosts(subscriptionid) {
-    
 }
 
 async function getAllPosts(userid) {
-    
+
 }
 
 module.exports = { 
@@ -161,6 +170,7 @@ module.exports = {
     createUser,
     getUserByEmail,
     getUserById,
+    getAllFeeds,
     getFeedPosts,
     getAllPosts
 }
