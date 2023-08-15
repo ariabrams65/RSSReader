@@ -149,7 +149,7 @@ async function getUserById(id) {
 async function getAllFeeds() {
     const getAllFeedsQuery = 
     `
-    SELECT id, iconurl, feedurl, title
+    SELECT id, iconurl, feedurl, title, lastmodified
     FROM feeds;
     `;
     const res = await query(getAllFeedsQuery);
@@ -163,14 +163,15 @@ async function insertPost(params) {
     VALUES ($1, $2, $3, $4, $5, $6, $7)
     ON CONFLICT (identifier) DO NOTHING;
     `;
-    await query(insertQuery,
+    await query(insertQuery, [
         params.feedid,
         params.title,
         params.url,
         params.commentsurl,
         params.mediaurl,
         params.identifier,
-        params.date);
+        params.date
+    ]);
 }
 
 async function getFeedPosts(subscriptionid) {
@@ -190,6 +191,7 @@ module.exports = {
     getUserByEmail,
     getUserById,
     getAllFeeds,
+    insertPost,
     getFeedPosts,
     getAllPosts
 }

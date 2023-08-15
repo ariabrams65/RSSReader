@@ -1,7 +1,6 @@
-const Client = require('pg').Client;
-const client = new Client();
+require('dotenv').config();
 const Parser = require('rss-parser');
-const query = require('../db/dbConn');
+const query = require('../db/queries');
 
 async function updatePosts() {
     const feeds = await query.getAllFeeds();
