@@ -13,7 +13,8 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         feedurl TEXT UNIQUE,
         iconurl TEXT,
-        title TEXT
+        title TEXT,
+        lastmodified TIMESTAMPTZ
     );
 
     CREATE TABLE IF NOT EXISTS subscriptions (
@@ -29,6 +30,7 @@ async function createTables() {
         url TEXT,
         commentsurl TEXT,
         mediaurl TEXT,
+        identifier TEXT UNIQUE,
         date TIMESTAMPTZ
     );
     `;
@@ -62,7 +64,7 @@ async function addUserSubscription(userid, subscription) {
     const insertSubscriptionQuery =
     `
     INSERT INTO subscriptions (userid, feedid)
-    VALUES ($1, $2)
+    VALUES ($1, $2);
     `;
     await query(insertFeedQuery, [
         subscription.feedurl,
@@ -152,6 +154,23 @@ async function getAllFeeds() {
     `;
     const res = await query(getAllFeedsQuery);
     return res.rows;
+}
+
+async function insertPost(params) {
+    const insertQuery =
+    `
+    INSERT INTO posts (feedid, title, url, commentsurl, mediaurl, identifier, date)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    ON CONFLICT (identifier) DO NOTHING;
+    `;
+    await query(insertQuery,
+        params.feedid,
+        params.title,
+        params.url,
+        params.commentsurl,
+        params.mediaurl,
+        params.identifier,
+        params.date);
 }
 
 async function getFeedPosts(subscriptionid) {
