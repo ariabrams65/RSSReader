@@ -8,6 +8,28 @@ async function updatePosts() {
 }
 
 async function updateFeedsPosts(feed) {
+    const headers = {};
+    if (feed.lastmodified !== null && feed.lastmodified !== undefined) {
+        headers['If-Modified-Since'] = feed.lastmodified;
+    }
+    if (feed.etag !== null && feed.etag !== undefined) {
+        headers['If-None-Match'] = feed.etag;
+    }
+    const response = await fetch(feed.feedurl, {
+        method: 'GET',
+        headers: headers
+    });
+    if (response.status === 304) {
+        console.log('Already have latest posts');
+        return;
+    }
+    if (response.headers.has('Last-Modified')) {
+        await query.updateFeedLastModified(feed.id, response.headers.get('Last-Modified'));
+    }
+    if (response.headers.has('ETag')) {
+        await query.updatefeedETag(feed.id, response.headers.get('ETag'));
+    }
+    const xmlText = await response.text();
     const parserConfig = {
         customFields: {
             item: [
@@ -17,11 +39,8 @@ async function updateFeedsPosts(feed) {
             ] 
         }
     };
-    if (feed.lastmodified !== null && feed.lastmodified !== undefined) {
-        parserConfig.headers = {'If-Modified-Since': feed.lastModified};
-    }
     const parser = new Parser(parserConfig);
-    const feedData = await parser.parseURL(feed.feedurl);
+    const feedData = await parser.parseString(xmlText);
     const posts = getPosts(feedData, feed.id);
     await Promise.all(posts.map(post => query.insertPost(post)));
 }

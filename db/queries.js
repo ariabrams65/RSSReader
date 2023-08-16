@@ -14,7 +14,8 @@ async function createTables() {
         feedurl TEXT UNIQUE,
         iconurl TEXT,
         title TEXT,
-        lastmodified TIMESTAMPTZ
+        lastmodified TIMESTAMPTZ,
+        etag TEXT
     );
 
     CREATE TABLE IF NOT EXISTS subscriptions (
@@ -149,7 +150,7 @@ async function getUserById(id) {
 async function getAllFeeds() {
     const getAllFeedsQuery = 
     `
-    SELECT id, iconurl, feedurl, title, lastmodified
+    SELECT id, iconurl, feedurl, title, etag, TO_CHAR(lastmodified AT TIME ZONE 'GMT', 'Dy, DD Mon YYYY HH24:MI:SS TZ') || 'GMT' as lastmodified
     FROM feeds;
     `;
     const res = await query(getAllFeedsQuery);
@@ -174,6 +175,26 @@ async function insertPost(params) {
     ]);
 }
 
+async function updateFeedLastModified(id, lastmodified) {
+    const updateQuery = 
+    `
+    UPDATE feeds
+    SET lastmodified = $1
+    WHERE id = $2;
+    `;
+    await query(updateQuery, [lastmodified, id]);
+}
+
+async function updatefeedETag(id, etag) {
+    const updateQuery = 
+    `
+    UPDATE feeds
+    SET etag = $1
+    WHERE id = $2;
+    `;
+    await query(updateQuery, [etag, id]);
+}
+
 async function getFeedPosts(subscriptionid) {
 }
 
@@ -192,6 +213,8 @@ module.exports = {
     getUserById,
     getAllFeeds,
     insertPost,
+    updateFeedLastModified,
+    updatefeedETag,
     getFeedPosts,
     getAllPosts
 }

@@ -15,22 +15,22 @@ query.createTables();
 
 initializePassport(passport);
 
-const bree = new Bree({
-    jobs: [{
-        name: 'updatePosts',
-        cron: '0 * * * *'
-    }]
-});
-(async () => {
-    await bree.start();
-})();
+// const bree = new Bree({
+//     jobs: [{
+//         name: 'updatePosts',
+//         cron: '0 * * * *'
+//     }]
+// });
+// (async () => {
+//     await bree.start();
+// })();
 
-bree.on('worker created', (name) => {
-    console.log('worker created', name);
-});
-bree.on('worker deleted', (name) => {
-    console.log('worker deleted', name);
-});
+// bree.on('worker created', (name) => {
+//     console.log('worker created', name);
+// });
+// bree.on('worker deleted', (name) => {
+//     console.log('worker deleted', name);
+// });
 
 const app = express();
 app.set('view engine', 'ejs');
