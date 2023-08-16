@@ -76,6 +76,7 @@ async function addUserSubscription(userid, subscription) {
     const res = await query(getFeedIdQuery, [subscription.feedurl]);
     const feedid = res.rows[0].id;
     await query(insertSubscriptionQuery, [userid, feedid]);
+    return feedid;
 }
 
 async function deleteUserSubscription(subscriptionid) {
@@ -145,6 +146,17 @@ async function getUserById(id) {
     WHERE id = $1;
     `;   
     const res = await query(getUserQuery, [id]);
+    return res.rows[0];
+}
+
+async function getFeed(id) {
+   const getFeedQuery = 
+   `
+    SELECT id, iconurl, feedurl, title, numposts, etag, TO_CHAR(lastmodified AT TIME ZONE 'GMT', 'Dy, DD Mon YYYY HH24:MI:SS TZ') || 'GMT' as lastmodified
+    FROM feeds
+    WHERE id = $1;
+   `;
+    const res = await query(getFeedQuery, [id]);
     return res.rows[0];
 }
 
@@ -221,6 +233,7 @@ module.exports = {
     createUser,
     getUserByEmail,
     getUserById,
+    getFeed,
     getAllFeeds,
     insertPost,
     updateFeedLastModified,

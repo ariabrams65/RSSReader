@@ -83,4 +83,8 @@ function createPostIdentifier(item) {
 
 //Should I await this???
 //When does the worker thread get removed??? 
-updatePosts()
+if (require.main === module) {
+    updatePosts()
+}
+
+module.exports = { updateFeedsPosts };

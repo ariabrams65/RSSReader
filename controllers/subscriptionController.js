@@ -1,6 +1,7 @@
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
 const query = require('../db/queries');
+const { updateFeedsPosts } = require('../jobs/updatePosts');
 
 async function getSubscriptions(req, res) {
     res.json({subscriptions: await query.getUserSubscriptions(req.user.id)});
@@ -21,9 +22,15 @@ async function addSubscription(req, res) {
         });
     }
     try {
-        await query.addUserSubscription(req.user.id, feedHeaders);
+        const feedid = await query.addUserSubscription(req.user.id, feedHeaders);
+        const feed = await query.getFeed(feedid);
+        if (feed.numposts === 0) {
+            await updateFeedsPosts(feed);
+            console.log('updated feed: ', feed.title);
+        }
         res.sendStatus(200);
-    } catch {
+    } catch (e) {
+        console.log(e);
         return res.status(500).send({
             message: 'Cannot add new feed'
         });
