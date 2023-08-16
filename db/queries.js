@@ -14,6 +14,7 @@ async function createTables() {
         feedurl TEXT UNIQUE,
         iconurl TEXT,
         title TEXT,
+        numposts INT DEFAULT 0,
         lastmodified TIMESTAMPTZ,
         etag TEXT
     );
@@ -150,7 +151,7 @@ async function getUserById(id) {
 async function getAllFeeds() {
     const getAllFeedsQuery = 
     `
-    SELECT id, iconurl, feedurl, title, etag, TO_CHAR(lastmodified AT TIME ZONE 'GMT', 'Dy, DD Mon YYYY HH24:MI:SS TZ') || 'GMT' as lastmodified
+    SELECT id, iconurl, feedurl, title, numposts, etag, TO_CHAR(lastmodified AT TIME ZONE 'GMT', 'Dy, DD Mon YYYY HH24:MI:SS TZ') || 'GMT' as lastmodified
     FROM feeds;
     `;
     const res = await query(getAllFeedsQuery);
@@ -164,7 +165,13 @@ async function insertPost(params) {
     VALUES ($1, $2, $3, $4, $5, $6, $7)
     ON CONFLICT (identifier) DO NOTHING;
     `;
-    await query(insertQuery, [
+    const updateNumPostsQuery = 
+    `
+    UPDATE feeds
+    SET numposts = numposts + 1
+    WHERE id = $1;
+    `; 
+    const res = await query(insertQuery, [
         params.feedid,
         params.title,
         params.url,
@@ -173,6 +180,9 @@ async function insertPost(params) {
         params.identifier,
         params.date
     ]);
+    if (res.rowCount === 1) {
+        await query(updateNumPostsQuery, [params.feedid]);
+    }
 }
 
 async function updateFeedLastModified(id, lastmodified) {
