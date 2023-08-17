@@ -96,51 +96,51 @@ function createItemElement(item) {
    
     const source = document.createElement('div');
     source.classList.add('item-source');
-    if (item.feedIcon !== undefined) {
+    if (item.iconurl) {
         const icon = document.createElement('img');
         icon.addEventListener('error', function () {
             this.src = '/images/default-feed-icon.png';
         });
         icon.classList.add('item-icon');
-        icon.src = item.feedIcon;
+        icon.src = item.iconurl;
         source.appendChild(icon);
     }
-    const sourceTitle = document.createElement('span');
-    sourceTitle.innerText = item.sourceTitle;
-    source.appendChild(sourceTitle);
+    const feedtitle = document.createElement('span');
+    feedtitle.innerText = item.feedtitle;
+    source.appendChild(feedtitle);
     li.appendChild(source);
 
     const titleAnchor = document.createElement('a');
-    titleAnchor.href = item.link;
+    titleAnchor.href = item.url;
     titleAnchor.innerText = item.title;
     titleAnchor.classList.add('item-title');
     li.appendChild(titleAnchor);
-    if (item.comments !== undefined) {
+    if (item.commentsurl) {
         const commentAnchor = document.createElement('a');
-        commentAnchor.href = item.comments;
+        commentAnchor.href = item.commentsurl;
         commentAnchor.innerText = 'Comments';
         commentAnchor.classList.add('item-comments');
         li.appendChild(commentAnchor);
     }
-    if (item.media !== undefined) {
+    if (item.mediaurl) {
         const img = document.createElement('img');
         img.classList.add('item-image');
-        img.src = item.media;
+        img.src = item.mediaurl;
         img.alt = 'Image unavailable';
         li.appendChild(img);
     }
 
-    if (item.isoDate !== undefined) {
+    if (item.date) {
         const time = document.createElement('h3');
-        time.datetime = item.isoDate;
-        time.innerText = formatTimeSince(item.isoDate);
+        time.datetime = item.date;
+        time.innerText = formatTimeSince(item.date);
         time.classList.add('item-time')
         li.appendChild(time);
     }
     return li;
 }
-function formatTimeSince(isoDate) {
-    const timeDifference = new Date() - new Date(isoDate);
+function formatTimeSince(date) {
+    const timeDifference = new Date() - new Date(date);
     if (timeDifference < 60000) { 
         return Math.floor(timeDifference / 1000) + 's';
     } else if (timeDifference < 3600000) {
@@ -171,7 +171,14 @@ async function getPosts() {
     if (activeButton.dataset.subscriptionid !== undefined) {
         params = `?subscriptionid=${activeButton.dataset.subscriptionid}`;
     }
+    if (activeButton.dataset.oldestPostDate !== undefined) {
+        params += `?olderThan=${activeButton.dataset.oldestPostDate}`;
+    }
+    params += '?limit=10';
     const response = await fetch(`/get-feed${params}`);
     const json = await response.json();
+    if (json.oldestPostDate !== undefined) {
+        activeButton.dataset.oldestPostDate = json.oldestPostDate;
+    }
     return json['posts'];
 }

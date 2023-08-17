@@ -149,6 +149,28 @@ async function getUserById(id) {
     return res.rows[0];
 }
 
+async function getFeedId(subscriptionid) {
+    const getFeedIdQuery =
+    `
+    SELECT feedid
+    FROM subscriptions
+    WHERE subscriptionid = $1;
+    `;
+    const res = await query(getFeedIdQuery, [subscriptionid]);
+    return res.rows[0].feedid;
+}
+
+async function getAllSubscribedFeedIds(userid) {
+    const getFeedIdsQuery = 
+    `
+    SELECT feedid
+    FROM subscriptions
+    WHERE userid = $1;
+    `;
+    const res = await query(getFeedIdsQuery, [userid]);
+    return res.rows.map(row => row.feedid);
+}
+
 async function getFeed(id) {
    const getFeedQuery = 
    `
@@ -217,11 +239,22 @@ async function updatefeedETag(id, etag) {
     await query(updateQuery, [etag, id]);
 }
 
-async function getFeedPosts(subscriptionid) {
-}
 
-async function getAllPosts(userid) {
-
+async function getPosts(params) {   
+    const getPostsQuery = 
+    `
+    SELECT posts.id, posts.feedid, posts.title, posts.url, posts.commentsurl, posts.mediaurl, posts.identifier, posts.date, feeds.iconurl, feeds.title as feedtitle
+    FROM posts JOIN feeds ON posts.feedid = feeds.id
+    WHERE posts.feedid = ANY($1::int[]) AND date < $2
+    ORDER BY posts.date DESC
+    LIMIT $3;
+    `;
+    const res = await query(getPostsQuery, [
+        params.feedIds,
+        params.olderThan || 'infinity',
+        params.limit
+    ]);
+    return res.rows;
 }
 
 module.exports = { 
@@ -233,11 +266,12 @@ module.exports = {
     createUser,
     getUserByEmail,
     getUserById,
+    getFeedId,
+    getAllSubscribedFeedIds,
     getFeed,
     getAllFeeds,
     insertPost,
     updateFeedLastModified,
     updatefeedETag,
-    getFeedPosts,
-    getAllPosts
+    getPosts
 }
