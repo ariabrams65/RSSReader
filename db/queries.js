@@ -42,9 +42,9 @@ async function createTables() {
 async function getUserSubscriptions(userid) {
     const getSubscriptionsQuery = 
     `
-    SELECT subscriptions.id as subscriptionid, iconurl, title
+    SELECT subscriptions.id as subscriptionid, feeds.iconurl, feeds.title
     FROM feeds JOIN subscriptions ON feeds.id = subscriptions.feedid
-    WHERE userid = $1;
+    WHERE subscriptions.userid = $1;
     `;
     const res = await query(getSubscriptionsQuery, [userid]);
     return res.rows;
@@ -112,7 +112,7 @@ async function subscriptionExists(userid, feedurl) {
     `
     SELECT COUNT(*)
     FROM subscriptions JOIN feeds ON subscriptions.feedid = feeds.id
-    WHERE userid = $1 AND feedurl = $2;
+    WHERE subscriptions.userid = $1 AND feeds.feedurl = $2;
     `;
     const res = await query(subscriptionExistsQuery, [userid, feedurl]);
     return parseInt(res.rows[0].count);
@@ -245,7 +245,7 @@ async function getPosts(params) {
     `
     SELECT posts.id, posts.feedid, posts.title, posts.url, posts.commentsurl, posts.mediaurl, posts.identifier, posts.date, feeds.iconurl, feeds.title as feedtitle
     FROM posts JOIN feeds ON posts.feedid = feeds.id
-    WHERE posts.feedid = ANY($1::int[]) AND date < $2
+    WHERE posts.feedid = ANY($1::int[]) AND posts.date < $2
     ORDER BY posts.date DESC
     LIMIT $3;
     `;
