@@ -12,12 +12,11 @@ async function getFeed(req, res) {
         olderThan: req.query.olderThan,
         limit: req.query.limit
     });
-    const oldestPost = posts.slice(-1);
-    const json = {posts: posts};
-    if (oldestPost) {
-        json.oldestPostDate = oldestPost.date;
-    }
-    res.json(json);
+    const oldestPost = posts.slice(-1)[0];
+    res.json({
+        posts: posts,
+        oldestPostDate: oldestPost ? oldestPost.date : undefined
+    });
 }
 
 module.exports =  getFeed;
