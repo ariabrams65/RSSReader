@@ -169,13 +169,13 @@ async function getPosts() {
     let params = '';
     const activeButton = document.querySelector('.feed.active');
     if (activeButton.dataset.subscriptionid !== undefined) {
-        params = `?subscriptionid=${activeButton.dataset.subscriptionid}`;
+        params = `subscriptionid=${activeButton.dataset.subscriptionid}&`;
     }
     if (activeButton.dataset.oldestPostDate !== undefined) {
-        params += `?olderThan=${activeButton.dataset.oldestPostDate}`;
+        params += `olderThan=${activeButton.dataset.oldestPostDate}&`;
     }
-    params += '?limit=10';
-    const response = await fetch(`/get-feed${params}`);
+    params += 'limit=10';
+    const response = await fetch(`/get-feed?${params}`);
     const json = await response.json();
     if (json.oldestPostDate !== undefined) {
         activeButton.dataset.oldestPostDate = json.oldestPostDate;

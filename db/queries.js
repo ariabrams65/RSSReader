@@ -154,7 +154,7 @@ async function getFeedId(subscriptionid) {
     `
     SELECT feedid
     FROM subscriptions
-    WHERE subscriptionid = $1;
+    WHERE id = $1;
     `;
     const res = await query(getFeedIdQuery, [subscriptionid]);
     return res.rows[0].feedid;
