@@ -1,0 +1,44 @@
+Specifications:
+https://cyber.harvard.edu/rss/rss.html
+https://www.rssboard.org/rss-specification
+
+
+How to check if feed has changed:
+https://stackoverflow.com/questions/1326398/detecting-new-new-items-in-a-rss-feed
+
+
+TODO:
+
+*Add ability to check if add .rss to end of url works in url is invalid
+
+*Import Export to/from OPML
+
+*Remove unecessary headers and post attributes
+
+*Don't allow duplicate subscriptions
+
+*Don't allow similar duplicates ie https://www.reddit.com/r/cats/.rss vs https://www.reddit.com/r/cats.rss
+
+*Limit the number of request to prevent getting rate limited (429)
+
+*strip white space off of urls
+
+*sometimes queries are made before the tables are finished creating (actually was only happening when requiring file that queries db before creating db)
+
+*Set timeout for requesting feed url if it takes too long
+
+*capatalization in url. Same url but it is seen as a different one
+
+*currently only inserting posts if there is no identifier conflict between every posts
+	maybe change this to only if there is an identifier conflict with posts from same feed
+
+*subscribe to 2 of the same feeds but with case differenses in url:
+	before: Second feed posts weren't populating due to conflicts
+	make sure conflicts don't happen between different feeds
+
+*Where should I put data being stored on the frontend? attach to the element? Or global variable?
+
+*Currently any data in the button data propery is erased when the subscribtions are re rendered
+
+*unsubscribing from feed currently doesn't remove all posts from that feed
+    either remove feed and all posts or neither

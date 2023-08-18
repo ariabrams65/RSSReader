@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const query = require('../db/queries');
+const userQueries = require('../db/queries/userQueries');
 
 function getRegistrationView(req, res) {
     res.render('register.ejs');
@@ -8,7 +8,7 @@ function getRegistrationView(req, res) {
 async function register(req, res) {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        await query.createUser(req.body.email, hashedPassword); 
+        await userQueries.createUser(req.body.email, hashedPassword); 
         res.redirect('/login');
     } catch(e) {
         console.log(e);

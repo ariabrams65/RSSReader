@@ -8,10 +8,10 @@ const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
 const initializePassport = require('./config/passportConfig');
-const query = require('./db/queries');
+const tableQueries = require('./db/queries/tableQueries');
 const Bree = require('bree');
 
-query.createTables();
+tableQueries.createTables();
 
 initializePassport(passport);
 

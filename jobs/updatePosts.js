@@ -1,9 +1,10 @@
 require('dotenv').config();
 const Parser = require('rss-parser');
-const query = require('../db/queries');
+const feedQueries = require('../db/queries/feedQueries');
+const postQueries = require ('../db/queries/postQueries');
 
 async function updatePosts() {
-    const feeds = await query.getAllFeeds();
+    const feeds = await feedQueries.getAllFeeds();
     await Promise.all(feeds.map(feed => updateFeedsPosts(feed)));
 }
 
@@ -24,10 +25,10 @@ async function updateFeedsPosts(feed) {
         return;
     }
     if (response.headers.has('Last-Modified')) {
-        await query.updateFeedLastModified(feed.id, response.headers.get('Last-Modified'));
+        await feedQueries.updateFeedLastModified(feed.id, response.headers.get('Last-Modified'));
     }
     if (response.headers.has('ETag')) {
-        await query.updatefeedETag(feed.id, response.headers.get('ETag'));
+        await feedQueries.updatefeedETag(feed.id, response.headers.get('ETag'));
     }
     const xmlText = await response.text();
     const parserConfig = {
@@ -42,7 +43,7 @@ async function updateFeedsPosts(feed) {
     const parser = new Parser(parserConfig);
     const feedData = await parser.parseString(xmlText);
     const posts = getPosts(feedData, feed.id);
-    await Promise.all(posts.map(post => query.insertPost(post)));
+    await Promise.all(posts.map(post => postQueries.insertPost(post)));
 }
 
 function getPosts(feedData, feedid) {

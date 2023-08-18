@@ -13,7 +13,6 @@ function addScrollEventListener() {
     const mainContent = document.querySelector('.main-content');
     const itemList = document.querySelector('#itemList');
     mainContent.addEventListener('scroll', async () => {
-        console.log(loadingMorePosts);
         if (loadingMorePosts || receivedAllPosts) return;
         loadingMorePosts = true;
         if (mainContent.scrollTop + mainContent.offsetHeight + 100 > itemList.offsetHeight) {

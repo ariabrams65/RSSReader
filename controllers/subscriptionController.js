@@ -1,14 +1,15 @@
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
-const query = require('../db/queries');
+const subscriptionQueries = require('../db/queries/subscriptionQueries');
+const feedQueries = require('../db/queries/feedQueries');
 const { updateFeedsPosts } = require('../jobs/updatePosts');
 
 async function getSubscriptions(req, res) {
-    res.json({subscriptions: await query.getUserSubscriptions(req.user.id)});
+    res.json({subscriptions: await subscriptionQueries.getUserSubscriptions(req.user.id)});
 }
 
 async function addSubscription(req, res) {
-    if (await query.subscriptionExists(req.user.id, req.body.newSubscription)) {
+    if (await subscriptionQueries.subscriptionExists(req.user.id, req.body.newSubscription)) {
         return res.status(400).send({
             message: 'Cannot add duplucate subscriptions'
         });
@@ -22,8 +23,8 @@ async function addSubscription(req, res) {
         });
     }
     try {
-        const feedid = await query.addUserSubscription(req.user.id, feedHeaders);
-        const feed = await query.getFeed(feedid);
+        const feedid = await subscriptionQueries.addUserSubscription(req.user.id, feedHeaders);
+        const feed = await feedQueries.getFeed(feedid);
         if (feed.numposts === 0) {
             await updateFeedsPosts(feed);
             console.log('updated feed: ', feed.title);
@@ -39,7 +40,7 @@ async function addSubscription(req, res) {
 
 async function deleteSubscription(req, res) {
     try {
-        await query.deleteUserSubscription(req.query.subscriptionid);
+        await subscriptionQueries.deleteUserSubscription(req.query.subscriptionid);
         res.sendStatus(200);
     } catch (e){
         console.log(e);

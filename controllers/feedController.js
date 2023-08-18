@@ -1,13 +1,14 @@
-const queries = require('../db/queries');
+const feedQueries = require('../db/queries/feedQueries');
+const postQueries = require('../db/queries/postQueries');
 
 async function getFeed(req, res) {
     let feedIds;
     if (req.query.subscriptionid === undefined) {
-        feedIds = await queries.getAllSubscribedFeedIds(req.user.id);
+        feedIds = await feedQueries.getAllSubscribedFeedIds(req.user.id);
     } else {
-        feedIds = [await queries.getFeedId(req.query.subscriptionid)];
+        feedIds = [await feedQueries.getFeedId(req.query.subscriptionid)];
     }
-    const posts = await queries.getPosts({
+    const posts = await postQueries.getPosts({
         feedIds: feedIds,
         olderThan: req.query.olderThan,
         limit: req.query.limit
