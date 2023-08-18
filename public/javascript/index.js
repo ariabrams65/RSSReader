@@ -1,9 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
-    renderFeed();
+    replaceFeed();
     renderSubscribedFeeds();
     addnewSubEventListener();
     addAllFeedsBtnEventListener();
+    addScrollEventListener();
 });
+let oldestPostDate;
+let loadingMorePosts = false;
+let receivedAllPosts = false;
+
+function addScrollEventListener() {
+    const mainContent = document.querySelector('.main-content');
+    const itemList = document.querySelector('#itemList');
+    mainContent.addEventListener('scroll', async () => {
+        console.log(loadingMorePosts);
+        if (loadingMorePosts || receivedAllPosts) return;
+        loadingMorePosts = true;
+        if (mainContent.scrollTop + mainContent.offsetHeight + 100 > itemList.offsetHeight) {
+            const posts = await getPosts(true);
+            if (posts.length !== 0) {
+                appendItemsToFeed(posts);
+            } else {
+                receivedAllPosts = true;
+            }
+        }
+        loadingMorePosts = false;
+    });
+}
 
 function addAllFeedsBtnEventListener() {
     const allFeedsBtn = document.getElementById('all-feeds');
@@ -18,7 +41,7 @@ async function addnewSubEventListener() {
                 await postNewSubscription(newSubInput.value);
                 renderSubscribedFeeds();
                 newSubInput.value = '';
-                renderFeed();
+                replaceFeed();
             } catch (e) {
                 //alert error message to user
                 console.log(e);
@@ -77,16 +100,24 @@ function onButtonClick(button) {
     const buttons = document.getElementsByClassName("feed");
     [...buttons].forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
-    renderFeed();
+    replaceFeed();
 }
 
-async function renderFeed() {
+async function replaceFeed() {
+    loadingMorePosts = true;
+    receivedAllPosts = false;
     const itemList = document.getElementById('itemList');
-    itemList.innerHTML = '';
+    itemList.replaceChildren();
     const items = await getPosts();
+    appendItemsToFeed(items);
+    loadingMorePosts = false;
+}
+
+function appendItemsToFeed(items) {
+    const itemList = document.getElementById('itemList');
     items.forEach(item => {
         const itemElement = createItemElement(item);
-        itemList.appendChild(itemElement) ;
+        itemList.appendChild(itemElement);
     });
 }
 
@@ -165,20 +196,20 @@ async function getSubscribedFeeds() {
     return json['subscriptions'];
 }
 
-async function getPosts() {
+async function getPosts(beforeOldestPostDate = false) {
     let params = '';
     const activeButton = document.querySelector('.feed.active');
     if (activeButton.dataset.subscriptionid !== undefined) {
         params = `subscriptionid=${activeButton.dataset.subscriptionid}&`;
     }
-    if (activeButton.dataset.oldestPostDate !== undefined) {
-        params += `olderThan=${activeButton.dataset.oldestPostDate}&`;
+    if (beforeOldestPostDate) {
+        params += `olderThan=${oldestPostDate}&`;
     }
     params += 'limit=10';
     const response = await fetch(`/get-feed?${params}`);
     const json = await response.json();
     if (json.oldestPostDate !== undefined) {
-        activeButton.dataset.oldestPostDate = json.oldestPostDate;
+        oldestPostDate = json.oldestPostDate;
     }
     return json['posts'];
 }
