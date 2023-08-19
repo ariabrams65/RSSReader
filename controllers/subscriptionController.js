@@ -4,25 +4,29 @@ const subscriptionQueries = require('../db/queries/subscriptionQueries');
 const feedQueries = require('../db/queries/feedQueries');
 const { updateFeedsPosts } = require('../jobs/updatePosts');
 
-async function getSubscriptions(req, res) {
-    res.json({subscriptions: await subscriptionQueries.getUserSubscriptions(req.user.id)});
+async function getSubscriptions(req, res, next) {
+    try {
+        res.json({subscriptions: await subscriptionQueries.getUserSubscriptions(req.user.id)});
+    } catch(e) {
+        next(e);
+    }
 }
 
-async function addSubscription(req, res) {
-    if (await subscriptionQueries.subscriptionExists(req.user.id, req.body.newSubscription)) {
-        return res.status(400).send({
-            message: 'Cannot add duplucate subscriptions'
-        });
-    }
-    let feedHeaders;
+async function addSubscription(req, res, next) {
     try {
-        feedHeaders = await getFeedHeaders(req.body.newSubscription);
-    } catch {
-        return res.status(400).send({
-            message: 'URL is invalid'
-        });
-    }
-    try {
+        if (await subscriptionQueries.subscriptionExists(req.user.id, req.body.newSubscription)) {
+            return res.status(400).send({
+                message: 'Cannot add duplucate subscriptions'
+            });
+        }
+        let feedHeaders;
+        try {
+            feedHeaders = await getFeedHeaders(req.body.newSubscription);
+        } catch {
+            return res.status(400).send({
+                message: 'URL is invalid'
+            });
+        }
         const feedid = await subscriptionQueries.addUserSubscription(req.user.id, feedHeaders);
         const feed = await feedQueries.getFeed(feedid);
         if (feed.numposts === 0) {
@@ -30,21 +34,17 @@ async function addSubscription(req, res) {
             console.log('updated feed: ', feed.title);
         }
         res.sendStatus(200);
-    } catch (e) {
-        console.log(e);
-        return res.status(500).send({
-            message: 'Cannot add new feed'
-        });
+    } catch(e) {
+        next(e);
     }
 }
 
-async function deleteSubscription(req, res) {
+async function deleteSubscription(req, res, next) {
     try {
         await subscriptionQueries.deleteUserSubscription(req.query.subscriptionid);
         res.sendStatus(200);
     } catch (e){
-        console.log(e);
-        return res.sendStatus(500);
+        next(e);
     }
 }
 
