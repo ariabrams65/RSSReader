@@ -42,3 +42,5 @@ TODO:
 
 *unsubscribing from feed currently doesn't remove all posts from that feed
     either remove feed and all posts or neither
+	
+*When no feed is selected (none have active class) error occurs when refreshing feeds (adding new feed)

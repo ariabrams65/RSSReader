@@ -21,6 +21,7 @@ body {
     overflow: auto; /* Add scrollability */
     height: 100vh;
     background-color: #2D353B;
+    border-right: 1px solid #000000;
 }
 
 .main-content {
@@ -37,6 +38,7 @@ body {
     position: sticky;
     top: 0;
     width: 100%;
+    border-bottom: 1px solid #000000;
 }
   
 .topnav a {
@@ -67,6 +69,7 @@ body {
     background-color: #b8b8b8;
     border: none;
     font-family: inherit;
+    margin-top: 40px;
 }
 
 ul {
@@ -116,7 +119,8 @@ ul {
     word-wrap: break-word;
     
     padding: 20px 10px;
-    border-bottom: solid 3px #282f35;
+    /* border-bottom: solid 3px #282f35; */
+    border-bottom: 1px solid #000000;
 }
 
 .item:hover {

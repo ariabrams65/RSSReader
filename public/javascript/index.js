@@ -64,7 +64,7 @@ async function postNewSubscription(newSubscription) {
     }
 }
 
-function addSubscription(subscribedFeeds, subscription) {
+function createSubscriptionElement(subscription) {
     const li = document.createElement('li');
     
     const button = document.createElement('button');
@@ -85,7 +85,7 @@ function addSubscription(subscribedFeeds, subscription) {
     button.appendChild(span);
     button.dataset.subscriptionid = subscription.subscriptionid;
     li.appendChild(button);
-    subscribedFeeds.appendChild(li);
+    return li;
 }
 
 async function unsubscribe(subscriptionid) {
@@ -184,9 +184,12 @@ function formatTimeSince(date) {
 
 async function renderSubscribedFeeds() {
     const subscriptions = await getSubscribedFeeds();
-    const subscribedFeeds = document.getElementById('subscribedFeeds');
-    subscribedFeeds.replaceChildren();
-    subscriptions.forEach(subscription => {addSubscription(subscribedFeeds, subscription)});
+    const subscribedFeedsElement = document.getElementById('subscribedFeeds');
+    subscribedFeedsElement.replaceChildren();
+    subscriptions.forEach(subscription => {
+        const element = createSubscriptionElement(subscription)
+        subscribedFeedsElement.appendChild(element);
+    });
 }
 
 async function getSubscribedFeeds() {
