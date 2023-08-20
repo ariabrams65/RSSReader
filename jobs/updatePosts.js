@@ -44,6 +44,7 @@ async function updateFeedsPosts(feed) {
     const feedData = await parser.parseString(xmlText);
     const posts = getPosts(feedData, feed.id);
     await Promise.all(posts.map(post => postQueries.insertPost(post)));
+    console.log('updated feed: ', feed.title);
 }
 
 function getPosts(feedData, feedid) {

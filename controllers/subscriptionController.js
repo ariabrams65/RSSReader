@@ -31,7 +31,6 @@ async function addSubscription(req, res, next) {
         const feed = await feedQueries.getFeed(feedid);
         if (feed.numposts === 0) {
             await updateFeedsPosts(feed);
-            console.log('updated feed: ', feed.title);
         }
         res.sendStatus(200);
     } catch(e) {
