@@ -55,4 +55,4 @@ app.use('/register', require('./routes/register'));
 app.use('/get-feed', require('./routes/feed'));
 app.use('/subscriptions', require('./routes/subscriptions'));
 
-app.listen(3000);
+app.listen(5000);
