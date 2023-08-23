@@ -16,8 +16,8 @@ function MainContent({ posts }) {
 function ItemList({ posts }) {
   const postElements = posts.map((post) => {
     return (
-      <li className="item">
-        <div class="item-source">
+      <li key={post.id} className="item">
+        <div className="item-source">
           {post.iconurl && <img class="item-icon" src={post.iconurl}/>}
           <span>{post.feedtitle}</span>
         </div>

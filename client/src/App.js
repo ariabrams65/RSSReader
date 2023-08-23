@@ -1,12 +1,8 @@
 import './App.css';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
+import { useState } from 'react';
 
-const FEEDS = [
-  {id: 1, feedurl: 'https://www.reddit.com/r/fish/.rss', iconurl: 'https://www.redditstatic.com/icon.png', title: 'All about the worlds enormous population of amazing fish'},
-  {id: 2, feedurl: 'https://www.reddit.com/r/dogs/.rss', iconurl: 'https://www.redditstatic.com/icon.png', title: 'r/dogs'},
-  {id: 3, feedurl: 'https://www.reddit.com/r/cats/.rss', iconurl: 'https://www.redditstatic.com/icon.png', title: 'r/cats'}
-];
 
 const POSTS = [
   {id: 1, title: 'title1', feedtitle: 'feedtitle1', url: 'url1', commentsurl: 'comments1', mediaurl: 'https://preview.redd.it/6frxhaztwwib1.jpg?width=320&crop=smart&auto=webp&s=8fcf3863ae15290a868cb39a8646e610d10ca716', date: '5h'},
@@ -17,10 +13,40 @@ const POSTS = [
 ];
 
 function App() {
+  const [posts, setPost] = useState(POSTS);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [selectedFeed, setSelectedFeed] = useState(null);
+  const [allFeedsSelected, setAllFeedsSelected] = useState(true);
+
+  function selectFolder(folderName) {
+    setSelectedFolder(folderName);
+    setSelectedFeed(null);
+    setAllFeedsSelected(false);
+  }
+  
+  function selectFeed(feedid) {
+    setSelectedFeed(feedid);
+    setSelectedFolder(null);
+    setAllFeedsSelected(false);
+  }
+  
+  function selectAllFeeds() {
+    setAllFeedsSelected(true);
+    setSelectedFeed(null);
+    setSelectedFolder(null);
+  }
+  
   return (
     <>
-      <Sidebar feeds={FEEDS}/>
-      <MainContent posts={POSTS}/>
+      <Sidebar 
+        selectedFolder={selectedFolder}
+        selectedFeed={selectedFeed}
+        allFeedsSelected={allFeedsSelected}
+        selectFolder={selectFolder}
+        selectFeed={selectFeed} 
+        selectAllFeeds={selectAllFeeds}
+      />
+      <MainContent posts={posts}/>
     </>
   );
 }

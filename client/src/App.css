@@ -107,7 +107,7 @@ ul {
     
 }
 
-.feed.active {
+.selected {
     background-color: #3A4349;
 }
 
