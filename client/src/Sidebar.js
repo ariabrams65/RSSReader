@@ -58,11 +58,11 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
   return (
     <div className="sidebar">
       <form method="post" onSubmit={handleSubmit}>
-        <input type="text" name="feed" className="new-sub-input" placeholder="Enter RSS feed URL"></input>
-        <input type="text" name="folder" className="folder-input" placeholder="Enter folder (optional)"></input>
+        <input type="text" name="feed" className="input new-sub-input" placeholder="Enter RSS feed URL"></input>
+        <input type="text" name="folder" className="input folder-input" placeholder="Enter folder (optional)"></input>
         <button type="submit" style={{display: 'none'}}></button>
       </form>
-      <button className={`all-feeds feed ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
+      <button className={`all-feeds sidebar-btn ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
         <img className="feed-icon" src="/all-feeds-icon.png"></img>
         <span className="feed-name">All Feeds</span>
       </button>
@@ -103,8 +103,8 @@ function FeedFolder({ subscriptions, selectedFolder, selectedFeed, selectFolder,
   const feedElements = subscriptions.map(subscription=> <SubscribedFeed subscription={subscription} selectedFeed={selectedFeed} selectFeed={selectFeed}/>); 
   const folderName = subscriptions[0].folder;
   return (
-    <li key={folderName}>
-      <button className={`folder ${selectedFolder === folderName ? 'selected' : ''}`} onClick={() => selectFolder(folderName)}>{folderName}</button>
+    <li key={folderName} className="folder">
+      <button className={`sidebar-btn ${selectedFolder === folderName ? 'selected' : ''}`} onClick={() => selectFolder(folderName)}>{folderName}</button>
       <ul>{feedElements}</ul>
     </li>
   );
@@ -113,7 +113,7 @@ function FeedFolder({ subscriptions, selectedFolder, selectedFeed, selectFolder,
 function SubscribedFeed({ subscription, selectedFeed, selectFeed}) {
   return (
     <li key={subscription.id}>
-      <button className={`feed ${selectedFeed === subscription.id ? 'selected' : ''}`} onClick={() => selectFeed(subscription.id)}>
+      <button className={`feed sidebar-btn ${selectedFeed === subscription.id ? 'selected' : ''}`} onClick={() => selectFeed(subscription.id)}>
         <img className="feed-icon" src={subscription.iconurl}></img>
         <span className="feed-name">{subscription.title}</span>
       </button>

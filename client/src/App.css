@@ -60,16 +60,23 @@ body {
     background-color: #313a41;
 }
 
-.new-sub-input {
+.input {
     width: 100%;
     font-size: .9em;
     border-radius: 5px;
-    margin-bottom: 20px;
     padding: 5px;
     background-color: #b8b8b8;
     border: none;
     font-family: inherit;
+}
+
+.new-sub-input {
+    margin-bottom: 10px;
     margin-top: 40px;
+}
+
+.folder-input{
+    margin-bottom: 20px;
 }
 
 ul {
@@ -82,7 +89,7 @@ ul {
     margin-bottom: 20px;
 }
 
-.feed {
+.sidebar-btn {
     display: flex;
     align-items: center;
     width: 100%;
@@ -95,6 +102,14 @@ ul {
     color: #b8b8b8;
     font-family: inherit;
 }
+.sidebar-btn:hover {
+    background-color: #313a41;
+    
+}
+
+.folder {
+    margin-bottom: 15px;
+}
 
 .feed-name {
     white-space: nowrap;
@@ -102,10 +117,6 @@ ul {
     text-overflow: ellipsis;
 }
 
-.feed:hover {
-    background-color: #313a41;
-    
-}
 
 .selected {
     background-color: #3A4349;
