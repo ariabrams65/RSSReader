@@ -12,6 +12,20 @@ function MainContent({ posts }) {
 }
 
 function ItemList({ posts }) {
+
+  function formatTimeSince(date) {
+      const timeDifference = new Date() - new Date(date);
+      if (timeDifference < 60000) { 
+          return Math.floor(timeDifference / 1000) + 's';
+      } else if (timeDifference < 3600000) {
+          return Math.floor(timeDifference / 60000) + 'm';
+      } else if (timeDifference < 86400000) {
+          return Math.floor(timeDifference / 3600000) + 'h';
+      } else {
+          return Math.floor(timeDifference / 86400000) + 'd';
+      }
+  }
+
   const postElements = posts.map((post) => {
     return (
       <li key={post.id} className="item">
@@ -20,9 +34,9 @@ function ItemList({ posts }) {
           <span>{post.feedtitle}</span>
         </div>
         <a href={post.url} className="item-title">{post.title}</a>
-        <a href={post.commentsurl} className="item-comments">Comments</a>
+        {post.commentsurl && <a href={post.commentsurl} className="item-comments">Comments</a>}
         {post.mediaurl && <img className="item-image" src={post.mediaurl}/>}
-        <h3 className="item-time">{post.date}</h3>
+        {post.date && <h3 className="item-time">{formatTimeSince(post.date)}</h3>}
       </li>
     );
   });
