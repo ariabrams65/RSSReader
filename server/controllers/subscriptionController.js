@@ -20,21 +20,30 @@ async function getSubscriptions(req, res, next) {
 }
 
 async function addSubscription(req, res, next) {
+    console.log(req.body);
+    // REMOVE!!!
+    // REMOVE!!!
+    // REMOVE!!!
+    req.user = {id: 1};
+    // REMOVE!!!
+    // REMOVE!!!
+    // REMOVE!!!
     try {
-        if (await subscriptionQueries.subscriptionExists(req.user.id, req.body.newSubscription)) {
+        if (await subscriptionQueries.subscriptionExists(req.user.id, req.body.feed)) {
             return res.status(400).send({
                 message: 'Cannot add duplucate subscriptions'
             });
         }
         let feedHeaders;
         try {
-            feedHeaders = await getFeedHeaders(req.body.newSubscription);
+            feedHeaders = await getFeedHeaders(req.body.feed);
         } catch {
             return res.status(400).send({
                 message: 'URL is invalid'
             });
         }
-        const feedid = await subscriptionQueries.addUserSubscription(req.user.id, feedHeaders);
+        const folder = req.body.folder || 'feeds';
+        const feedid = await subscriptionQueries.addUserSubscription(req.user.id, feedHeaders, folder);
         const feed = await feedQueries.getFeed(feedid);
         if (feed.numposts === 0) {
             await updateFeedsPosts(feed);

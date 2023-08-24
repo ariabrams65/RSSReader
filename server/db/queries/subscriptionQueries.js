@@ -11,7 +11,7 @@ async function getUserSubscriptions(userid) {
     return res.rows;
 }
 
-async function addUserSubscription(userid, subscription) {
+async function addUserSubscription(userid, subscription, folder) {
     const insertFeedQuery = 
     `
     INSERT INTO feeds (feedurl, iconurl, title)
@@ -26,8 +26,8 @@ async function addUserSubscription(userid, subscription) {
     `;
     const insertSubscriptionQuery =
     `
-    INSERT INTO subscriptions (userid, feedid)
-    VALUES ($1, $2);
+    INSERT INTO subscriptions (userid, feedid, folder)
+    VALUES ($1, $2, $3);
     `;
     await query(insertFeedQuery, [
         subscription.feedurl,
@@ -36,7 +36,7 @@ async function addUserSubscription(userid, subscription) {
     ]);
     const res = await query(getFeedIdQuery, [subscription.feedurl]);
     const feedid = res.rows[0].id;
-    await query(insertSubscriptionQuery, [userid, feedid]);
+    await query(insertSubscriptionQuery, [userid, feedid, folder]);
     return feedid;
 }
 
