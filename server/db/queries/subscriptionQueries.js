@@ -3,7 +3,7 @@ const query = require('../dbConn');
 async function getUserSubscriptions(userid) {
     const getSubscriptionsQuery = 
     `
-    SELECT subscriptions.id as subscriptionid, feeds.iconurl, feeds.title
+    SELECT subscriptions.id, feeds.iconurl, feeds.title, subscriptions.folder
     FROM feeds JOIN subscriptions ON feeds.id = subscriptions.feedid
     WHERE subscriptions.userid = $1;
     `;

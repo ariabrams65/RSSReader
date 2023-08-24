@@ -22,7 +22,8 @@ async function createTables() {
     CREATE TABLE IF NOT EXISTS subscriptions (
         id SERIAL PRIMARY KEY,
         userid INT REFERENCES users(id),
-        feedid INT REFERENCES feeds(id)
+        feedid INT REFERENCES feeds(id),
+        folder TEXT
     );
 
     CREATE TABLE IF NOT EXISTS posts (

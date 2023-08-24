@@ -2,6 +2,13 @@ const feedQueries = require('../db/queries/feedQueries');
 const postQueries = require('../db/queries/postQueries');
 
 async function getFeed(req, res, next) {
+    // REMOVE!!!
+    // REMOVE!!!
+    // REMOVE!!!
+    req.user = {id: 1};
+    // REMOVE!!!
+    // REMOVE!!!
+    // REMOVE!!!
     let feedIds;
     try {
         if (req.query.subscriptionid === undefined) {

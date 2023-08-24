@@ -5,6 +5,13 @@ const feedQueries = require('../db/queries/feedQueries');
 const { updateFeedsPosts } = require('../jobs/updatePosts');
 
 async function getSubscriptions(req, res, next) {
+    // REMOVE!!!
+    // REMOVE!!!
+    // REMOVE!!!
+    req.user = {id: 1};
+    // REMOVE!!!
+    // REMOVE!!!
+    // REMOVE!!!
     try {
         res.json({subscriptions: await subscriptionQueries.getUserSubscriptions(req.user.id)});
     } catch(e) {

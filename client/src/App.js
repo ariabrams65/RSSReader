@@ -13,7 +13,7 @@ const POSTS = [
 ];
 
 function App() {
-  const [posts, setPosts] = useState(POSTS);
+  const [posts, setPosts] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [selectedFeed, setSelectedFeed] = useState(null);
   const [allFeedsSelected, setAllFeedsSelected] = useState(true);
@@ -26,8 +26,8 @@ function App() {
     let urlParams;
     if (params.folder) {
       urlParams = `folder=${params.folder}&`;
-    } else if (params.feed) {
-      urlParams = `subscriptionid=${params.feed}&`;
+    } else if (params.subscriptionid) {
+      urlParams = `subscriptionid=${params.subscriptionid}&`;
     } else {
       urlParams = `allFeeds=true&`;
     }
@@ -44,11 +44,11 @@ function App() {
     updatePosts({folder: folderName});  
   }
   
-  function selectFeed(feedid) {
-    setSelectedFeed(feedid);
+  function selectFeed(subscriptionid) {
+    setSelectedFeed(subscriptionid);
     setSelectedFolder(null);
     setAllFeedsSelected(false);
-    updatePosts({feed: feedid});  
+    updatePosts({subscriptionid: subscriptionid});  
   }
   
   function selectAllFeeds() {

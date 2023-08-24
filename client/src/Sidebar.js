@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const FEEDS = [
   {folder: 'folder1', id: 1, feedurl: 'https://www.reddit.com/r/fish/.rss', iconurl: 'https://www.redditstatic.com/icon.png', title: 'All about the worlds enormous population of amazing fish'},
@@ -9,7 +9,17 @@ const FEEDS = [
 ];
 
 function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
-  const [feeds, setFeeds] = useState(FEEDS);
+  const [subscriptions, setSubscriptions] = useState([]);
+  
+  useEffect(() => {
+    updateSubscriptions();
+  }, []);
+
+  async function updateSubscriptions() {
+    const res = await fetch('/subscriptions');
+    const json = await res.json();
+    setSubscriptions(json.subscriptions);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -27,7 +37,7 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
         <span className="feed-name">All Feeds</span>
       </button>
       <Folders 
-        feeds={feeds} 
+        subscriptions={subscriptions} 
         selectedFolder={selectedFolder} 
         selectedFeed={selectedFeed} 
         selectFolder={selectFolder} 
@@ -37,17 +47,17 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
   );
 }
 
-function Folders({ feeds, selectedFolder, selectedFeed, selectFolder, selectFeed}) {
-  const groupedFeeds = {};
-  feeds.forEach(feed => {
-    if (!groupedFeeds[feed.folder]) {
-      groupedFeeds[feed.folder] = [];
+function Folders({ subscriptions, selectedFolder, selectedFeed, selectFolder, selectFeed}) {
+  const groupedSubscriptions= {};
+  subscriptions.forEach(subscription=> {
+    if (!groupedSubscriptions[subscription.folder]) {
+      groupedSubscriptions[subscription.folder] = [];
     }
-    groupedFeeds[feed.folder].push(feed);
+    groupedSubscriptions[subscription.folder].push(subscription);
   });
-  const folders = Object.values(groupedFeeds).map(feeds => {
+  const folders = Object.values(groupedSubscriptions).map(subscriptions => {
     return <FeedFolder
-      feeds={feeds}
+      subscriptions={subscriptions}
       selectedFolder={selectedFolder}
       selectedFeed={selectedFeed}
       selectFolder={selectFolder}
@@ -59,9 +69,9 @@ function Folders({ feeds, selectedFolder, selectedFeed, selectFolder, selectFeed
   );
 }
 
-function FeedFolder({ feeds, selectedFolder, selectedFeed, selectFolder, selectFeed}) {
-  const feedElements = feeds.map(feed => <SubscribedFeed feed={feed} selectedFeed={selectedFeed} selectFeed={selectFeed}/>); 
-  const folderName = feeds[0].folder;
+function FeedFolder({ subscriptions, selectedFolder, selectedFeed, selectFolder, selectFeed}) {
+  const feedElements = subscriptions.map(subscription=> <SubscribedFeed subscription={subscription} selectedFeed={selectedFeed} selectFeed={selectFeed}/>); 
+  const folderName = subscriptions[0].folder;
   return (
     <li key={folderName}>
       <button className={`folder ${selectedFolder === folderName ? 'selected' : ''}`} onClick={() => selectFolder(folderName)}>{folderName}</button>
@@ -70,12 +80,12 @@ function FeedFolder({ feeds, selectedFolder, selectedFeed, selectFolder, selectF
   );
 }
 
-function SubscribedFeed({ feed, selectedFeed, selectFeed}) {
+function SubscribedFeed({ subscription, selectedFeed, selectFeed}) {
   return (
-    <li key={feed.id}>
-      <button className={`feed ${selectedFeed === feed.id ? 'selected' : ''}`} onClick={() => selectFeed(feed.id)}>
-        <img className="feed-icon" src={feed.iconurl}></img>
-        <span className="feed-name">{feed.title}</span>
+    <li key={subscription.id}>
+      <button className={`feed ${selectedFeed === subscription.id ? 'selected' : ''}`} onClick={() => selectFeed(subscription.id)}>
+        <img className="feed-icon" src={subscription.iconurl}></img>
+        <span className="feed-name">{subscription.title}</span>
       </button>
     </li>
   );
