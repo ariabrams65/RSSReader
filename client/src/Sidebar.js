@@ -21,16 +21,34 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
     setSubscriptions(json.subscriptions);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    //fetch('/api', formData);
+    const res = await fetch('/subscriptions', {
+      method: "post", 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        feed: e.target.feed.value,
+        folder: e.target.folder.value
+      })});
+      if (!res.ok) {
+        const json = await res.json();
+        console.log(json.message);
+      }
+      e.target.feed.value = '';
+      e.target.folder.value = '';
+      updateSubscriptions();
+
     //https://react.dev/reference/react-dom/components/input
+    
   }
   return (
     <div className="sidebar">
       <form method="post" onSubmit={handleSubmit}>
-        <input type="text" className="new-sub-input" placeholder="Enter RSS feed URL"></input>
+        <input type="text" name="feed" className="new-sub-input" placeholder="Enter RSS feed URL"></input>
+        <input type="text" name="folder" className="folder-input" placeholder="Enter folder (optional)"></input>
+        <button type="submit" style={{display: 'none'}}></button>
       </form>
       <button className={`all-feeds feed ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
         <img className="feed-icon" src="/all-feeds-icon.png"></img>
