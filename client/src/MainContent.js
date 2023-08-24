@@ -1,5 +1,3 @@
-import React from 'react';
-
 function MainContent({ posts }) {
   return (
     <div className="main-content">
@@ -18,7 +16,7 @@ function ItemList({ posts }) {
     return (
       <li key={post.id} className="item">
         <div className="item-source">
-          {post.iconurl && <img class="item-icon" src={post.iconurl}/>}
+          {post.iconurl && <img className="item-icon" src={post.iconurl}/>}
           <span>{post.feedtitle}</span>
         </div>
         <a href={post.url} className="item-title">{post.title}</a>

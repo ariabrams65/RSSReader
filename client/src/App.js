@@ -1,7 +1,7 @@
 import './App.css';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 const POSTS = [
@@ -13,27 +13,49 @@ const POSTS = [
 ];
 
 function App() {
-  const [posts, setPost] = useState(POSTS);
+  const [posts, setPosts] = useState(POSTS);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [selectedFeed, setSelectedFeed] = useState(null);
   const [allFeedsSelected, setAllFeedsSelected] = useState(true);
+  
+  useEffect(() => {
+    updatePosts({allFeeds: true});
+  },[]);
 
+  async function updatePosts(params) {
+    let urlParams;
+    if (params.folder) {
+      urlParams = `folder=${params.folder}&`;
+    } else if (params.feed) {
+      urlParams = `subscriptionid=${params.feed}&`;
+    } else {
+      urlParams = `allFeeds=true&`;
+    }
+    urlParams += 'limit=10';
+    const res = await fetch(`/get-feed?${urlParams}`); 
+    const json = await res.json();
+    setPosts(json.posts);
+  }
+  
   function selectFolder(folderName) {
     setSelectedFolder(folderName);
     setSelectedFeed(null);
     setAllFeedsSelected(false);
+    updatePosts({folder: folderName});  
   }
   
   function selectFeed(feedid) {
     setSelectedFeed(feedid);
     setSelectedFolder(null);
     setAllFeedsSelected(false);
+    updatePosts({feed: feedid});  
   }
   
   function selectAllFeeds() {
     setAllFeedsSelected(true);
     setSelectedFeed(null);
     setSelectedFolder(null);
+    updatePosts({allFeeds: true});  
   }
   
   return (
