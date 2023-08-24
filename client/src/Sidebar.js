@@ -111,10 +111,15 @@ function FeedFolder({ subscriptions, selectedFolder, selectedFeed, selectFolder,
 }
 
 function SubscribedFeed({ subscription, selectedFeed, selectFeed}) {
+  function handleImageError(e) {
+    console.log('here')
+    e.target.src = '/default-feed-icon.png';
+  }
+  console.log(subscription.iconurl);
   return (
     <li key={subscription.id}>
       <button className={`feed sidebar-btn ${selectedFeed === subscription.id ? 'selected' : ''}`} onClick={() => selectFeed(subscription.id)}>
-        <img className="feed-icon" src={subscription.iconurl}></img>
+        <img className="feed-icon" onError={handleImageError} src={subscription.iconurl || ''}></img>
         <span className="feed-name">{subscription.title}</span>
       </button>
     </li>
