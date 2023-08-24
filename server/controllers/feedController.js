@@ -9,11 +9,14 @@ async function getFeed(req, res, next) {
     // REMOVE!!!
     // REMOVE!!!
     // REMOVE!!!
+
     let feedIds;
     try {
-        if (req.query.subscriptionid === undefined) {
+        if (req.query.allFeeds) {
             feedIds = await feedQueries.getAllSubscribedFeedIds(req.user.id);
-        } else {
+        } else if (req.query.folder) {
+            feedIds = await feedQueries.getFolderFeedIds(req.user.id, req.query.folder);
+        } else if (req.query.subscriptionid) {
             feedIds = [await feedQueries.getFeedId(req.query.subscriptionid)];
         }
         const posts = await postQueries.getPosts({

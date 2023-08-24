@@ -43,6 +43,18 @@ async function getAllFeeds() {
     return res.rows;
 }
 
+async function getFolderFeedIds(id, folder) {
+    const getFeedIdsQuery = 
+    `
+    SELECT feedid
+    FROM subscriptions
+    WHERE userid = $1 AND folder = $2;
+    `;
+    const res = await query(getFeedIdsQuery, [id, folder]);
+    return res.rows.map(row => row.feedid);
+    
+}
+
 async function updateFeedLastModified(id, lastmodified) {
     const updateQuery = 
     `
@@ -62,4 +74,4 @@ async function updatefeedETag(id, etag) {
     `;
     await query(updateQuery, [etag, id]);
 }
-module.exports = { getFeedId, getAllSubscribedFeedIds, getFeed, getAllFeeds, updateFeedLastModified, updatefeedETag};
+module.exports = { getFeedId, getAllSubscribedFeedIds, getFeed, getAllFeeds, getFolderFeedIds, updateFeedLastModified, updatefeedETag};
