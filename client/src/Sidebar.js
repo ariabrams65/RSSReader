@@ -20,9 +20,21 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
     const json = await res.json();
     setSubscriptions(json.subscriptions);
   }
+  
+  function getSelectedFolder() {
+    if (selectedFolder) {
+      return selectedFolder;
+    } else if (selectedFeed) {
+      const subscription = subscriptions.find(sub => sub.id === selectedFeed);
+      return subscription.folder;
+    } else {
+      return '';
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const folder = e.target.folder.value || getSelectedFolder();
     const res = await fetch('/subscriptions', {
       method: "post", 
       headers: {
@@ -30,7 +42,7 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
       },
       body: JSON.stringify({
         feed: e.target.feed.value,
-        folder: e.target.folder.value
+        folder: folder 
       })});
       if (!res.ok) {
         const json = await res.json();

@@ -44,3 +44,6 @@ TODO:
     either remove feed and all posts or neither
 	
 *When no feed is selected (none have active class) error occurs when refreshing feeds (adding new feed)
+
+*JSON version of reddit feeds might have upvotes
+	ex. http://www.reddit.com/r/inthemorning/.json
