@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 
-function Login() {
+function Register() {
     return (
         <>
-            <h1>Login</h1> 
-            <form action="/login" method="POST">
+            <h1>Register</h1>
+            <form action="/register" method="POST">
                 <div>
                     <label htmlFor="email">Email</label>
                     <input type="email" id="email" name="email" required></input>
@@ -13,11 +13,11 @@ function Login() {
                     <label htmlFor="password">Password</label>
                     <input type="password" id="password" name="password" required></input>
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit">Register</button>
             </form>
-            <Link to="/register">Register</Link>
+            <Link to="/login">Log in</Link>
         </>
     );
 }
 
-export default Login;
+export default Register;
