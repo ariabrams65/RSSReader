@@ -47,3 +47,7 @@ TODO:
 
 *JSON version of reddit feeds might have upvotes
 	ex. http://www.reddit.com/r/inthemorning/.json
+
+*cors
+
+*make sure no route handlers can crash server

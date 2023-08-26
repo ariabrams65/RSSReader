@@ -10,6 +10,7 @@ const methodOverride = require('method-override');
 const initializePassport = require('./config/passportConfig');
 const tableQueries = require('./db/queries/tableQueries');
 const Bree = require('bree');
+const cors = require('cors');
 
 tableQueries.createTables();
 
@@ -37,6 +38,10 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
+// app.use(cors({
+//     origin: "http://localhost:3000",
+//     credentials: true
+// }));
 app.use(flash());
 app.use(session({
     secret: process.env.SESSION_SECRET,

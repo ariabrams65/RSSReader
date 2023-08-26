@@ -9,10 +9,11 @@ async function register(req, res) {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await userQueries.createUser(req.body.email, hashedPassword); 
-        res.redirect('/login');
+        res.sendStatus(201);
+        // res.redirect('/login');
     } catch(e) {
         console.log(e);
-        res.redirect('/register');
+        // res.redirect('/register');
     }
 }
 

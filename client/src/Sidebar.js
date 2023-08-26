@@ -28,14 +28,15 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
         e.preventDefault();
         const folder = e.target.folder.value || getSelectedFolder();
         const res = await fetch('/subscriptions', {
-            method: "post", 
+            method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 feed: e.target.feed.value,
                 folder: folder 
-        })});
+            })
+        });
         if (!res.ok) {
             const json = await res.json();
             console.log(json.message);
@@ -103,10 +104,8 @@ function FeedFolder({ subscriptions, selectedFolder, selectedFeed, selectFolder,
 
 function SubscribedFeed({ subscription, selectedFeed, selectFeed}) {
     function handleImageError(e) {
-        console.log('here')
         e.target.src = '/default-feed-icon.png';
     }
-    console.log(subscription.iconurl);
     return (
         <li key={subscription.id}>
             <button className={`feed sidebar-btn ${selectedFeed === subscription.id ? 'selected' : ''}`} onClick={() => selectFeed(subscription.id)}>
