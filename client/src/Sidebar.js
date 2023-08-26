@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 
 function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
     const [subscriptions, setSubscriptions] = useState([]);
+    const [feedInput, setFeedInput] = useState('');
+    const [folderInput, setFolderInput] = useState('');
   
     useEffect(() => {
         updateSubscriptions();
@@ -26,32 +28,44 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const folder = e.target.folder.value || getSelectedFolder();
         const res = await fetch('/subscriptions', {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                feed: e.target.feed.value,
-                folder: folder 
+                feed: feedInput,
+                folder: folderInput || getSelectedFolder() 
             })
         });
         if (!res.ok) {
             const json = await res.json();
             console.log(json.message);
         }
-        e.target.feed.value = '';
-        e.target.folder.value = '';
+        setFeedInput('');
+        setFolderInput('');
         updateSubscriptions();
-        //https://react.dev/reference/react-dom/components/input
   }
 
     return (
         <div className="sidebar">
             <form method="post" onSubmit={handleSubmit}>
-                <input type="text" name="feed" className="input new-sub-input" placeholder="Enter RSS feed URL"></input>
-                <input type="text" name="folder" className="input folder-input" placeholder="Enter folder (optional)"></input>
+                <input
+                    onChange={(e) => setFeedInput(e.target.value)}
+                    value={feedInput} 
+                    type="text" 
+                    name="feed" 
+                    className="input new-sub-input" 
+                    placeholder="Enter RSS feed URL"
+                />
+                <input 
+                    onChange={(e) => setFolderInput(e.target.value)} 
+                    value={folderInput} 
+                    type="text" 
+                    name="folder" 
+                    className="input folder-input" 
+                    placeholder="Enter folder (optional)"
+                />
                 <button type="submit" style={{display: 'none'}}></button>
             </form>
             <button className={`all-feeds sidebar-btn ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
