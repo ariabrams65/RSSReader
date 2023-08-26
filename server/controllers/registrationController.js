@@ -1,10 +1,6 @@
 const bcrypt = require('bcrypt');
 const userQueries = require('../db/queries/userQueries');
 
-function getRegistrationView(req, res) {
-    res.render('register.ejs');
-}
-
 async function register(req, res) {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -17,5 +13,5 @@ async function register(req, res) {
     }
 }
 
-module.exports = { getRegistrationView, register };
+module.exports = { register };
 
