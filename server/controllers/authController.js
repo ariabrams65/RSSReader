@@ -17,11 +17,18 @@ function login(req, res, next) {
     })(req, res, next);
 }
 
-function logout(req, res) {
+function logout(req, res, next) {
     req.logout(err => {
         if (err) return next(err);
     })
     res.redirect('/login');
 }
 
-module.exports = { login, logout };
+function isAuthenticated(req, res) {
+    if (req.isAuthenticated()) {
+        return res.sendStatus(200);
+    }
+    res.sendStatus(401);
+}
+
+module.exports = { login, logout, isAuthenticated };
