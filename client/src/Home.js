@@ -11,8 +11,12 @@ function Home() {
     const [allFeedsSelected, setAllFeedsSelected] = useState(true);
   
     useEffect(() => {
-        updatePosts({allFeeds: true});
-    },[]);
+        updatePosts({
+            subscriptionid: selectedFeed,
+            folder: selectedFolder,
+            allFeeds: allFeedsSelected
+        });
+    }, [selectedFolder, selectedFeed, allFeedsSelected]);
 
     async function updatePosts(params) {
         let urlParams;
@@ -33,21 +37,18 @@ function Home() {
         setSelectedFolder(folderName);
         setSelectedFeed(null);
         setAllFeedsSelected(false);
-        updatePosts({folder: folderName});  
     }
   
     function selectFeed(subscriptionid) {
         setSelectedFeed(subscriptionid);
         setSelectedFolder(null);
         setAllFeedsSelected(false);
-        updatePosts({subscriptionid: subscriptionid});  
     }
   
     function selectAllFeeds() {
         setAllFeedsSelected(true);
         setSelectedFeed(null);
         setSelectedFolder(null);
-        updatePosts({allFeeds: true});  
     }
   
     return (
