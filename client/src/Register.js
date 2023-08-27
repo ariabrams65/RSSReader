@@ -18,7 +18,11 @@ function Register() {
                 password: password
             })
         });
-        navigate('/login');
+        if (!res.ok) {
+            console.log('error creating account');
+        } else {
+            navigate('/login');
+        }
     }
     return (
         <>

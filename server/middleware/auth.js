@@ -7,7 +7,7 @@ function checkAuthenticated(req, res, next) {
 
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        res.sendStatus(403);
+        return res.sendStatus(403);
     }
     next();
 }

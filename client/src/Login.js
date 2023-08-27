@@ -18,7 +18,11 @@ function Login() {
                 password: password
             })
         });
-        navigate('/');
+        if (!res.ok) {
+            console.log('error loggin in');    
+        } else {
+            navigate('/');
+        }
     }
     
     return (

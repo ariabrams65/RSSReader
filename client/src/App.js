@@ -12,8 +12,8 @@ function App() {
             </Route>
             <Route element={<ProtectedRoutes checkAuthenticated={false}/>}>
                 <Route element={<Login/>} path="/login"/>
+                <Route path="/register" element={<Register/>}/>
             </Route>
-            <Route path="/register" element={<Register/>}/>
         </Routes>        
     );
 };
