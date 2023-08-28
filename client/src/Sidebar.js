@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import Modal from './Modal';
 
 function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
     const [subscriptions, setSubscriptions] = useState([]);
     const [feedInput, setFeedInput] = useState('');
     const [folderInput, setFolderInput] = useState('');
+    const [isAddFeedModalOpen, setAddFeedModalOpen] = useState(false);
   
     useEffect(() => {
         updateSubscriptions();
@@ -68,6 +70,12 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
                 />
                 <button type="submit" style={{display: 'none'}}></button>
             </form>
+            <button onClick={() => setAddFeedModalOpen(true)}>Open Modal</button>
+            
+            <Modal open={isAddFeedModalOpen} onClose={() => setAddFeedModalOpen(false)}>
+                Fancy Modal 
+            </Modal>
+
             <button className={`all-feeds sidebar-btn ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
                 <img className="feed-icon" src="/all-feeds-icon.png"></img>
                 <span className="feed-name">All Feeds</span>
