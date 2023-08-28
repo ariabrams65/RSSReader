@@ -1,4 +1,4 @@
-function MainContent({ posts }) {
+function MainContent({ posts, lastPostElementRef }) {
     return (
         <div className="main-content">
             <ul className="topnav">
@@ -6,12 +6,15 @@ function MainContent({ posts }) {
                     <a id="user-btn">Account</a>
                 </li>
             </ul>
-            <ItemList posts={posts}/>
+            <ItemList 
+                posts={posts} 
+                lastPostElementRef={lastPostElementRef} 
+            />
         </div>
     ); 
 }
 
-function ItemList({ posts }) {
+function ItemList({ posts, lastPostElementRef }) {
 
     function formatTimeSince(date) {
         const timeDifference = new Date() - new Date(date);
@@ -26,9 +29,16 @@ function ItemList({ posts }) {
         }
     }
 
-    const postElements = posts.map((post) => {
+    const postElements = posts.map((post, index) => {
+        const attributes = {
+            key: post.id,
+            className: 'item'
+        };
+        if (posts.length === index + 1) {
+            attributes.ref = lastPostElementRef;
+        }
         return (
-            <li key={post.id} className="item">
+            <li {...attributes}>
                 <div className="item-source">
                     {post.iconurl && <img className="item-icon" src={post.iconurl}/>}
                     <span>{post.feedtitle}</span>
@@ -41,7 +51,9 @@ function ItemList({ posts }) {
         );
     });
     return (
-        <ul className="item-list">{postElements}</ul>
+        <>
+            <ul className="item-list">{postElements}</ul>
+        </>
     );
 }
 

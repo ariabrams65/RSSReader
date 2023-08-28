@@ -1,30 +1,40 @@
 import { useEffect, useState } from 'react';
 
-function usePosts(selectedFolder, selectedFeed, allFeedsSelected){
+function usePosts(selectedFolder, selectedFeed, allFeedsSelected) {
     const [posts, setPosts] = useState([]);
+    const [oldestPostDate, setOldestPostDate] = useState(null);
     const [loading, setLoading] = useState(true);
     const [hasMore, setHasMore] = useState(false);
-    const [error, setError] = useState(false);
     
     useEffect(() => {
-        async function updatePosts() {
-            let urlParams;
-            if (selectedFolder) {
-                urlParams = `folder=${selectedFolder}&`;
-            } else if (selectedFeed) {
-                urlParams = `subscriptionid=${selectedFeed}&`;
-            } else {
-                urlParams = `allFeeds=true&`;
-            }
-            urlParams += 'limit=10';
-            const res = await fetch(`/get-feed?${urlParams}`); 
-            const json = await res.json();
-            setPosts(json.posts);
-        }
-        updatePosts();
+        setPosts([]);
+        setOldestPostDate(null);
+        updatePosts(null);
     }, [selectedFolder, selectedFeed, allFeedsSelected]);
+
+    async function updatePosts(olderThan=oldestPostDate) {
+        setLoading(true);
+        let urlParams;
+        if (selectedFolder) {
+            urlParams = `folder=${selectedFolder}&`;
+        } else if (selectedFeed) {
+            urlParams = `subscriptionid=${selectedFeed}&`;
+        } else {
+            urlParams = `allFeeds=true&`;
+        }
+        if (olderThan) {
+            urlParams += `olderThan=${olderThan}&`;
+        }
+        urlParams += 'limit=10';
+        const res = await fetch(`/get-feed?${urlParams}`); 
+        const json = await res.json();
+        setOldestPostDate(json.oldestPostDate);
+        setPosts(prevPosts => [...prevPosts, ...json.posts]);
+        setHasMore(json.posts.length > 0);
+        setLoading(false);
+    }
     
-    return { posts, loading, hasMore, error };
+    return { posts, loading, hasMore, updatePosts };
 }
 
 export default usePosts;

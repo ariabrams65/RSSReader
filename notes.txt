@@ -51,3 +51,5 @@ TODO:
 *cors
 
 *make sure no route handlers can crash server
+
+*infinite scrolling will fetch feeds twice initially for some reason. Might be due the last feed being visible and a race condition with the loading flag

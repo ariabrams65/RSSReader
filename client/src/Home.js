@@ -2,7 +2,7 @@ import './App.css';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
 import usePosts from './usePosts';
-import { useState, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 
 function Home() {
@@ -10,7 +10,23 @@ function Home() {
     const [selectedFeed, setSelectedFeed] = useState(null);
     const [allFeedsSelected, setAllFeedsSelected] = useState(true);
     
-    const { posts, loading, hasMore, error } = usePosts(selectedFolder, selectedFeed, allFeedsSelected);
+    const { posts, loading, hasMore, updatePosts } = usePosts(selectedFolder, selectedFeed, allFeedsSelected);
+    
+    const observer = useRef();
+    const lastPostElementRef = useCallback(node => {
+        if (loading) return;
+        if (observer.current) {
+            observer.current.disconnect();
+        }
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                updatePosts();
+            }
+        })
+        if (node) {
+            observer.current.observe(node);
+        }
+    }, [loading, hasMore]);
   
     function selectFolder(folderName) {
         setSelectedFolder(folderName);
@@ -40,7 +56,10 @@ function Home() {
                 selectFeed={selectFeed} 
                 selectAllFeeds={selectAllFeeds}
             />
-            <MainContent posts={posts}/>
+            <MainContent 
+                posts={posts}
+                lastPostElementRef={lastPostElementRef}
+            />
         </>
     );
 }
