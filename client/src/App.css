@@ -33,68 +33,46 @@ body {
 }
 
 .sidebar{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     flex: 1; 
     min-width: 0;
-    /* padding: 10px 20px;  */
-    /* overflow: auto; 
-    height: 100vh; */
     background-color: #2D353B;
     border-right: 1px solid #000000;
 }
 
 .sidebar-header {
-    height: 6vh;
+    min-height: 50px;
     padding: 10px 20px;
 }
 
 .sidebar-content {
     padding: 10px 20px;
     overflow-y: auto;
-    height: 94vh;
+    flex-grow: 1;
+    max-height: calc(100% - 50px);
 }
 
 .main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     flex: 4; 
-    /* overflow: auto;  */
-    /* height: 100vh; */
     background-color: #2F383E;
-    position: relative;
 }
 
 .topnav {
     background-color: #2D353B;
-    overflow: hidden;
-    /* position: sticky;
-    top: 0; */
-    height: 6vh;
+    height: 50px;
     width: 100%;
     border-bottom: 1px solid #000000;
 }
-  
-/* .topnav a {
-    float: left;
-    color: #b8b8b8;
-    text-align: center;
-    padding: 10px 16px;
-    text-decoration: none;
-    font-size: 1.1em;
-    border-radius: 5px;
-    font-weight: bold;
-    height: 20px;
-} */
-
-/* #user-btn {
-    float: right;
-} */
 
 .item-list {
     overflow-y: auto;
-    height: 94vh;
-}
-  
-  
-.topnav a:hover {
-    background-color: #313a41;
+    flex-grow: 1;
+    max-height: calc(100% - 50px);
 }
 
 .input {
@@ -237,6 +215,9 @@ ul {
     background-color: #FFF;
     padding: 50px;
     z-index: 1000;
+    background-color: #21292e;
+    border: 2px solid black;
+    border-radius: 15px;
 }
 
 .overlay {

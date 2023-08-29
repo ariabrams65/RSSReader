@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Modal from './Modal';
+import AddFeedModal from './AddFeedModal';
 
 function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
     return (
@@ -81,7 +82,7 @@ function Header({ selectedFolder, selectedFeed}) {
             <button className="sidebar-btn" onClick={() => setAddFeedModalOpen(true)}>Add Feed</button>
             
             <Modal open={isAddFeedModalOpen} onClose={() => setAddFeedModalOpen(false)}>
-                Fancy Modal 
+                <AddFeedModal/>
             </Modal>
         </div>
     );
