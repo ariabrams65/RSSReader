@@ -1,11 +1,25 @@
 import { useState, useEffect } from 'react';
 
 function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
+    const [subscriptions, setSubscriptions] = useState([]);
+
+    useEffect(() => {
+            updateSubscriptions();
+        }, []);
+
+    async function updateSubscriptions() {
+        const res = await fetch('/subscriptions');
+        const json = await res.json();
+        setSubscriptions(json.subscriptions);
+    }
+
     return (
         <div className="sidebar">
             <Header
                 selectedFolder={selectedFolder}
                 selectedFeed={selectedFeed}
+                subscriptions={subscriptions}
+                updateSubscriptions={updateSubscriptions}
             />
             <Content 
                 selectedFolder={selectedFolder}
@@ -14,67 +28,65 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
                 selectFolder={selectFolder}
                 selectFeed={selectFeed} 
                 selectAllFeeds={selectAllFeeds}
+                subscriptions={subscriptions}
             />
         </div>
     );
 }
 
-function Header({ selectedFolder, selectedFeed}) {
-    // const [feedInput, setFeedInput] = useState('');
-    // const [folderInput, setFolderInput] = useState('');
+function Header({ selectedFolder, selectedFeed, subscriptions, updateSubscriptions }) {
     const [isAddFeedOpen, setAddFeedOpen] = useState(false);
 
-//     function getSelectedFolder() {
-//         if (selectedFolder) {
-//             return selectedFolder;
-//         } else if (selectedFeed) {
-//             const subscription = subscriptions.find(sub => sub.id === selectedFeed);
-//             return subscription.folder;
-//         } else {
-//             return '';
-//         }
-//     }
-
-//     async function handleSubmit(e) {
-//         e.preventDefault();
-//         const res = await fetch('/subscriptions', {
-//             method: "POST", 
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({
-//                 feed: feedInput,
-//                 folder: folderInput || getSelectedFolder() 
-//             })
-//         });
-//         if (!res.ok) {
-//             const json = await res.json();
-//             console.log(json.message);
-//         }
-//         setFeedInput('');
-//         setFolderInput('');
-//         // updateSubscriptions();
-//   }
+    function getSelectedFolder() {
+        if (selectedFolder) {
+            return selectedFolder;
+        } else if (selectedFeed) {
+            const subscription = subscriptions.find(sub => sub.id === selectedFeed);
+            return subscription.folder;
+        } else {
+            return '';
+        }
+    }
 
     return (
         <div className='sidebar-header'>
             <button className="sidebar-btn" onClick={() => setAddFeedOpen((prev => !prev))}>Add Feed</button>
-            <FeedInput open={isAddFeedOpen}/>
-            
-            {/* <Modal open={isAddFeedModalOpen} onClose={() => setAddFeedModalOpen(false)}>
-                <AddFeedModal/>
-            </Modal> */}
+            <FeedInput 
+                open={isAddFeedOpen} 
+                getSelectedFolder={getSelectedFolder}
+                updateSubscriptions={updateSubscriptions}     
+            />
         </div>
     );
 }
 
-function FeedInput({ open }) {
+function FeedInput({ open, getSelectedFolder, updateSubscriptions }) {
     const [feedInput, setFeedInput] = useState('');
     const [folderInput, setFolderInput] = useState('');
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const res = await fetch('/subscriptions', {
+            method: "POST", 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                feed: feedInput,
+                folder: folderInput || getSelectedFolder() 
+            })
+        });
+        if (!res.ok) {
+            const json = await res.json();
+            console.log(json.message);
+        }
+        setFeedInput('');
+        setFolderInput('');
+        updateSubscriptions();
+  }
     if (!open) return null;
     return (
-        <form>
-        {/* <form method="post" onSubmit={handleSubmit}> */}
+        <form onSubmit={handleSubmit}>
             <input
                 onChange={(e) => setFeedInput(e.target.value)}
                 value={feedInput} 
@@ -96,19 +108,7 @@ function FeedInput({ open }) {
     );
 }
 
-function Content({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
-    const [subscriptions, setSubscriptions] = useState([]);
-
-    useEffect(() => {
-            updateSubscriptions();
-        }, []);
-
-    async function updateSubscriptions() {
-        const res = await fetch('/subscriptions');
-        const json = await res.json();
-        setSubscriptions(json.subscriptions);
-    }
-
+function Content({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds, subscriptions}) {
     return (
         <div className="sidebar-content">
             <button className={`all-feeds sidebar-btn ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
