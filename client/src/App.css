@@ -45,13 +45,13 @@ body {
 .sidebar-header {
     min-height: 50px;
     padding: 10px 20px;
+    flex-shrink: 0;
 }
 
 .sidebar-content {
     padding: 10px 20px;
     overflow-y: auto;
     flex-grow: 1;
-    max-height: calc(100% - 50px);
 }
 
 .main-content {
@@ -65,6 +65,7 @@ body {
 .topnav {
     background-color: #2D353B;
     height: 50px;
+    flex-shrink: 0;
     width: 100%;
     border-bottom: 1px solid #000000;
 }
@@ -72,7 +73,6 @@ body {
 .item-list {
     overflow-y: auto;
     flex-grow: 1;
-    max-height: calc(100% - 50px);
 }
 
 .input {
