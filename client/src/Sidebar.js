@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import Modal from './Modal';
-import AddFeedModal from './AddFeedModal';
 
 function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
     return (
@@ -24,7 +22,7 @@ function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
 function Header({ selectedFolder, selectedFeed}) {
     // const [feedInput, setFeedInput] = useState('');
     // const [folderInput, setFolderInput] = useState('');
-    const [isAddFeedModalOpen, setAddFeedModalOpen] = useState(false);
+    const [isAddFeedOpen, setAddFeedOpen] = useState(false);
 
 //     function getSelectedFolder() {
 //         if (selectedFolder) {
@@ -60,31 +58,41 @@ function Header({ selectedFolder, selectedFeed}) {
 
     return (
         <div className='sidebar-header'>
-            {/* <form method="post" onSubmit={handleSubmit}>
-                <input
-                    onChange={(e) => setFeedInput(e.target.value)}
-                    value={feedInput} 
-                    type="text" 
-                    name="feed" 
-                    className="input new-sub-input" 
-                    placeholder="Enter RSS feed URL"
-                />
-                <input 
-                    onChange={(e) => setFolderInput(e.target.value)} 
-                    value={folderInput} 
-                    type="text" 
-                    name="folder" 
-                    className="input folder-input" 
-                    placeholder="Enter folder (optional)"
-                />
-                <button type="submit" style={{display: 'none'}}></button>
-            </form> */}
-            <button className="sidebar-btn" onClick={() => setAddFeedModalOpen(true)}>Add Feed</button>
+            <button className="sidebar-btn" onClick={() => setAddFeedOpen((prev => !prev))}>Add Feed</button>
+            <FeedInput open={isAddFeedOpen}/>
             
-            <Modal open={isAddFeedModalOpen} onClose={() => setAddFeedModalOpen(false)}>
+            {/* <Modal open={isAddFeedModalOpen} onClose={() => setAddFeedModalOpen(false)}>
                 <AddFeedModal/>
-            </Modal>
+            </Modal> */}
         </div>
+    );
+}
+
+function FeedInput({ open }) {
+    const [feedInput, setFeedInput] = useState('');
+    const [folderInput, setFolderInput] = useState('');
+    if (!open) return null;
+    return (
+        <form>
+        {/* <form method="post" onSubmit={handleSubmit}> */}
+            <input
+                onChange={(e) => setFeedInput(e.target.value)}
+                value={feedInput} 
+                type="text" 
+                name="feed" 
+                className="input new-sub-input" 
+                placeholder="Enter RSS feed URL"
+            />
+            <input 
+                onChange={(e) => setFolderInput(e.target.value)} 
+                value={folderInput} 
+                type="text" 
+                name="folder" 
+                className="input folder-input" 
+                placeholder="Enter folder (optional)"
+            />
+            <button type="submit" style={{display: 'none'}}></button>
+        </form>
     );
 }
 
