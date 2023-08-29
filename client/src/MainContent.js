@@ -2,9 +2,9 @@ function MainContent({ posts, lastPostElementRef }) {
     return (
         <div className="main-content">
             <ul className="topnav">
-                <li>
+                {/* <li>
                     <a id="user-btn">Account</a>
-                </li>
+                </li> */}
             </ul>
             <ItemList 
                 posts={posts} 
