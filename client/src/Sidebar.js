@@ -1,44 +1,45 @@
 import { useState, useEffect } from 'react';
 import Modal from './Modal';
 import EditModal from './EditModal';
+import { useSubscriptions } from './SubscriptionContext';
+import { useSelection } from './SelectionContext';
 
-function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
-    const [subscriptions, setSubscriptions] = useState([]);
+function Sidebar() {
+    const { updateSubscriptions } = useSubscriptions();
 
     useEffect(() => {
             updateSubscriptions();
         }, []);
 
-    async function updateSubscriptions() {
-        const res = await fetch('/subscriptions');
-        const json = await res.json();
-        setSubscriptions(json.subscriptions);
-    }
-
     return (
         <div className="sidebar">
-            <Header
-                selectedFolder={selectedFolder}
-                selectedFeed={selectedFeed}
-                subscriptions={subscriptions}
-                updateSubscriptions={updateSubscriptions}
-            />
-            <Content 
-                selectedFolder={selectedFolder}
-                selectedFeed={selectedFeed}
-                allFeedsSelected={allFeedsSelected}
-                selectFolder={selectFolder}
-                selectFeed={selectFeed} 
-                selectAllFeeds={selectAllFeeds}
-                subscriptions={subscriptions}
-                updateSubscriptions={updateSubscriptions}
-            />
+            <Header/>
+            <Content/>
         </div>
     );
 }
 
-function Header({ selectedFolder, selectedFeed, subscriptions, updateSubscriptions }) {
+function Header() {
     const [isAddFeedOpen, setAddFeedOpen] = useState(false);
+
+    return (
+        <div className='sidebar-header'>
+            <SidebarButton
+                selected={false}
+                onClick={() => setAddFeedOpen(prev => !prev)}
+                text={'Add Feed'}
+                editable={false}
+            />
+            <FeedInput open={isAddFeedOpen}/>
+        </div>
+    );
+}
+
+function FeedInput({ open }) {
+    const [feedInput, setFeedInput] = useState('');
+    const [folderInput, setFolderInput] = useState('');
+    const { selectedFolder, selectedFeed } = useSelection();
+    const { subscriptions, updateSubscriptions } = useSubscriptions();
 
     function getSelectedFolder() {
         if (selectedFolder) {
@@ -50,28 +51,6 @@ function Header({ selectedFolder, selectedFeed, subscriptions, updateSubscriptio
             return '';
         }
     }
-
-    return (
-        <div className='sidebar-header'>
-            {/* <button className="sidebar-btn" onClick={() => setAddFeedOpen((prev => !prev))}>Add Feed</button> */}
-            <SidebarButton
-                selected={false}
-                onClick={() => setAddFeedOpen(prev => !prev)}
-                text={'Add Feed'}
-                editable={false}
-            />
-            <FeedInput 
-                open={isAddFeedOpen} 
-                getSelectedFolder={getSelectedFolder}
-                updateSubscriptions={updateSubscriptions}     
-            />
-        </div>
-    );
-}
-
-function FeedInput({ open, getSelectedFolder, updateSubscriptions }) {
-    const [feedInput, setFeedInput] = useState('');
-    const [folderInput, setFolderInput] = useState('');
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -117,13 +96,10 @@ function FeedInput({ open, getSelectedFolder, updateSubscriptions }) {
     );
 }
 
-function Content({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds, subscriptions, updateSubscriptions}) {
+function Content() {
+    const { allFeedsSelected, selectAllFeeds } = useSelection();
     return (
         <div className="sidebar-content">
-            {/* <button className={`all-feeds sidebar-btn ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
-                <img className="feed-icon" src="/all-feeds-icon.png"></img>
-                <span className="feed-name">All Feeds</span>
-            </button> */}
             <SidebarButton
                 classNames={'all-feeds'}
                 selected={allFeedsSelected}
@@ -132,43 +108,32 @@ function Content({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder,
                 text={'All Feeds'}
                 editable={false}
             />
-            <Folders 
-                subscriptions={subscriptions} 
-                updateSubscriptions={updateSubscriptions}
-                selectedFolder={selectedFolder} 
-                selectedFeed={selectedFeed} 
-                selectFolder={selectFolder} 
-                selectFeed={selectFeed}
-            />
+            <Folders/>
         </div>
     );
 }
 
-function Folders({ subscriptions, selectedFolder, selectedFeed, selectFolder, selectFeed, updateSubscriptions}) {
+function Folders() {
+    const { subscriptions } = useSubscriptions();
     const groupedSubscriptions= {};
-    subscriptions.forEach(subscription=> {
+    subscriptions.forEach(subscription => {
         if (!groupedSubscriptions[subscription.folder]) {
         groupedSubscriptions[subscription.folder] = [];
         }
         groupedSubscriptions[subscription.folder].push(subscription);
     });
-    const folders = Object.values(groupedSubscriptions).map(subscriptions => {
-        return <FeedFolder
-            subscriptions={subscriptions}
-            selectedFolder={selectedFolder}
-            selectedFeed={selectedFeed}
-            selectFolder={selectFolder}
-            selectFeed={selectFeed}
-            updateSubscriptions={updateSubscriptions}
-        />
+    const folders = Object.values(groupedSubscriptions).map(group => {
+        return <FeedFolder subscriptions={group}/>
     });
     return (
         <ul>{folders}</ul>
     );
 }
 
-function FeedFolder({ subscriptions, selectedFolder, selectedFeed, selectFolder, selectFeed, updateSubscriptions}) {
-    const feedElements = subscriptions.map(subscription=> <SubscribedFeed subscription={subscription} selectedFeed={selectedFeed} selectFeed={selectFeed} updateSubscriptions={updateSubscriptions}/>); 
+function FeedFolder({ subscriptions }) {
+    const { selectedFolder, selectFolder } = useSelection();
+
+    const feedElements = subscriptions.map(subscription => <SubscribedFeed subscription={subscription}/>); 
     const folderName = subscriptions[0].folder;
     return (
         <li key={folderName} className="folder">
@@ -177,21 +142,16 @@ function FeedFolder({ subscriptions, selectedFolder, selectedFeed, selectFolder,
                 onClick={() => selectFolder(folderName)}
                 text={folderName}
                 editable={true}
-                updateSubscriptions={updateSubscriptions}
             />
-            {/* <button className={`sidebar-btn ${selectedFolder === folderName ? 'selected' : ''}`} onClick={() => selectFolder(folderName)}>{folderName}</button> */}
             <ul>{feedElements}</ul>
         </li>
     );
 }
 
-function SubscribedFeed({ subscription, selectedFeed, selectFeed, updateSubscriptions}) {
+function SubscribedFeed({ subscription }) {
+    const { selectedFeed, selectFeed } = useSelection();
     return (
         <li key={subscription.id}>
-            {/* <button className={`feed sidebar-btn ${selectedFeed === subscription.id ? 'selected' : ''}`} onClick={() => selectFeed(subscription.id)}>
-                <img className="feed-icon" onError={handleImageError} src={subscription.iconurl || ''}></img>
-                <span className="feed-name">{subscription.title}</span>
-            </button> */}
             <SidebarButton
                 selected={selectedFeed === subscription.id}
                 onClick={() => selectFeed(subscription.id)}
@@ -200,13 +160,12 @@ function SubscribedFeed({ subscription, selectedFeed, selectFeed, updateSubscrip
                 text={subscription.title}
                 editable={true}
                 id={subscription.id}
-                updateSubscriptions={updateSubscriptions}
             />
         </li>
     );
 }
 
-function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageError, text, editable, id, updateSubscriptions}) {
+function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageError, text, editable, id }) {
     const [editModalOpen, setEditModalOpen] = useState(false);
     
     function handleButtonClick(e) {
@@ -223,7 +182,7 @@ function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageErr
                 <img className="edit-icon" src="/edit-icon.png"/>
             </button>}
             <Modal open={editModalOpen} onClose={(() => setEditModalOpen(false))}>
-                <EditModal name={text} id={id} updateSubscriptions={updateSubscriptions} onClose={() => setEditModalOpen(false)} />
+                <EditModal name={text} id={id} onClose={() => setEditModalOpen(false)} />
             </Modal>
         </div>
     );

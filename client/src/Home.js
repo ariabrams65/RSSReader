@@ -2,15 +2,12 @@ import './App.css';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
 import usePosts from './usePosts';
-import { useState, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
+import { SubscriptionProvider } from './SubscriptionContext';
 
 
 function Home() {
-    const [selectedFolder, setSelectedFolder] = useState(null);
-    const [selectedFeed, setSelectedFeed] = useState(null);
-    const [allFeedsSelected, setAllFeedsSelected] = useState(true);
-    
-    const { posts, loading, hasMore, updatePosts } = usePosts(selectedFolder, selectedFeed, allFeedsSelected);
+    const { posts, loading, hasMore, updatePosts } = usePosts();
     
     const observer = useRef();
     const lastPostElementRef = useCallback(node => {
@@ -28,34 +25,11 @@ function Home() {
         }
     }, [loading, hasMore]);
   
-    function selectFolder(folderName) {
-        setSelectedFolder(folderName);
-        setSelectedFeed(null);
-        setAllFeedsSelected(false);
-    }
-  
-    function selectFeed(subscriptionid) {
-        setSelectedFeed(subscriptionid);
-        setSelectedFolder(null);
-        setAllFeedsSelected(false);
-    }
-  
-    function selectAllFeeds() {
-        setAllFeedsSelected(true);
-        setSelectedFeed(null);
-        setSelectedFolder(null);
-    }
-  
     return (
         <>
-            <Sidebar 
-                selectedFolder={selectedFolder}
-                selectedFeed={selectedFeed}
-                allFeedsSelected={allFeedsSelected}
-                selectFolder={selectFolder}
-                selectFeed={selectFeed} 
-                selectAllFeeds={selectAllFeeds}
-            />
+        <SubscriptionProvider>
+            <Sidebar/>
+        </SubscriptionProvider>
             <MainContent 
                 posts={posts}
                 lastPostElementRef={lastPostElementRef}

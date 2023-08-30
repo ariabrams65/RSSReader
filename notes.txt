@@ -59,3 +59,11 @@ TODO:
 *Delete posts after a certain date so the database doesn't grow too large
 
 * When adding favorites to posts make sure not to delete posts that are favorited
+
+*Prop drilling seems to be getting excessive. Look into contexts or redux (or react query)
+
+*Add ability for feed to be in multiple folders
+
+*Ordering of feeds and folders aren't preserved when fetching from db
+
+*Feeds aren't being deleted when unsubscribing

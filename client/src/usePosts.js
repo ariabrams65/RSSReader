@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useSelection } from './SelectionContext';
 
-function usePosts(selectedFolder, selectedFeed, allFeedsSelected) {
+function usePosts() {
     const [posts, setPosts] = useState([]);
     const [oldestPostDate, setOldestPostDate] = useState(null);
     const [loading, setLoading] = useState(true);
     const [hasMore, setHasMore] = useState(false);
+    
+    const {
+        selectedFolder,
+        selectedFeed,
+        allFeedsSelected
+    } = useSelection();
     
     useEffect(() => {
         setPosts([]);
