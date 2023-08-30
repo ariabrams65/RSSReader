@@ -179,7 +179,7 @@ function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageErr
             <span className="feed-name">{text}</span>
             {editable && 
             <button className="edit-btn" onClick={handleButtonClick}>
-                <img className="edit-icon" src="/edit-icon.png"/>
+                <img className="edit-icon" src="/images/edit-icon.png"/>
             </button>}
             <Modal open={editModalOpen} onClose={(() => setEditModalOpen(false))}>
                 <EditModal name={text} id={id} onClose={() => setEditModalOpen(false)} />
