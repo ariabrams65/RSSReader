@@ -122,6 +122,10 @@ ul {
     
 }
 
+.sidebar-btn:hover .edit-btn {
+    opacity: 1;
+}
+
 .folder {
     margin-bottom: 15px;
 }
@@ -135,6 +139,28 @@ ul {
 
 .selected {
     background-color: #3A4349;
+}
+
+.edit-btn {
+    display: flex;
+    /* align-items: center;
+    justify-content: center; */
+    opacity: 0;
+    margin-left: auto;
+    border: none;
+    padding: 0;
+    background-color: inherit;
+    border-radius: 5px;
+}
+
+.edit-btn:hover {
+    filter: brightness(80%);
+}
+
+.edit-icon {
+    height: 15px;
+    width: 15px;
+    border-radius: 2px;
 }
 
 .item {

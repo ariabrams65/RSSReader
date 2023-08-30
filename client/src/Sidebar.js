@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Modal from './Modal';
 
 function Sidebar({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds}) {
     const [subscriptions, setSubscriptions] = useState([]);
@@ -50,7 +51,13 @@ function Header({ selectedFolder, selectedFeed, subscriptions, updateSubscriptio
 
     return (
         <div className='sidebar-header'>
-            <button className="sidebar-btn" onClick={() => setAddFeedOpen((prev => !prev))}>Add Feed</button>
+            {/* <button className="sidebar-btn" onClick={() => setAddFeedOpen((prev => !prev))}>Add Feed</button> */}
+            <SidebarButton
+                selected={false}
+                onClick={() => setAddFeedOpen(prev => !prev)}
+                text={'Add Feed'}
+                editable={false}
+            />
             <FeedInput 
                 open={isAddFeedOpen} 
                 getSelectedFolder={getSelectedFolder}
@@ -111,10 +118,18 @@ function FeedInput({ open, getSelectedFolder, updateSubscriptions }) {
 function Content({ selectedFolder, selectedFeed, allFeedsSelected, selectFolder, selectFeed, selectAllFeeds, subscriptions}) {
     return (
         <div className="sidebar-content">
-            <button className={`all-feeds sidebar-btn ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
+            {/* <button className={`all-feeds sidebar-btn ${allFeedsSelected ? 'selected' : ''}`} onClick={() => selectAllFeeds()}>
                 <img className="feed-icon" src="/all-feeds-icon.png"></img>
                 <span className="feed-name">All Feeds</span>
-            </button>
+            </button> */}
+            <SidebarButton
+                classNames={'all-feeds'}
+                selected={allFeedsSelected}
+                onClick={selectAllFeeds}
+                imageSrc={'/all-feeds-icon.png'}
+                text={'All Feeds'}
+                editable={false}
+            />
             <Folders 
                 subscriptions={subscriptions} 
                 selectedFolder={selectedFolder} 
@@ -153,7 +168,13 @@ function FeedFolder({ subscriptions, selectedFolder, selectedFeed, selectFolder,
     const folderName = subscriptions[0].folder;
     return (
         <li key={folderName} className="folder">
-            <button className={`sidebar-btn ${selectedFolder === folderName ? 'selected' : ''}`} onClick={() => selectFolder(folderName)}>{folderName}</button>
+            <SidebarButton
+                selected={selectedFolder === folderName}
+                onClick={() => selectFolder(folderName)}
+                text={folderName}
+                editable={true}
+            />
+            {/* <button className={`sidebar-btn ${selectedFolder === folderName ? 'selected' : ''}`} onClick={() => selectFolder(folderName)}>{folderName}</button> */}
             <ul>{feedElements}</ul>
         </li>
     );
@@ -165,11 +186,33 @@ function SubscribedFeed({ subscription, selectedFeed, selectFeed}) {
     }
     return (
         <li key={subscription.id}>
-            <button className={`feed sidebar-btn ${selectedFeed === subscription.id ? 'selected' : ''}`} onClick={() => selectFeed(subscription.id)}>
+            {/* <button className={`feed sidebar-btn ${selectedFeed === subscription.id ? 'selected' : ''}`} onClick={() => selectFeed(subscription.id)}>
                 <img className="feed-icon" onError={handleImageError} src={subscription.iconurl || ''}></img>
                 <span className="feed-name">{subscription.title}</span>
-            </button>
+            </button> */}
+            <SidebarButton
+                selected={selectedFeed === subscription.id}
+                onClick={() => selectFeed(subscription.id)}
+                imageSrc={subscription.iconurl || ''}
+                handleImageError={(e) => e.target.src = '/default-feed-icon.png'}
+                text={subscription.title}
+                editable={true}
+            />
         </li>
+    );
+}
+
+function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageError, text, editable }) {
+    return (
+        <div className={`${classNames ? classNames : ''} sidebar-btn ${selected ? 'selected' : ''}`} onClick={onClick}>
+            {imageSrc !== undefined && <img className="feed-icon" onError={handleImageError} src={imageSrc}/>}
+            <span className="feed-name">{text}</span>
+            {editable && 
+            <button className="edit-btn">
+                <img className="edit-icon" src="/edit-icon.png"/>
+            </button>
+            }
+        </div>
     );
 }
 

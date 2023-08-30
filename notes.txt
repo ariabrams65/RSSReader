@@ -53,3 +53,9 @@ TODO:
 *make sure no route handlers can crash server
 
 *infinite scrolling will fetch feeds twice initially for some reason. Might be due the last feed being visible and a race condition with the loading flag
+
+*If it takes 12 minutes to update all feeds and feeds update every 10 minutes that will be an issue
+
+*Delete posts after a certain date so the database doesn't grow too large
+
+* When adding favorites to posts make sure not to delete posts that are favorited
