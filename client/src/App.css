@@ -58,7 +58,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    flex: 4; 
+    flex: 3; 
     background-color: #2F383E;
 }
 
@@ -238,12 +238,11 @@ ul {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #FFF;
-    padding: 50px;
+    padding: 10px 50px;
     z-index: 1000;
     background-color: #21292e;
-    border: 2px solid black;
-    border-radius: 15px;
+    border: 1px solid #252525;
+    border-radius: 10px;
 }
 
 .overlay {
