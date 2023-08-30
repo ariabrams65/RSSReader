@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSelection } from './SelectionContext';
+import { useSelection } from '../context/SelectionContext';
 
 function usePosts() {
     const [posts, setPosts] = useState([]);

@@ -67,3 +67,13 @@ TODO:
 *Ordering of feeds and folders aren't preserved when fetching from db
 
 *Feeds aren't being deleted when unsubscribing
+		^
+		| Probably related
+		\/
+* Received error:
+	TypeError: Cannot read properties of undefined (reading 'feedid')
+    at Object.getFeedId (/home/ariab/RSSReader/server/db/queries/feedQueries.js:11:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async getFeed (/home/ariab/RSSReader/server/controllers/feedController.js:12:24)
+
+	Maybe make sure that when getting feedId, if subscriptionid doesn't exists handle that somehow

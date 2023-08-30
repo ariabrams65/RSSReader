@@ -1,9 +1,10 @@
+import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import Home from './Home';
-import Login from './Login';
-import Register from './Register';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import ProtectedRoutes from './ProtectedRoutes';
-import { SelectionProvider } from './SelectionContext'
+import { SelectionProvider } from './context/SelectionContext'
 
 function App() {
     return (

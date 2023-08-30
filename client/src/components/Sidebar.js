@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import Modal from './Modal';
 import EditModal from './EditModal';
-import { useSubscriptions } from './SubscriptionContext';
-import { useSelection } from './SelectionContext';
+import { useSubscriptions } from '../context/SubscriptionContext';
+import { useSelection } from '../context/SelectionContext';
 
 function Sidebar() {
     const { updateSubscriptions } = useSubscriptions();
@@ -104,7 +104,7 @@ function Content() {
                 classNames={'all-feeds'}
                 selected={allFeedsSelected}
                 onClick={selectAllFeeds}
-                imageSrc={'/all-feeds-icon.png'}
+                imageSrc={'/images/all-feeds-icon.png'}
                 text={'All Feeds'}
                 editable={false}
             />
@@ -156,7 +156,7 @@ function SubscribedFeed({ subscription }) {
                 selected={selectedFeed === subscription.id}
                 onClick={() => selectFeed(subscription.id)}
                 imageSrc={subscription.iconurl || ''}
-                handleImageError={(e) => e.target.src = '/default-feed-icon.png'}
+                handleImageError={(e) => e.target.src = '/images/default-feed-icon.png'}
                 text={subscription.title}
                 editable={true}
                 id={subscription.id}

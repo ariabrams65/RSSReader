@@ -1,9 +1,8 @@
-import './App.css';
-import Sidebar from './Sidebar';
-import MainContent from './MainContent';
-import usePosts from './usePosts';
+import Sidebar from '../components/Sidebar';
+import MainContent from '../components/MainContent';
+import usePosts from '../hooks/usePosts';
 import { useCallback, useRef } from 'react';
-import { SubscriptionProvider } from './SubscriptionContext';
+import { SubscriptionProvider } from '../context/SubscriptionContext';
 
 
 function Home() {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSubscriptions } from './SubscriptionContext';
+import { useSubscriptions } from '../context/SubscriptionContext';
 
 function EditModal({ name, id, onClose}) {
     const [nameInput, setNameInput] = useState(name);
