@@ -43,8 +43,26 @@ async function deleteSubscription(req, res, next) {
     try {
         await subscriptionQueries.deleteUserSubscription(req.query.subscriptionid);
         res.sendStatus(200);
-    } catch (e){
+    } catch(e) {
         console.log(e);
+        next(e);
+    }
+}
+
+async function renameSubscription(req, res, next) {
+    try {
+        await subscriptionQueries.renameSubscription(req.body.subscriptionid, req.body.newName);
+        res.sendStatus(204);
+    } catch(e) {
+        next(e);
+    }
+}
+
+async function renameFolder(req, res, next) {
+    try {
+        await subscriptionQueries.renameFolder(req.body.oldName, req.body.newName);
+        res.sendStatus(204);
+    } catch(e) {
         next(e);
     }
 }
@@ -69,4 +87,4 @@ async function getFeedHeaders(feedurl) {
     return headers;
 }
 
-module.exports = { getSubscriptions, addSubscription, deleteSubscription };
+module.exports = { getSubscriptions, addSubscription, deleteSubscription, renameSubscription , renameFolder };

@@ -86,3 +86,7 @@ posts aren't updated when unsubscribing froma feed
 
 *Adding new feed will always request feed and parse xml
 	No need to do this. First check if feed already exists before doing this
+	
+*When A feed can't be added because it alreaady exists in that folder, don't remove the inputs
+
+* When destructuring or exporting, if there are a lot of variables, move them to sepearte lines

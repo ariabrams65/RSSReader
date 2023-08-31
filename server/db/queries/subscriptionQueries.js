@@ -3,7 +3,7 @@ const query = require('../dbConn');
 async function getUserSubscriptions(userid) {
     const getSubscriptionsQuery = 
     `
-    SELECT subscriptions.id, feeds.iconurl, feeds.title, subscriptions.folder
+    SELECT subscriptions.id, feeds.iconurl, subscriptions.name, subscriptions.folder
     FROM feeds JOIN subscriptions ON feeds.id = subscriptions.feedid
     WHERE subscriptions.userid = $1;
     `;
@@ -26,8 +26,8 @@ async function addUserSubscription(userid, subscription, folder) {
     `;
     const insertSubscriptionQuery =
     `
-    INSERT INTO subscriptions (userid, feedid, folder)
-    VALUES ($1, $2, $3);
+    INSERT INTO subscriptions (userid, feedid, name, folder)
+    VALUES ($1, $2, $3, $4);
     `;
     await query(insertFeedQuery, [
         subscription.feedurl,
@@ -36,7 +36,7 @@ async function addUserSubscription(userid, subscription, folder) {
     ]);
     const res = await query(getFeedIdQuery, [subscription.feedurl]);
     const feedid = res.rows[0].id;
-    await query(insertSubscriptionQuery, [userid, feedid, folder]);
+    await query(insertSubscriptionQuery, [userid, feedid, subscription.title, folder]);
     return feedid;
 }
 
@@ -89,4 +89,18 @@ async function subscriptionExists(userid, feedurl, folder) {
     return parseInt(res.rows[0].count);
 }
 
-module.exports = { getUserSubscriptions, addUserSubscription, deleteUserSubscription, subscriptionExists };
+async function renameSubscription(subscriptionid, newName) {
+    const renameQuery = 
+    `
+    `;
+    await query(renameQuery, [subscriptionid, newName]);
+}
+
+async function renameFolder(oldName, newName) {
+    const renameQuery = 
+    `
+    `;
+    await query(renameQuery, [oldName, newName]);
+}
+
+module.exports = { getUserSubscriptions, addUserSubscription, deleteUserSubscription, subscriptionExists, renameSubscription, renameFolder };

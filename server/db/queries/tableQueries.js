@@ -23,6 +23,7 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         userid INT REFERENCES users(id),
         feedid INT REFERENCES feeds(id),
+        name TEXT,
         folder TEXT
     );
 
