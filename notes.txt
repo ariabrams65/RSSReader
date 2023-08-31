@@ -77,3 +77,7 @@ TODO:
     at async getFeed (/home/ariab/RSSReader/server/controllers/feedController.js:12:24)
 
 	Maybe make sure that when getting feedId, if subscriptionid doesn't exists handle that somehow
+	
+* change sidebar color to chatgpt sidebar color
+
+* posts don't get updated when adding subscription (Make it so the added subscription is selected)

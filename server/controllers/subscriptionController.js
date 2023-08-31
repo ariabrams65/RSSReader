@@ -44,6 +44,7 @@ async function deleteSubscription(req, res, next) {
         await subscriptionQueries.deleteUserSubscription(req.query.subscriptionid);
         res.sendStatus(200);
     } catch (e){
+        console.log(e);
         next(e);
     }
 }

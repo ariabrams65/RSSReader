@@ -51,20 +51,30 @@ async function deleteUserSubscription(subscriptionid) {
     `
     DELETE FROM subscriptions WHERE id = $1;
     `;
+    
+    //deletes all posts whos feed doesn't have any subscriptions
+    const deletePostsQuery =
+    `
+    DELETE FROM posts
+    WHERE feedid NOT IN (
+        SELECT feedid
+        FROM subscriptions
+    )
+    `;
 
     //deletes all feeds that aren't subscribed to by any users
     const deleteFeedQuery =
     `
     DELETE FROM feeds
-    WHERE NOT EXISTS (
-        SELECT * 
+    WHERE id NOT IN (
+        SELECT feedid
         FROM subscriptions
-        WHERE feeds.id = subscriptions.feedid
     );
     `;
     // const res = await query(getFeedIdQuery, [subscriptionid]);
     // const feedid = res.rows[0].feedid;
     await query(deleteSubscriptionQuery, [subscriptionid]);
+    await query(deletePostsQuery);
     await query(deleteFeedQuery);
 }
 
