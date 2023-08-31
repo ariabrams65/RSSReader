@@ -41,29 +41,17 @@ async function addUserSubscription(userid, subscription, folder) {
 }
 
 async function deleteUserSubscription(subscriptionid) {
-    // const getFeedIdQuery =
-    // `
-    // SELECT feedid
-    // FROM subscriptions
-    // WHERE id = $1;
-    // `;
     const deleteSubscriptionQuery =
     `
     DELETE FROM subscriptions WHERE id = $1;
     `;
-    
-    //deletes all posts whos feed doesn't have any subscriptions
-    const deletePostsQuery =
-    `
-    DELETE FROM posts
-    WHERE feedid NOT IN (
-        SELECT feedid
-        FROM subscriptions
-    )
-    `;
+    await query(deleteSubscriptionQuery, [subscriptionid]);
+    await deleteUnsubscribedFeeds();
+}
 
+async function deleteUnsubscribedFeeds() {
     //deletes all feeds that aren't subscribed to by any users
-    const deleteFeedQuery =
+    const deleteFeedsQuery =
     `
     DELETE FROM feeds
     WHERE id NOT IN (
@@ -71,11 +59,7 @@ async function deleteUserSubscription(subscriptionid) {
         FROM subscriptions
     );
     `;
-    // const res = await query(getFeedIdQuery, [subscriptionid]);
-    // const feedid = res.rows[0].feedid;
-    await query(deleteSubscriptionQuery, [subscriptionid]);
-    await query(deletePostsQuery);
-    await query(deleteFeedQuery);
+    await query(deleteFeedsQuery);
 }
 
 async function subscriptionExists(userid, feedurl, folder) {
@@ -109,4 +93,14 @@ async function renameFolder(userid, oldName, newName) {
     await query(renameQuery, [newName, userid, oldName]);
 }
 
-module.exports = { getUserSubscriptions, addUserSubscription, deleteUserSubscription, subscriptionExists, renameSubscription, renameFolder };
+async function deleteFolder(userid, folder) {
+    const deleteQuery = 
+    `
+    DELETE from subscriptions
+    WHERE userid = $1 AND folder = $2;
+    `;
+    await query(deleteQuery, [userid, folder]);
+    deleteUnsubscribedFeeds();
+}
+
+module.exports = { getUserSubscriptions, addUserSubscription, deleteUserSubscription, subscriptionExists, renameSubscription, renameFolder, deleteFolder};

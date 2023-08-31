@@ -90,3 +90,8 @@ posts aren't updated when unsubscribing froma feed
 *When A feed can't be added because it alreaady exists in that folder, don't remove the inputs
 
 * When destructuring or exporting, if there are a lot of variables, move them to sepearte lines
+
+*Pressing enter key when changing feed name calls the delete callback
+
+*Renaming feed doesn't change the names of the post sources
+	(Same feeds in different folders could possibly have different names)

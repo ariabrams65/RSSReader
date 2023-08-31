@@ -29,7 +29,7 @@ async function createTables() {
 
     CREATE TABLE IF NOT EXISTS posts (
         id SERIAL PRIMARY KEY,
-        feedid INT REFERENCES feeds(id),
+        feedid INT REFERENCES feeds(id) ON DELETE CASCADE,
         title TEXT,
         url TEXT,
         commentsurl TEXT,

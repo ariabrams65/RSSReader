@@ -67,6 +67,16 @@ async function renameFolder(req, res, next) {
     }
 }
 
+async function deleteFolder(req, res, next) {
+    try {
+        await subscriptionQueries.deleteFolder(req.user.id, req.query.folder);
+        res.sendStatus(204);
+    } catch(e) {
+        console.log(e);
+        next(e);
+    }
+}
+
 async function getFeedHeaders(feedurl) {
     const parser = new Parser({
         customFields: {
@@ -87,4 +97,4 @@ async function getFeedHeaders(feedurl) {
     return headers;
 }
 
-module.exports = { getSubscriptions, addSubscription, deleteSubscription, renameSubscription , renameFolder };
+module.exports = { getSubscriptions, addSubscription, deleteSubscription, renameSubscription , renameFolder, deleteFolder };

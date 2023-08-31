@@ -7,31 +7,30 @@ function EditModal({ name, id, onClose}) {
     
     const isFeed = (id !== undefined);
     
+    async function sendPatch(url, body) {
+        await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+    }
+    
     async function handleSubmit(e) {
         e.preventDefault();
+        
         if (isFeed) {
-            await fetch('/subscriptions/rename', {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    subscriptionid: id,
-                    newName: nameInput
-                })
+            await sendPatch('/subscriptions/rename', {
+                subscriptionid: id,
+                newName: nameInput
             });
         } else {
-            await fetch('/subscriptions/rename-folder', {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    oldName: name,
-                    newName: nameInput
-                })           
+            await sendPatch('/subscriptions/rename/folder', {
+                oldName: name,
+                newName: nameInput
             });
-        } 
+        }
         updateSubscriptions();
         onClose();
     }
@@ -39,12 +38,15 @@ function EditModal({ name, id, onClose}) {
     async function handleDelete(e) {
         e.preventDefault();
         if (isFeed) {
+            if (!window.confirm(`Are you sure you want to unsubscribe from "${name}"?`)) return;
             await fetch(`/subscriptions?subscriptionid=${id}`, {
                 method: 'DELETE'
             });
         } else {
-            //todo
-            //await fetch (`/subscriptions`)
+            if (!window.confirm(`Are you sure you want to unsubscribe from all feeds in "${name}"?`)) return;
+            await fetch(`/subscriptions/folder?folder=${name}`, {
+                method: 'DELETE'
+            });
         }
         updateSubscriptions();
         onClose();
@@ -59,7 +61,9 @@ function EditModal({ name, id, onClose}) {
                 className="input" 
             />
             <div>
-                <button onClick={handleDelete}>Unsubscribe</button> 
+                <button onClick={handleDelete}>
+                    {isFeed ? 'Unsubscribe' : 'Delete'}
+                </button> 
                 <button type="submit">Save</button>
             </div>
         </form>
