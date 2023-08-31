@@ -78,14 +78,14 @@ async function deleteUserSubscription(subscriptionid) {
     await query(deleteFeedQuery);
 }
 
-async function subscriptionExists(userid, feedurl) {
+async function subscriptionExists(userid, feedurl, folder) {
     const subscriptionExistsQuery = 
     `
     SELECT COUNT(*)
     FROM subscriptions JOIN feeds ON subscriptions.feedid = feeds.id
-    WHERE subscriptions.userid = $1 AND feeds.feedurl = $2;
+    WHERE subscriptions.userid = $1 AND feeds.feedurl = $2 AND subscriptions.folder = $3;
     `;
-    const res = await query(subscriptionExistsQuery, [userid, feedurl]);
+    const res = await query(subscriptionExistsQuery, [userid, feedurl, folder]);
     return parseInt(res.rows[0].count);
 }
 

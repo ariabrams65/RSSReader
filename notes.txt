@@ -81,3 +81,8 @@ TODO:
 * change sidebar color to chatgpt sidebar color
 
 * posts don't get updated when adding subscription (Make it so the added subscription is selected)
+
+posts aren't updated when unsubscribing froma feed
+
+*Adding new feed will always request feed and parse xml
+	No need to do this. First check if feed already exists before doing this

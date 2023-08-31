@@ -14,7 +14,7 @@ async function getFeedId(subscriptionid) {
 async function getAllSubscribedFeedIds(userid) {
     const getFeedIdsQuery = 
     `
-    SELECT feedid
+    SELECT DISTINCT feedid
     FROM subscriptions
     WHERE userid = $1;
     `;
