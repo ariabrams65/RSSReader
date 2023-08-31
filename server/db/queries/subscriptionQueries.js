@@ -92,15 +92,21 @@ async function subscriptionExists(userid, feedurl, folder) {
 async function renameSubscription(subscriptionid, newName) {
     const renameQuery = 
     `
+    UPDATE subscriptions
+    SET name = $1
+    WHERE id = $2;
     `;
-    await query(renameQuery, [subscriptionid, newName]);
+    await query(renameQuery, [newName, subscriptionid]);
 }
 
-async function renameFolder(oldName, newName) {
+async function renameFolder(userid, oldName, newName) {
     const renameQuery = 
     `
+    update subscriptions
+    set folder = $1
+    where userid = $2 AND folder = $3;
     `;
-    await query(renameQuery, [oldName, newName]);
+    await query(renameQuery, [newName, userid, oldName]);
 }
 
 module.exports = { getUserSubscriptions, addUserSubscription, deleteUserSubscription, subscriptionExists, renameSubscription, renameFolder };

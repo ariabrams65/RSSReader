@@ -60,7 +60,7 @@ async function renameSubscription(req, res, next) {
 
 async function renameFolder(req, res, next) {
     try {
-        await subscriptionQueries.renameFolder(req.body.oldName, req.body.newName);
+        await subscriptionQueries.renameFolder(req.user.id, req.body.oldName, req.body.newName);
         res.sendStatus(204);
     } catch(e) {
         next(e);
