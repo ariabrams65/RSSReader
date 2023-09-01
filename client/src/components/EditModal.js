@@ -73,7 +73,7 @@ function EditModal({ name, subscription, onClose}) {
                 className="input" 
             />
             <div>
-                <button onClick={handleDelete}>
+                <button type="button" onClick={handleDelete}>
                     {isFeed ? 'Unsubscribe' : 'Delete'}
                 </button> 
                 <button type="submit">Save</button>
