@@ -24,9 +24,15 @@ function FeedInput({ open }) {
     const [folderInput, setFolderInput] = useState('');
     const { selectedFolder, selectedFeed, selectFeed } = useSelection();
     const { updateSubscriptions } = useSubscriptions();
+    const [loading, setLoading] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if (loading) {
+            console.log('loading');
+            return;
+        }
+        setLoading(true);
         const res = await fetch('/subscriptions', {
             method: "POST", 
             headers: {
@@ -38,11 +44,13 @@ function FeedInput({ open }) {
             })
         });
         const json = await res.json();
+        setLoading(false);
         if (!res.ok) {
             console.log(json.message);
+            return;
         }
         const subscription = json.subscription;
-
+        
         setFeedInput('');
         setFolderInput('');
         updateSubscriptions();
