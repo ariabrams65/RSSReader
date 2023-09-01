@@ -5,7 +5,8 @@ async function getUserSubscriptions(userid) {
     `
     SELECT subscriptions.id, feeds.iconurl, subscriptions.name, subscriptions.folder
     FROM feeds JOIN subscriptions ON feeds.id = subscriptions.feedid
-    WHERE subscriptions.userid = $1;
+    WHERE subscriptions.userid = $1
+    ORDER BY subscriptions.id;
     `;
     const res = await query(getSubscriptionsQuery, [userid]);
     return res.rows;
