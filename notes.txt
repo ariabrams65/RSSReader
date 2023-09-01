@@ -97,3 +97,5 @@ posts aren't updated when unsubscribing froma feed
 	(Same feeds in different folders could possibly have different names)
 	
 *Worker thread when does it get removed
+
+No need to pass down some props to SidebarButton if passing down the subscription object

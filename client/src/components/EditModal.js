@@ -4,7 +4,7 @@ import { useSelection } from '../context/SelectionContext';
 
 function EditModal({ name, subscription, onClose}) {
     const [nameInput, setNameInput] = useState(name);
-    const { subscriptions, updateSubscriptions } = useSubscriptions();
+    const { updateSubscriptions } = useSubscriptions();
     const { selectedFolder, selectedFeed, selectAllFeeds} = useSelection();
     
     const isFeed = (subscription !== undefined);

@@ -22,7 +22,7 @@ function SidebarHeader() {
 function FeedInput({ open }) {
     const [feedInput, setFeedInput] = useState('');
     const [folderInput, setFolderInput] = useState('');
-    const { selectedFolder, selectedFeed } = useSelection();
+    const { selectedFolder, selectedFeed, selectFeed } = useSelection();
     const { updateSubscriptions } = useSubscriptions();
 
     async function handleSubmit(e) {
@@ -37,14 +37,18 @@ function FeedInput({ open }) {
                 folder: folderInput || selectedFolder || selectedFeed?.folder || '' 
             })
         });
+        const json = await res.json();
         if (!res.ok) {
-            const json = await res.json();
             console.log(json.message);
         }
+        const subscription = json.subscription;
+
         setFeedInput('');
         setFolderInput('');
         updateSubscriptions();
-  }
+        selectFeed(subscription);
+    }
+
     if (!open) return null;
     return (
         <form onSubmit={handleSubmit}>
