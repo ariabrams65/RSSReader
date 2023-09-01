@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useSubscriptions } from '../context/SubscriptionContext';
+import { useSelection } from '../context/SelectionContext';
 
-function EditModal({ name, id, onClose}) {
+function EditModal({ name, subscription, onClose}) {
     const [nameInput, setNameInput] = useState(name);
-    const { updateSubscriptions } = useSubscriptions();
+    const { subscriptions, updateSubscriptions } = useSubscriptions();
+    const { selectedFolder, selectedFeed, selectAllFeeds} = useSelection();
     
-    const isFeed = (id !== undefined);
+    const isFeed = (subscription !== undefined);
     
     async function sendPatch(url, body) {
         await fetch(url, {
@@ -22,7 +24,7 @@ function EditModal({ name, id, onClose}) {
         
         if (isFeed) {
             await sendPatch('/subscriptions/rename', {
-                subscriptionid: id,
+                subscriptionid: subscription.id,
                 newName: nameInput
             });
         } else {
@@ -35,11 +37,18 @@ function EditModal({ name, id, onClose}) {
         onClose();
     }
     
+    function selectionExists(currentSubscriptions) {
+        return (
+            currentSubscriptions.some(sub => sub.folder === selectedFolder) ||
+            currentSubscriptions.some(sub => sub.id === selectedFeed?.id)
+        );
+    }
+    
     async function handleDelete(e) {
         e.preventDefault();
         if (isFeed) {
             if (!window.confirm(`Are you sure you want to unsubscribe from "${name}"?`)) return;
-            await fetch(`/subscriptions?subscriptionid=${id}`, {
+            await fetch(`/subscriptions?subscriptionid=${subscription.id}`, {
                 method: 'DELETE'
             });
         } else {
@@ -48,7 +57,10 @@ function EditModal({ name, id, onClose}) {
                 method: 'DELETE'
             });
         }
-        updateSubscriptions();
+        const currentSubscriptions = await updateSubscriptions();
+        if (!selectionExists(currentSubscriptions)) {
+            selectAllFeeds();
+        }
         onClose();
     }
     

@@ -3,7 +3,7 @@ import Modal from './Modal';
 import EditModal from './EditModal';
 
 
-function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageError, text, editable, id }) {
+function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageError, text, editable, subscription }) {
     const [editModalOpen, setEditModalOpen] = useState(false);
     
     function handleButtonClick(e) {
@@ -20,7 +20,7 @@ function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageErr
                 <img className="edit-icon" src="/images/edit-icon.png"/>
             </button>}
             <Modal open={editModalOpen} onClose={(() => setEditModalOpen(false))}>
-                <EditModal name={text} id={id} onClose={() => setEditModalOpen(false)} />
+                <EditModal name={text} subscription={subscription} onClose={() => setEditModalOpen(false)} />
             </Modal>
         </div>
     );

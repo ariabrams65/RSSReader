@@ -95,3 +95,5 @@ posts aren't updated when unsubscribing froma feed
 
 *Renaming feed doesn't change the names of the post sources
 	(Same feeds in different folders could possibly have different names)
+	
+*Worker thread when does it get removed

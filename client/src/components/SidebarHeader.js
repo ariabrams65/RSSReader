@@ -23,18 +23,7 @@ function FeedInput({ open }) {
     const [feedInput, setFeedInput] = useState('');
     const [folderInput, setFolderInput] = useState('');
     const { selectedFolder, selectedFeed } = useSelection();
-    const { subscriptions, updateSubscriptions } = useSubscriptions();
-
-    function getSelectedFolder() {
-        if (selectedFolder) {
-            return selectedFolder;
-        } else if (selectedFeed) {
-            const subscription = subscriptions.find(sub => sub.id === selectedFeed);
-            return subscription.folder;
-        } else {
-            return '';
-        }
-    }
+    const { updateSubscriptions } = useSubscriptions();
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -45,7 +34,7 @@ function FeedInput({ open }) {
             },
             body: JSON.stringify({
                 feed: feedInput,
-                folder: folderInput || getSelectedFolder() 
+                folder: folderInput || selectedFolder || selectedFeed?.folder || '' 
             })
         });
         if (!res.ok) {

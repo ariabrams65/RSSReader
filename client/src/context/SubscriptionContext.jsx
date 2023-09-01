@@ -15,6 +15,7 @@ function SubscriptionProvider({ children }) {
         const res = await fetch('/subscriptions');
         const json = await res.json();
         setSubscriptions(json.subscriptions);
+        return json.subscriptions;
     }
     
     const value = {

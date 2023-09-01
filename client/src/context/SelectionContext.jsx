@@ -17,8 +17,8 @@ function SelectionProvider({ children }) {
         setAllFeedsSelected(false);
     }
   
-    function selectFeed(subscriptionid) {
-        setSelectedFeed(subscriptionid);
+    function selectFeed(subscription) {
+        setSelectedFeed(subscription);
         setSelectedFolder(null);
         setAllFeedsSelected(false);
     }

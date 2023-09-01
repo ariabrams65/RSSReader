@@ -22,10 +22,10 @@ function usePosts() {
     async function updatePosts(olderThan=oldestPostDate) {
         setLoading(true);
         let urlParams;
-        if (selectedFolder) {
+        if (selectedFeed) {
+            urlParams = `subscriptionid=${selectedFeed.id}&`;
+        } else if (selectedFolder) {
             urlParams = `folder=${selectedFolder}&`;
-        } else if (selectedFeed) {
-            urlParams = `subscriptionid=${selectedFeed}&`;
         } else {
             urlParams = `allFeeds=true&`;
         }

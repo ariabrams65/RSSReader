@@ -59,13 +59,13 @@ function SubscribedFeed({ subscription }) {
     return (
         <li key={subscription.id}>
             <SidebarButton
-                selected={selectedFeed === subscription.id}
-                onClick={() => selectFeed(subscription.id)}
+                selected={selectedFeed?.id === subscription.id}
+                onClick={() => selectFeed(subscription)}
                 imageSrc={subscription.iconurl || ''}
                 handleImageError={(e) => e.target.src = '/images/default-feed-icon.png'}
                 text={subscription.name}
                 editable={true}
-                id={subscription.id}
+                subscription={subscription}
             />
         </li>
     );
