@@ -16,29 +16,29 @@ async function getSubscriptions(req, res, next) {
 
 async function addSubscription(req, res, next) {
     try {
-        const folder = req.body.folder || 'feeds';
-        if (await subscriptionQueries.subscriptionExists(req.user.id, req.body.feed, folder)) {
-            return res.status(400).json({
-                message: 'Cannot add duplucate subscriptions'
-            });
-        }
-        let feedHeaders;
-        try {
-            feedHeaders = await getFeedHeaders(req.body.feed);
-        } catch {
-            return res.status(400).json({
-                message: 'URL is invalid'
-            });
-        }
-        const subscription = await subscriptionQueries.addUserSubscription(req.user.id, feedHeaders, folder);
-        const feed = await feedQueries.getFeed(subscription.feedid);
-        if (feed.numposts === 0) {
-            await updateFeedsPosts(feed);
-        }
+        const subscription = await saveSubscription(req.user.id, req.body.feed, req.body.folder || 'feeds');
         res.status(200).json({subscription: subscription});
-    } catch(e) {
+    } catch (e) {
         next(e);
     }
+}
+
+async function saveSubscription(userid, url, folder) {
+    if (await subscriptionQueries.subscriptionExists(userid, url, folder)) {
+        throw {message: 'Cannot add duplicate subscriptions', url: url, status: 400};
+    }
+    let feedHeaders;
+    try {
+        feedHeaders = await getFeedHeaders(url);
+    } catch {
+        throw {message: 'URL is invalid', url: url, status: 400};
+    }
+    const subscription = await subscriptionQueries.addUserSubscription(userid, feedHeaders, folder);
+    const feed = await feedQueries.getFeed(subscription.feedid);
+    if (feed.numposts === 0) {
+        await updateFeedsPosts(feed);
+    }
+    return subscription;
 }
 
 async function deleteSubscription(req, res, next) {
@@ -86,15 +86,20 @@ async function importOPML(req, res, next) {
         const xmlObj = await parser.parseStringPromise(xml);
         const folders = getFoldersFromOPML(xmlObj);
 
+        const promises = [];
         for (const [folder, feeds] of Object.entries(folders)) {
-            
+            for (const feed of feeds) {
+                promises.push(saveSubscription(req.user.id, feed.url, folder));
+            }
         }
-        
-        res.sendStatus(204);
+        const results = await Promise.allSettled(promises);
+        const rejected = results
+            .filter(result => result.status === 'rejected')
+            .map(result => result.reason);
+        res.status(204).json({rejected: rejected});
     } catch (e) {
         next(e);
     }
-
 }
 
 function getFoldersFromOPML(xml) {

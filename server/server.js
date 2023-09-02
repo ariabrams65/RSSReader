@@ -54,4 +54,11 @@ app.use('/get-feed', require('./routes/feed'));
 app.use('/subscriptions', require('./routes/subscriptions'));
 app.use('/authenticated', require('./routes/authentication'))
 
+app.use((err, req, res, next) => {
+    if (!err.message || !err.status) {
+        return next(err);
+    }
+    res.status(err.status).json({message: err.message});
+});
+
 app.listen(5000);

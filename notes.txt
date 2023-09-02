@@ -117,3 +117,5 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 * Save session to db maybe?
 
 * When importing from ompl, maybe create  new thread for getting posts from all the new feeds
+
+* When importing from opml I think some feeds are taking really long because the url is invalid and they might be timing out
