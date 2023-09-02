@@ -99,3 +99,21 @@ posts aren't updated when unsubscribing froma feed
 *Worker thread when does it get removed
 
 No need to pass down some props to SidebarButton if passing down the subscription object
+
+Unsubscribing from feeds in a folder sometimes causes the order of the folders to change
+	usually when there is only 1 feed left in the folder
+	
+* Add loading icon when adding feed
+
+*If all feeds is already selected when deleting a feed, that feed will still show up in the Content
+	If any feed/folder is selected, it won't be updated when deleting feeds since the state for selection isn't changing
+	
+* Handle cases where posts or feeds don't contain information in their xml. Such as missing titles, dates etc.
+
+*Do atom feeds use the rss attribute in ompl files
+
+* Add limits to the multer middleware to prevent too large of files being submitted
+
+* Save session to db maybe?
+
+* When importing from ompl, maybe create  new thread for getting posts from all the new feeds

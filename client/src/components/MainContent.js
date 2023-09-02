@@ -3,14 +3,26 @@ import formatTimeSince from "../utils/formatTime";
 function MainContent({ posts, lastPostElementRef }) {
     return (
         <div className="main-content">
-            <ul className="topnav">
-            </ul>
+            <Topnav/>
             <ItemList 
                 posts={posts} 
                 lastPostElementRef={lastPostElementRef} 
             />
         </div>
     ); 
+}
+
+function Topnav() {
+    return (
+        <ul className="topnav">
+            <li>
+                <form method="POST" enctype="multipart/form-data" action="/subscriptions/ompl">
+                    <input name="opml" type="file" />
+                    <button>Upload</button>
+                </form>
+            </li>
+        </ul>
+    );
 }
 
 function ItemList({ posts, lastPostElementRef }) {

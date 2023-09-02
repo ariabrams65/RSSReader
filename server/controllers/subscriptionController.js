@@ -3,6 +3,8 @@ const removeTrailingSlash = require('../helpers/commonHelpers');
 const subscriptionQueries = require('../db/queries/subscriptionQueries');
 const feedQueries = require('../db/queries/feedQueries');
 const { updateFeedsPosts } = require('../jobs/updatePosts');
+const { readFile } = require('fs/promises');
+const xml2js = require('xml2js');
 
 async function getSubscriptions(req, res, next) {
     try {
@@ -77,6 +79,46 @@ async function deleteFolder(req, res, next) {
     }
 }
 
+async function importOPML(req, res, next) {
+    try {
+        const xml = await readFile(req.file.path, 'utf8');
+        const parser = new xml2js.Parser();    
+        const xmlObj = await parser.parseStringPromise(xml);
+        const folders = getFoldersFromOPML(xmlObj);
+
+        for (const [folder, feeds] of Object.entries(folders)) {
+            
+        }
+        
+        res.sendStatus(204);
+    } catch (e) {
+        next(e);
+    }
+
+}
+
+function getFoldersFromOPML(xml) {
+    const folders = {};
+    const outlines = xml.opml.body[0].outline;
+    getFoldersR(folders, outlines, 'feeds');
+    return folders;
+}
+
+function getFoldersR(folders, outlines, folder) {
+    for (const outline of outlines) {
+        const attrs = outline['$'];
+        if (attrs.type === undefined) {
+            getFoldersR(folders, outline.outline, attrs.text);
+        } else {
+            const feed = {
+                'url': attrs.xmlUrl,
+                'name': attrs.text
+            };
+            folders[folder] ? folders[folder].push(feed) : folders[folder] = [feed];
+        }
+    }
+}
+
 async function getFeedHeaders(feedurl) {
     const parser = new Parser({
         customFields: {
@@ -97,4 +139,4 @@ async function getFeedHeaders(feedurl) {
     return headers;
 }
 
-module.exports = { getSubscriptions, addSubscription, deleteSubscription, renameSubscription , renameFolder, deleteFolder };
+module.exports = { getSubscriptions, addSubscription, deleteSubscription, renameSubscription , renameFolder, deleteFolder, importOPML};
