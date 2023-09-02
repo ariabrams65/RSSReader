@@ -119,3 +119,11 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 * When importing from ompl, maybe create  new thread for getting posts from all the new feeds
 
 * When importing from opml I think some feeds are taking really long because the url is invalid and they might be timing out
+
+* Duplicate subscriptions in ompl folder are being added
+
+* Currently if a subscription is added where the posts in that feed aren't able to be read. The subscription will still be added just without any posts (Do something about this)
+
+* Add logging for when post data for a feed isn't able to be read.
+	Log that feed so it can be tested later
+	ex: https://www.wired.com/feed --posts unable to be read

@@ -128,7 +128,8 @@ async function getFeedHeaders(feedurl) {
     const parser = new Parser({
         customFields: {
             feed: ['image', 'icon']
-        }
+        },
+        timeout: 5000
     });
     const feed = await parser.parseURL(feedurl);
     const headers = {};
