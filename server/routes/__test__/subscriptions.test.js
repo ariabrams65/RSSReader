@@ -82,9 +82,11 @@ describe('POST /subscriptions', () => {
     });
 });
 
-// describe('DELETE /subscriptions', () => {
-    
-// });
+describe('DELETE /subscriptions', async () => {
+    const res = await agent
+        .delete('/subscriptions')    
+        .send({});
+});
 
 // describe('PATCH /subscriptions/rename', () => {
     

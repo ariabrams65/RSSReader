@@ -43,7 +43,7 @@ async function saveSubscription(userid, url, folder) {
 
 async function deleteSubscription(req, res, next) {
     try {
-        await db.deleteUserSubscription(req.query.subscriptionid);
+        await db.deleteUserSubscription(req.user.id, req.query.subscriptionid);
         res.sendStatus(200);
     } catch(e) {
         console.log(e);
@@ -53,9 +53,10 @@ async function deleteSubscription(req, res, next) {
 
 async function renameSubscription(req, res, next) {
     try {
-        await db.renameSubscription(req.body.subscriptionid, req.body.newName);
+        await db.renameSubscription(req.user.id, req.body.subscriptionid, req.body.newName);
         res.sendStatus(204);
     } catch(e) {
+        console.log(e);
         next(e);
     }
 }

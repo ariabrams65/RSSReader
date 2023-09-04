@@ -43,12 +43,13 @@ async function addUserSubscription(userid, feedHeaders, folder) {
     return subscription;
 }
 
-async function deleteUserSubscription(subscriptionid) {
+async function deleteUserSubscription(userid, subscriptionid) {
     const deleteSubscriptionQuery =
     `
-    DELETE FROM subscriptions WHERE id = $1;
+    DELETE FROM subscriptions 
+    WHERE userid = $1 AND id = $2;
     `;
-    await query(deleteSubscriptionQuery, [subscriptionid]);
+    await query(deleteSubscriptionQuery, [userid, subscriptionid]);
     await deleteUnsubscribedFeeds();
 }
 
@@ -76,14 +77,14 @@ async function subscriptionExists(userid, feedurl, folder) {
     return parseInt(res.rows[0].count);
 }
 
-async function renameSubscription(subscriptionid, newName) {
+async function renameSubscription(userid, subscriptionid, newName) {
     const renameQuery = 
     `
     UPDATE subscriptions
     SET name = $1
-    WHERE id = $2;
+    WHERE userid = $2 AND id = $3;
     `;
-    await query(renameQuery, [newName, subscriptionid]);
+    await query(renameQuery, [newName, userid, subscriptionid]);
 }
 
 async function renameFolder(userid, oldName, newName) {
