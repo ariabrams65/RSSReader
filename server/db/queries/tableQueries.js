@@ -41,4 +41,20 @@ async function createTables() {
     await query(createTablesQuery);
 }
 
-module.exports = { createTables };
+async function resetTables(tables) {
+    const allowedTables = ['users', 'feeds', 'subscriptions', 'posts'];
+    let truncate = [];
+    if (!tables) {
+        truncate = allowedTables;
+    } else {
+        for (const table of tables) {
+            if (allowedTables.includes(table)) {
+                truncate.push(table);
+            }
+        }
+    }
+    const resetQuery = `TRUNCATE ${truncate.join(', ')};`;
+    await query(resetQuery);
+}
+
+module.exports = { createTables, resetTables};

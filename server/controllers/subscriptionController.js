@@ -19,6 +19,7 @@ async function addSubscription(req, res, next) {
         const subscription = await saveSubscription(req.user.id, req.body.feed, req.body.folder || 'feeds');
         res.status(200).json({subscription: subscription});
     } catch (e) {
+        console.log(e);
         next(e);
     }
 }

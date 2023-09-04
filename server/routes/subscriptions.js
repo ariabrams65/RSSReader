@@ -13,6 +13,6 @@ router.patch('/rename', auth.checkAuthenticated, renameSubscription);
 router.patch('/rename/folder', auth.checkAuthenticated, renameFolder);
 router.delete('/folder', deleteFolder);
 
-router.post('/ompl', auth.checkAuthenticated, upload.single('opml'), importOPML)
+router.post('/opml', auth.checkAuthenticated, upload.single('opml'), importOPML)
 
 module.exports = router;

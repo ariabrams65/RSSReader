@@ -127,3 +127,5 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 * Add logging for when post data for a feed isn't able to be read.
 	Log that feed so it can be tested later
 	ex: https://www.wired.com/feed --posts unable to be read
+	
+* Should I connect to the db in server.js
