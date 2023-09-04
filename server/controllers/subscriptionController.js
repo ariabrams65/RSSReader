@@ -1,14 +1,13 @@
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
-const subscriptionQueries = require('../db/queries/subscriptionQueries');
-const feedQueries = require('../db/queries/feedQueries');
+const db = require('../db/db');
 const { updateFeedsPosts } = require('../jobs/updatePosts');
 const { readFile } = require('fs/promises');
 const xml2js = require('xml2js');
 
 async function getSubscriptions(req, res, next) {
     try {
-        res.json({subscriptions: await subscriptionQueries.getUserSubscriptions(req.user.id)});
+        res.json({subscriptions: await db.getUserSubscriptions(req.user.id)});
     } catch(e) {
         next(e);
     }
@@ -25,7 +24,7 @@ async function addSubscription(req, res, next) {
 }
 
 async function saveSubscription(userid, url, folder) {
-    if (await subscriptionQueries.subscriptionExists(userid, url, folder)) {
+    if (await db.subscriptionExists(userid, url, folder)) {
         throw {message: 'Cannot add duplicate subscriptions', url: url, status: 400};
     }
     let feedHeaders;
@@ -34,8 +33,8 @@ async function saveSubscription(userid, url, folder) {
     } catch {
         throw {message: 'URL is invalid', url: url, status: 400};
     }
-    const subscription = await subscriptionQueries.addUserSubscription(userid, feedHeaders, folder);
-    const feed = await feedQueries.getFeed(subscription.feedid);
+    const subscription = await db.addUserSubscription(userid, feedHeaders, folder);
+    const feed = await db.getFeed(subscription.feedid);
     if (feed.numposts === 0) {
         await updateFeedsPosts(feed);
     }
@@ -44,7 +43,7 @@ async function saveSubscription(userid, url, folder) {
 
 async function deleteSubscription(req, res, next) {
     try {
-        await subscriptionQueries.deleteUserSubscription(req.query.subscriptionid);
+        await db.deleteUserSubscription(req.query.subscriptionid);
         res.sendStatus(200);
     } catch(e) {
         console.log(e);
@@ -54,7 +53,7 @@ async function deleteSubscription(req, res, next) {
 
 async function renameSubscription(req, res, next) {
     try {
-        await subscriptionQueries.renameSubscription(req.body.subscriptionid, req.body.newName);
+        await db.renameSubscription(req.body.subscriptionid, req.body.newName);
         res.sendStatus(204);
     } catch(e) {
         next(e);
@@ -63,7 +62,7 @@ async function renameSubscription(req, res, next) {
 
 async function renameFolder(req, res, next) {
     try {
-        await subscriptionQueries.renameFolder(req.user.id, req.body.oldName, req.body.newName);
+        await db.renameFolder(req.user.id, req.body.oldName, req.body.newName);
         res.sendStatus(204);
     } catch(e) {
         next(e);
@@ -72,7 +71,7 @@ async function renameFolder(req, res, next) {
 
 async function deleteFolder(req, res, next) {
     try {
-        await subscriptionQueries.deleteFolder(req.user.id, req.query.folder);
+        await db.deleteFolder(req.user.id, req.query.folder);
         res.sendStatus(204);
     } catch(e) {
         console.log(e);

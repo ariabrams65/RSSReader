@@ -1,11 +1,11 @@
 require('dotenv').config();
 const app = require('../../app');
 const request = require('supertest');
-const tableQueries = require('../../db/queries/tableQueries');
+const db = require('../../db/db');
 
 const agent = request.agent(app);
 beforeAll(async () => {     
-    await tableQueries.resetTables();
+    await db.resetTables();
     
     await agent
         .post('/register')
@@ -18,7 +18,7 @@ beforeAll(async () => {
 
 describe('GET /subscriptions', () => {
     test('Response subscriptions are valid', async () => {
-        await tableQueries.resetTables(['subscriptions', 'feeds', 'posts']);
+        await db.resetTables(['subscriptions', 'feeds', 'posts']);
         await agent
             .post('/subscriptions')
             .send({feed: 'https://www.reddit.com/r/all/.rss', folder: ''});
@@ -36,7 +36,7 @@ describe('GET /subscriptions', () => {
 
 describe('POST /subscriptions', () => {
     test('Valid feed url should respond with 200 status code', async () => {
-        await tableQueries.resetTables(['subscriptions', 'feeds', 'posts']);
+        await db.resetTables(['subscriptions', 'feeds', 'posts']);
         const res = await agent 
             .post('/subscriptions')
             .send({feed: 'https://www.reddit.com/r/all/.rss', folder: ''});
@@ -44,7 +44,7 @@ describe('POST /subscriptions', () => {
     });
     
     test('Response content type is json', async () => {
-        await tableQueries.resetTables(['subscriptions', 'feeds', 'posts']);
+        await db.resetTables(['subscriptions', 'feeds', 'posts']);
         const res = await agent 
             .post('/subscriptions')
             .send({feed: 'https://www.reddit.com/r/all/.rss', folder: ''});
@@ -52,7 +52,7 @@ describe('POST /subscriptions', () => {
     });
     
     test('Response subscription is valid', async () => {
-        await tableQueries.resetTables(['subscriptions', 'feeds', 'posts']);
+        await db.resetTables(['subscriptions', 'feeds', 'posts']);
         const res = await agent 
             .post('/subscriptions')
             .send({feed: 'https://www.reddit.com/r/all/.rss', folder: ''});
