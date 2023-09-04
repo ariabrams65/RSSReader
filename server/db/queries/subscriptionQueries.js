@@ -1,4 +1,5 @@
 const query = require('../dbConn');
+const { QueryError } = require('../../customErrors');
 
 async function getUserSubscriptions(userid) {
     const getSubscriptionsQuery = 
@@ -49,7 +50,10 @@ async function deleteUserSubscription(userid, subscriptionid) {
     DELETE FROM subscriptions 
     WHERE userid = $1 AND id = $2;
     `;
-    await query(deleteSubscriptionQuery, [userid, subscriptionid]);
+    const res = await query(deleteSubscriptionQuery, [userid, subscriptionid]);
+    if (res.rowCount === 0) {
+        throw new QueryError('Deletion unsuccesful');
+    }
     await deleteUnsubscribedFeeds();
 }
 
@@ -104,6 +108,9 @@ async function deleteFolder(userid, folder) {
     WHERE userid = $1 AND folder = $2;
     `;
     await query(deleteQuery, [userid, folder]);
+    if (res.rowCount === 0) {
+        throw new QueryError('Deletion unsuccesful');
+    }
     deleteUnsubscribedFeeds();
 }
 

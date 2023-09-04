@@ -3,6 +3,7 @@ const passport = require('passport');
 const session = require('express-session');
 const initializePassport = require('./config/passportConfig');
 const cors = require('cors');
+const { ServerError } = require('./customErrors');
 
 initializePassport(passport);
 
@@ -30,8 +31,15 @@ app.use('/subscriptions', require('./routes/subscriptions'));
 app.use('/authenticated', require('./routes/authentication'))
 
 app.use((err, req, res, next) => {
-    const status = err.status || 500;
-    const message = err.message || 'Internal Server Error';
+    let status;
+    let message;
+    if (err instanceof ServerError) {
+        status = err.status;
+        message = err.message;
+    } else {
+        status = 500;
+        message = 'Internal Server Error';
+    }
     res.status(status).json({message: message});
 });
 

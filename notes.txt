@@ -129,3 +129,9 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 	ex: https://www.wired.com/feed --posts unable to be read
 	
 * Should I connect to the db in server.js
+
+* Some routes such as deleteSubscriptions don't return error code when deletion is unsuccesful
+
+* Make sure all thrown errors are Error objects
+
+* I should be validating query params and body before making requests to database etc.

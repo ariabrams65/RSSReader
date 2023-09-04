@@ -4,6 +4,7 @@ const db = require('../db/db');
 const { updateFeedsPosts } = require('../jobs/updatePosts');
 const { readFile } = require('fs/promises');
 const xml2js = require('xml2js');
+const { ServerError, QueryError} = require('../customErrors');
 
 async function getSubscriptions(req, res, next) {
     try {
@@ -25,13 +26,13 @@ async function addSubscription(req, res, next) {
 
 async function saveSubscription(userid, url, folder) {
     if (await db.subscriptionExists(userid, url, folder)) {
-        throw {message: 'Cannot add duplicate subscriptions', url: url, status: 400};
+        throw new ServerError('Cannot add duplicate subscription', 400);
     }
     let feedHeaders;
     try {
         feedHeaders = await getFeedHeaders(url);
     } catch {
-        throw {message: 'URL is invalid', url: url, status: 400};
+        throw new ServerError('URL is invalid', 400);
     }
     const subscription = await db.addUserSubscription(userid, feedHeaders, folder);
     const feed = await db.getFeed(subscription.feedid);
@@ -47,6 +48,9 @@ async function deleteSubscription(req, res, next) {
         res.sendStatus(200);
     } catch(e) {
         console.log(e);
+        if (e instanceof QueryError) {
+            next(new ServerError('Invalid deletion request', 400))
+        }
         next(e);
     }
 }
