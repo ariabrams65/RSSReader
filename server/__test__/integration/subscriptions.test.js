@@ -1,6 +1,7 @@
+require('dotenv').config();
 const { getLoggedInAgent } = require('./utils/setup');
-
 const db = require('../../db/db');
+const { addSubscription } = require('./utils/dbHelpers');
 
 let agent;
 beforeAll(async () => {     
@@ -11,14 +12,6 @@ beforeEach(async () => {
     await db.resetTables(['subscriptions', 'feeds', 'posts']);
 });
 
-async function addSubscription(feed, folder) {
-    const res = await agent
-        .post('/subscriptions')
-        .send({feed: feed, folder: folder});
-    
-    return res;
-}
-
 async function getNumRows(table) {
     const res = await db.query(`SELECT * FROM ${table};`);
     return res.rowCount;
@@ -26,7 +19,7 @@ async function getNumRows(table) {
 
 describe('GET /subscriptions', () => {
     test('Response subscriptions are valid', async () => {
-        await addSubscription('https://www.reddit.com/r/all/.rss', '');
+        await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
 
         const res = await agent 
             .get('/subscriptions')
@@ -45,7 +38,7 @@ describe('POST /subscriptions', () => {
     test('Subscription should be added', async () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
 
-        const res = await addSubscription('https://www.reddit.com/r/all/.rss', '');
+        const res = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
         expect(res.statusCode).toBe(201);
         expect(res.headers['content-type']).toMatch(/json/);
         const subscription = res.body.subscription;
@@ -63,7 +56,7 @@ describe('POST /subscriptions', () => {
     test('Invalid feed urls should respond with 400 status code', async () => {
         const feeds = ['', 'aaa', 'https://www.reddit.com/'];
         for (const feed of feeds) {
-            const res = await addSubscription(feed, '');
+            const res = await addSubscription(agent, feed, '');
             expect(res.statusCode).toBe(400);
         }
         expect(await getNumRows('subscriptions')).toEqual(0);
@@ -80,9 +73,9 @@ describe('POST /subscriptions', () => {
     });
     
     test('Duplicate subscription should respond with 400', async () => {
-        await addSubscription('https://www.reddit.com/r/all/.rss', '');
+        await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
         expect(await getNumRows('subscriptions')).toEqual(1);
-        const res = await addSubscription('https://www.reddit.com/r/all/.rss', '');
+        const res = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
         expect(res.statusCode).toBe(400);
         expect(await getNumRows('subscriptions')).toEqual(1);
     });
@@ -90,7 +83,7 @@ describe('POST /subscriptions', () => {
 
 describe('DELETE /subscriptions', () => {
     test('Subscription deletion is successful', async () => {
-        const subRes = await addSubscription('https://www.reddit.com/r/all/.rss', '');
+        const subRes = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
         expect(await getNumRows('subscriptions')).toEqual(1);
 
         const id = subRes.body.subscription.id;
@@ -120,7 +113,7 @@ describe('DELETE /subscriptions', () => {
 
 describe('PATCH /subscriptions/rename', () => {
     test('Renaming subscription is successful', async () => {
-        const subRes = await addSubscription('https://www.reddit.com/r/all/.rss', '');
+        const subRes = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
         const id = subRes.body.subscription.id;
         const res = await agent
             .patch('/subscriptions/rename')
@@ -148,7 +141,7 @@ describe('PATCH /subscriptions/rename', () => {
 
 describe('PATCH /subscriptions/rename/folder', () => {
     test('Renaming folder is successful', async () => {
-        const subRes = await addSubscription('https://www.reddit.com/r/all/.rss', 'old');
+        const subRes = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', 'old');
         const id = subRes.body.subscription.id;
         const res = await agent
             .patch('/subscriptions/rename/folder')
@@ -177,7 +170,7 @@ describe('PATCH /subscriptions/rename/folder', () => {
 
 describe('DELETE /folder', () => {
     test('Deleting folder is successful', async () => {
-        await addSubscription('https://www.reddit.com/r/all/.rss', 'test');
+        await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', 'test');
         const pre = await db.query('SELECT * FROM subscriptions WHERE folder = \'test\'');
         expect(pre.rowCount).toBe(1);
         const res = await agent

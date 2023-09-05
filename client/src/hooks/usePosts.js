@@ -33,7 +33,7 @@ function usePosts() {
             urlParams += `olderThan=${olderThan}&`;
         }
         urlParams += 'limit=10';
-        const res = await fetch(`/get-feed?${urlParams}`); 
+        const res = await fetch(`/feed?${urlParams}`); 
         const json = await res.json();
         setOldestPostDate(json.oldestPostDate);
         setPosts(prevPosts => [...prevPosts, ...json.posts]);
