@@ -1,20 +1,10 @@
-require('dotenv').config();
-const app = require('../../app');
-const request = require('supertest');
-const db = require('../../db/db');
-const { query } = require('express');
+const { getLoggedInAgent } = require('./utils/setup');
 
-const agent = request.agent(app);
+const db = require('../../db/db');
+
+let agent;
 beforeAll(async () => {     
-    await db.resetTables();
-    
-    await agent
-        .post('/register')
-        .send({email: 'test@test', password: 'test'});
-    
-    await agent
-        .post('/login')
-        .send({email: 'test@test', password: 'test'});
+    agent = await getLoggedInAgent();
 });
 
 beforeEach(async () => {
@@ -214,7 +204,7 @@ describe('DELETE /folder', () => {
 });
 
 describe('POST /opml', () => {    
-    test.only('Uploading opml file is successful', async () => {
+    test('Uploading opml file is successful', async () => {
         expect(await getNumRows('subscriptions')).toBe(0);
         const res = await agent
             .post('/subscriptions/opml')
