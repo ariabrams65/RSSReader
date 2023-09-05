@@ -88,7 +88,10 @@ async function renameSubscription(userid, subscriptionid, newName) {
     SET name = $1
     WHERE userid = $2 AND id = $3;
     `;
-    await query(renameQuery, [newName, userid, subscriptionid]);
+    const res = await query(renameQuery, [newName, userid, subscriptionid]);
+    if (res.rowCount === 0) {
+        throw new QueryError('Subscription rename unsuccesful');
+    }
 }
 
 async function renameFolder(userid, oldName, newName) {
@@ -98,7 +101,10 @@ async function renameFolder(userid, oldName, newName) {
     set folder = $1
     where userid = $2 AND folder = $3;
     `;
-    await query(renameQuery, [newName, userid, oldName]);
+    const res = await query(renameQuery, [newName, userid, oldName]);
+    if (res.rowCount === 0) {
+        throw new QueryError('Folder rename unsuccesful');
+    }
 }
 
 async function deleteFolder(userid, folder) {
@@ -107,7 +113,7 @@ async function deleteFolder(userid, folder) {
     DELETE from subscriptions
     WHERE userid = $1 AND folder = $2;
     `;
-    await query(deleteQuery, [userid, folder]);
+    const res = await query(deleteQuery, [userid, folder]);
     if (res.rowCount === 0) {
         throw new QueryError('Deletion unsuccesful');
     }

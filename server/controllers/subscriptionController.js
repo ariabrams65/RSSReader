@@ -8,7 +8,8 @@ const { ServerError, QueryError} = require('../customErrors');
 
 async function getSubscriptions(req, res, next) {
     try {
-        res.json({subscriptions: await db.getUserSubscriptions(req.user.id)});
+        const subscriptions = await db.getUserSubscriptions(req.user.id);
+        res.status(200).json({subscriptions: subscriptions});
     } catch(e) {
         next(e);
     }
@@ -17,7 +18,7 @@ async function getSubscriptions(req, res, next) {
 async function addSubscription(req, res, next) {
     try {
         const subscription = await saveSubscription(req.user.id, req.body.feed, req.body.folder || 'feeds');
-        res.status(200).json({subscription: subscription});
+        res.status(201).json({subscription: subscription});
     } catch (e) {
         console.log(e);
         next(e);
@@ -45,7 +46,7 @@ async function saveSubscription(userid, url, folder) {
 async function deleteSubscription(req, res, next) {
     try {
         await db.deleteUserSubscription(req.user.id, req.query.subscriptionid);
-        res.sendStatus(200);
+        res.sendStatus(204);
     } catch(e) {
         console.log(e);
         if (e instanceof QueryError) {
@@ -61,6 +62,9 @@ async function renameSubscription(req, res, next) {
         res.sendStatus(204);
     } catch(e) {
         console.log(e);
+        if (e instanceof QueryError) {
+            next(new ServerError('Invalid subscription rename request', 400));
+        }
         next(e);
     }
 }
@@ -70,6 +74,10 @@ async function renameFolder(req, res, next) {
         await db.renameFolder(req.user.id, req.body.oldName, req.body.newName);
         res.sendStatus(204);
     } catch(e) {
+        console.log(e);
+        if (e instanceof QueryError) {
+            next(new ServerError('Invalid folder rename request', 400));
+        }
         next(e);
     }
 }
@@ -80,6 +88,9 @@ async function deleteFolder(req, res, next) {
         res.sendStatus(204);
     } catch(e) {
         console.log(e);
+        if (e instanceof QueryError) {
+            next(new ServerError('Invalid folder delete request', 400));
+        }
         next(e);
     }
 }
@@ -101,7 +112,7 @@ async function importOPML(req, res, next) {
         const rejected = results
             .filter(result => result.status === 'rejected')
             .map(result => result.reason);
-        res.status(204).json({rejected: rejected});
+        res.status(201).json({rejected: rejected});
     } catch (e) {
         next(e);
     }

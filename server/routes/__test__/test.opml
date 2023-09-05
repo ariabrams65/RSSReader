@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+    <head>
+        <title>test subscriptions</title>
+        <dateCreated>Mon, 04 Sep 2023 23:18:14 +0000</dateCreated>
+    </head>
+    <body>
+        <outline text="Singularity" title="Singularity" type="rss" xmlUrl="https://www.reddit.com/r/singularity/.rss" htmlUrl="https://www.reddit.com/r/singularity/"/>
+        <outline text="folder1" title="folder1">
+            <outline text="Hacker News: Front Page" title="Hacker News: Front Page" type="rss" xmlUrl="https://hnrss.org/frontpage" htmlUrl="https://news.ycombinator.com/"/>
+            <outline text="r/SpaceXLounge, for casual SpaceX discussion." title="r/SpaceXLounge, for casual SpaceX discussion." type="rss" xmlUrl="https://www.reddit.com/r/SpaceXLounge/.rss" htmlUrl="https://www.reddit.com/r/SpaceXLounge/"/>
+        </outline>
+        <outline text="folder2" title="folder2">
+            <outline text="Biz &amp; IT – Ars Technica" title="Biz &amp; IT – Ars Technica" type="rss" xmlUrl="https://feeds.arstechnica.com/arstechnica/technology-lab" htmlUrl="https://arstechnica.com"/>
+        </outline>
+    </body>
+</opml>

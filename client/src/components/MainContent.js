@@ -16,7 +16,7 @@ function Topnav() {
     return (
         <ul className="topnav">
             <li>
-                <form method="POST" enctype="multipart/form-data" action="/subscriptions/ompl">
+                <form method="POST" enctype="multipart/form-data" action="/subscriptions/opml">
                     <input name="opml" type="file" />
                     <button>Upload</button>
                 </form>

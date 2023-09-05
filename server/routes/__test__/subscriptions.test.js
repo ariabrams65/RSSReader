@@ -2,6 +2,7 @@ require('dotenv').config();
 const app = require('../../app');
 const request = require('supertest');
 const db = require('../../db/db');
+const { query } = require('express');
 
 const agent = request.agent(app);
 beforeAll(async () => {     
@@ -55,7 +56,7 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
 
         const res = await addSubscription('https://www.reddit.com/r/all/.rss', '');
-        expect(res.statusCode).toBe(200);
+        expect(res.statusCode).toBe(201);
         expect(res.headers['content-type']).toMatch(/json/);
         const subscription = res.body.subscription;
         expect(subscription).toBeDefined(); 
@@ -106,7 +107,7 @@ describe('DELETE /subscriptions', () => {
         const res = await agent
             .delete('/subscriptions')    
             .query({subscriptionid: id});
-        expect(res.statusCode).toBe(200);
+        expect(res.statusCode).toBe(204);
         
         
         expect(await getNumRows('subscriptions')).toEqual(0);
@@ -116,7 +117,7 @@ describe('DELETE /subscriptions', () => {
     test('Invalid subscription returns 400', async () => {
         const res = await agent
             .delete('/subscriptions')
-            .query({subscriptionid: 1});
+            .query({subscriptionid: -1});
         expect(res.statusCode).toBe(400);
     });
 
@@ -127,19 +128,103 @@ describe('DELETE /subscriptions', () => {
     }); 
 });
 
-// describe('PATCH /subscriptions/rename', () => {
+describe('PATCH /subscriptions/rename', () => {
+    test('Renaming subscription is successful', async () => {
+        const subRes = await addSubscription('https://www.reddit.com/r/all/.rss', '');
+        const id = subRes.body.subscription.id;
+        const res = await agent
+            .patch('/subscriptions/rename')
+            .send({subscriptionid: id, newName: 'new name'});
+        expect(res.statusCode).toBe(204);
+        
+        const queryRes = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
+        const subscription = queryRes.rows[0];
+        expect(subscription.name).toBe('new name');
+    });
     
-// });
-
-// describe('PATCH /subscriptions/rename/folder', () => {
+    test('Renaming non existant subscription returns 400', async () => {
+        const res = await agent
+            .patch('/subscriptions/rename')
+            .send({subscriptionid: -1, newNae: 'new name'});
+        expect(res.statusCode).toBe(400);
+    })
     
-// });
+    test('Missing query params returns 400', async () => {
+        const res = await agent
+            .patch('/subscriptions/rename')
+        expect(res.statusCode).toBe(400);
+    });
+});
 
-// describe('DELETE /folder', () => {
+describe('PATCH /subscriptions/rename/folder', () => {
+    test('Renaming folder is successful', async () => {
+        const subRes = await addSubscription('https://www.reddit.com/r/all/.rss', 'old');
+        const id = subRes.body.subscription.id;
+        const res = await agent
+            .patch('/subscriptions/rename/folder')
+            .send({oldName: 'old', newName: 'new'});
+        expect(res.statusCode).toBe(204);
+
+        const queryRes = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
+        const subscription = queryRes.rows[0];
+        expect(subscription.folder).toBe('new');
+    }); 
     
-// });
-
-// describe('POST /opml' () => {
+    test('Renaming non existant folder returns 400', async () => {
+        const res = await agent
+            .patch('/subscriptions/rename/folder')
+            .send({oldName: 'old', newName: 'new'});
+        expect(res.statusCode).toBe(400);
+    });
     
-// });
+    test('Missing query params returns 400', async () => {
+        const res = await agent
+            .patch('/subscriptions/rename/folder')
+        expect(res.statusCode).toBe(400);
+        
+    });
+});
 
+describe('DELETE /folder', () => {
+    test('Deleting folder is successful', async () => {
+        await addSubscription('https://www.reddit.com/r/all/.rss', 'test');
+        const pre = await db.query('SELECT * FROM subscriptions WHERE folder = \'test\'');
+        expect(pre.rowCount).toBe(1);
+        const res = await agent
+            .delete('/subscriptions/folder') 
+            .query({folder: 'test'});
+        expect(res.statusCode).toBe(204);
+
+        const post = await db.query('SELECT * FROM subscriptions WHERE folder = \'test\'');
+        expect(post.rowCount).toBe(0);
+    });  
+    
+    test('Deleting non existant folder returns 400', async () => {
+        const res = await agent
+            .delete('/subscriptions/folder') 
+            .query({folder: 'test'});
+        expect(res.statusCode).toBe(400);
+    });
+    
+    test('Missing query params returns 400', async () => {
+        const res = await agent
+            .delete('/subscriptions/folder') 
+        expect(res.statusCode).toBe(400);
+    });
+});
+
+describe('POST /opml', () => {    
+    test.only('Uploading opml file is successful', async () => {
+        expect(await getNumRows('subscriptions')).toBe(0);
+        const res = await agent
+            .post('/subscriptions/opml')
+            .attach("opml", `${__dirname}/test.opml`);
+        expect(res.statusCode).toBe(201);
+        expect(res.body).toHaveProperty('rejected');
+        
+        expect(await getNumRows('subscriptions')).toBe(4);
+        expect(await getNumRows('feeds')).toBe(4);
+    }, 10000);
+    
+    test.todo('Uploading invalid opml file returns error');
+});
