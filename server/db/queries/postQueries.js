@@ -30,7 +30,7 @@ async function insertPost(params) {
 async function getPosts(params) {   
     const getPostsQuery = 
     `
-    SELECT posts.id, posts.feedid, posts.title, posts.url, posts.commentsurl, posts.mediaurl, posts.identifier, posts.date, feeds.iconurl, feeds.title as feedtitle
+    SELECT posts.id, posts.feedid, posts.title, posts.url, posts.commentsurl, posts.mediaurl, posts.identifier, posts.date, feeds.iconurl, feeds.title as feedtitle, feeds.feedurl
     FROM posts JOIN feeds ON posts.feedid = feeds.id
     WHERE posts.feedid = ANY($1::int[]) AND posts.date < $2
     ORDER BY posts.date DESC

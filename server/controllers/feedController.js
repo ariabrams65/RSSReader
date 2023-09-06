@@ -13,7 +13,7 @@ async function getFeed(req, res, next) {
         const posts = await db.getPosts({
             feedIds: feedIds,
             olderThan: req.query.olderThan,
-            limit: req.query.limit
+            limit: req.query.limit || 100
         });
         const oldestPost = posts.slice(-1)[0];
         res.json({
@@ -21,6 +21,7 @@ async function getFeed(req, res, next) {
             oldestPostDate: oldestPost ? oldestPost.date : undefined
     });
     } catch(e) {
+        console.log(e);
         next(e);
     }
 }

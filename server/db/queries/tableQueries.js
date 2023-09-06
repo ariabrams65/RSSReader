@@ -53,8 +53,9 @@ async function resetTables(tables) {
             }
         }
     }
-    const resetQuery = `TRUNCATE ${truncate.join(', ')};`;
+    const resetQuery = `TRUNCATE TABLE ${truncate.join(', ')};`;
     await query(resetQuery);
+    await createTables();
 }
 
 module.exports = { createTables, resetTables};

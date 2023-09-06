@@ -137,3 +137,17 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 * I should be validating query params and body before making requests to database etc. (Make sure they exist)
 
 * Possibly change the name feed to posts ie getFeed should become getPosts
+
+* Should be using seperate database for testing.
+
+* when clicking on feed, should pass feedid instead of subscriptionid since we are storing that in the selected object
+
+* Create session secrets
+
+* Feeds being requested too quickly results in 429 error
+	-This could be an issue if different users all add the same feed in quick succession
+	
+* create custom rss url that isn't rate limited so testing is easier
+	-Also xml will always remain the same
+	
+* Using database transactions could allow me to run multiple test suites in parallel even if they use the same database

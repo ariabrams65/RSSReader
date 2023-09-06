@@ -1,10 +1,15 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
+const db = require('./db/db');
 const initializePassport = require('./config/passportConfig');
 const cors = require('cors');
 const { ServerError } = require('./customErrors');
 
+db.createTables();
 initializePassport(passport);
 
 const app = express();

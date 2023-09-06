@@ -1,12 +1,5 @@
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
-
-const tableQueries = require('./db/queries/tableQueries');
 const Bree = require('bree');
 app =  require('./app');
-
-tableQueries.createTables();
 
 const bree = new Bree({
     jobs: [{

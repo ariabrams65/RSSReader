@@ -1,21 +1,16 @@
-require('dotenv').config();
 const { getLoggedInAgent } = require('./utils/setup');
 const db = require('../../db/db');
-const { addSubscription } = require('./utils/dbHelpers');
+const { addSubscription, getNumRows } = require('./utils/dbHelpers');
 
 let agent;
 beforeAll(async () => {     
+    await db.resetTables();
     agent = await getLoggedInAgent();
 });
 
 beforeEach(async () => {
     await db.resetTables(['subscriptions', 'feeds', 'posts']);
 });
-
-async function getNumRows(table) {
-    const res = await db.query(`SELECT * FROM ${table};`);
-    return res.rowCount;
-}
 
 describe('GET /subscriptions', () => {
     test('Response subscriptions are valid', async () => {

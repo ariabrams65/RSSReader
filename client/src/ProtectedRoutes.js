@@ -11,7 +11,7 @@ function PrivateRoutes({ checkAuthenticated }) {
         async function getAuthenticated() {
             setLoading(true);
             const res = await fetch('/authenticated');
-            setAuthenticated(res.status === 200);
+            setAuthenticated(res.ok);
             setLoading(false);
         }
         getAuthenticated();
