@@ -17,6 +17,9 @@ async function getSubscriptions(req, res, next) {
 
 async function addSubscription(req, res, next) {
     try {
+        if (!req.body.feed) {
+            throw new ServerError('Missing parameters', 400);
+        }
         const subscription = await saveSubscription(req.user.id, req.body.feed, req.body.folder || 'feeds');
         res.status(201).json({subscription: subscription});
     } catch (e) {
@@ -45,6 +48,9 @@ async function saveSubscription(userid, url, folder) {
 
 async function deleteSubscription(req, res, next) {
     try {
+        if (!req.query.subscriptionid) {
+            throw new ServerError('Missing parameters', 400);
+        }
         await db.deleteUserSubscription(req.user.id, req.query.subscriptionid);
         res.sendStatus(204);
     } catch(e) {
@@ -58,6 +64,9 @@ async function deleteSubscription(req, res, next) {
 
 async function renameSubscription(req, res, next) {
     try {
+        if (!req.body.subscriptionid || !req.body.newName) {
+            throw new ServerError('Missing parameters', 400);
+        }
         await db.renameSubscription(req.user.id, req.body.subscriptionid, req.body.newName);
         res.sendStatus(204);
     } catch(e) {
@@ -71,6 +80,9 @@ async function renameSubscription(req, res, next) {
 
 async function renameFolder(req, res, next) {
     try {
+        if (!req.body.oldName || !req.body.newName) {
+            throw new ServerError('Missing parameters', 400);
+        }
         await db.renameFolder(req.user.id, req.body.oldName, req.body.newName);
         res.sendStatus(204);
     } catch(e) {
@@ -84,6 +96,9 @@ async function renameFolder(req, res, next) {
 
 async function deleteFolder(req, res, next) {
     try {
+        if (!req.query.folder) {
+            throw new ServerError('Missing parameters', 400);
+        }
         await db.deleteFolder(req.user.id, req.query.folder);
         res.sendStatus(204);
     } catch(e) {

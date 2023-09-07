@@ -36,16 +36,10 @@ app.use('/subscriptions', require('./routes/subscriptions'));
 app.use('/authenticated', require('./routes/authentication'));
 
 app.use((err, req, res, next) => {
-    let status;
-    let message;
     if (err instanceof ServerError) {
-        status = err.status;
-        message = err.message;
-    } else {
-        status = 500;
-        message = 'Internal Server Error';
+        return res.status(err.status).json({message: err.message});
     }
-    res.status(status).json({message: message});
+    next(err);
 });
 
 module.exports = app;

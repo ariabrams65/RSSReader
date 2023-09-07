@@ -22,6 +22,7 @@ describe('GET /subscriptions', () => {
             .get('/subscriptions')
         expect(res.statusCode).toBe(200);
         expect(res.headers['content-type']).toMatch(/json/);
+
         const subscriptions = res.body.subscriptions;
         expect(subscriptions).toBeDefined();
         expect(subscriptions[0]).toHaveProperty('id');
@@ -38,6 +39,7 @@ describe('POST /subscriptions', () => {
         const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(res.statusCode).toBe(201);
         expect(res.headers['content-type']).toMatch(/json/);
+
         const subscription = res.body.subscription;
         expect(subscription).toBeDefined(); 
         expect(subscription).toHaveProperty('id'); 
@@ -74,25 +76,30 @@ describe('POST /subscriptions', () => {
     
     test('Duplicate subscription should respond with 400', async () => {
         await addSubscription(agent, serverAddress + '/redditAll.xml', '');
+
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+
         const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(res.statusCode).toBe(400);
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
     });
+
+    test.todo('Same feed can be added to multiple folders');
 });
 
 describe('DELETE /subscriptions', () => {
     test('Subscription deletion is successful', async () => {
         const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
+        const id = res.body.subscription.id;
+
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
 
-        const id = res.body.subscription.id;
         const res2 = await agent
             .delete('/subscriptions')    
             .query({subscriptionid: id});
@@ -100,7 +107,6 @@ describe('DELETE /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
         expect(await getNumRows('feeds')).toEqual(0);
         expect(await getNumRows('posts')).toEqual(0);
-        
     });
     
     test('Invalid subscription returns 400', async () => {
@@ -115,16 +121,19 @@ describe('DELETE /subscriptions', () => {
             .delete('/subscriptions');
         expect(res.statusCode).toBe(400);
     }); 
+
+    test.todo('Deleting subscription that is subscribed by multiple users does not delete feed or posts');
 });
 
 describe('PATCH /subscriptions/rename', () => {
     test('Renaming subscription is successful', async () => {
-        const subRes = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
-        const id = subRes.body.subscription.id;
-        const res = await agent
+        const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
+        const id = res.body.subscription.id;
+
+        const res2 = await agent
             .patch('/subscriptions/rename')
             .send({subscriptionid: id, newName: 'new name'});
-        expect(res.statusCode).toBe(204);
+        expect(res2.statusCode).toBe(204);
         
         const query = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
         const subscription = query.rows[0];
@@ -136,19 +145,38 @@ describe('PATCH /subscriptions/rename', () => {
             .patch('/subscriptions/rename')
             .send({subscriptionid: -1, newName: 'new name'});
         expect(res.statusCode).toBe(400);
-    })
+    });
     
     test('Missing query params returns 400', async () => {
         const res = await agent
-            .patch('/subscriptions/rename')
+            .patch('/subscriptions/rename');
         expect(res.statusCode).toBe(400);
     });
+    
+    test('Renaming subscription empty string returns 400', async () => {
+        const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
+        const id = res.body.subscription.id;
+        
+        await agent
+            .patch('/subscriptions/rename')
+            .send({subscriptionid: id, newName: 'sub name'});
+
+        const res2 = await agent
+            .patch('/subscriptions/rename')
+            .send({subscriptionid: id, newName: ''});
+        expect(res2.statusCode).toBe(400);
+        
+        const query = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
+        const subscription = query.rows[0];
+        expect(subscription.name).toBe('sub name');
+    })
 });
 
 describe('PATCH /subscriptions/rename/folder', () => {
     test('Renaming folder is successful', async () => {
         const res = await addSubscription(agent, serverAddress + '/redditAll.xml', 'old');
         const id = res.body.subscription.id;
+
         const res2 = await agent
             .patch('/subscriptions/rename/folder')
             .send({oldName: 'old', newName: 'new'});
@@ -168,18 +196,33 @@ describe('PATCH /subscriptions/rename/folder', () => {
     
     test('Missing query params returns 400', async () => {
         const res = await agent
-            .patch('/subscriptions/rename/folder')
+            .patch('/subscriptions/rename/folder');
         expect(res.statusCode).toBe(400);
-        
     });
+    
+    test('Renaming folder empty string returns 400', async () => {
+        const res = await addSubscription(agent, serverAddress + '/redditAll.xml', 'old');
+        const id = res.body.subscription.id;
+
+        const res2 = await agent
+            .patch('/subscriptions/rename/folder')
+            .send({oldName: 'old', newName: ''});
+        expect(res2.statusCode).toBe(400);
+
+        const query = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
+        const subscription = query.rows[0];
+        expect(subscription.folder).toBe('old');
+    }) 
 });
 
 describe('DELETE /folder', () => {
     test('Deleting folder is successful', async () => {
         await addSubscription(agent, serverAddress + '/redditAll.xml', 'test');
         await addSubscription(agent, serverAddress + '/hackerNews.xml', 'test');
+
         const pre = await db.query('SELECT * FROM subscriptions WHERE folder = \'test\'');
         expect(pre.rowCount).toBe(2);
+
         const res = await agent
             .delete('/subscriptions/folder') 
             .query({folder: 'test'});
@@ -206,6 +249,7 @@ describe('DELETE /folder', () => {
 describe('POST /opml', () => {    
     test('Uploading opml file is successful', async () => {
         expect(await getNumRows('subscriptions')).toBe(0);
+
         const res = await agent
             .post('/subscriptions/opml')
             .attach("opml", `${__dirname}/test.opml`);
