@@ -1,7 +1,5 @@
 const app = require('../../../app');
 const request = require('supertest');
-const db = require('../../../db/db');
-
 
 async function getLoggedInAgent() {
     const agent = request.agent(app);

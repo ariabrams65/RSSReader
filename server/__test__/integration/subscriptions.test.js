@@ -87,16 +87,16 @@ describe('POST /subscriptions', () => {
 
 describe('DELETE /subscriptions', () => {
     test('Subscription deletion is successful', async () => {
-        const subRes = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
+        const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
 
-        const id = subRes.body.subscription.id;
-        const res = await agent
+        const id = res.body.subscription.id;
+        const res2 = await agent
             .delete('/subscriptions')    
             .query({subscriptionid: id});
-        expect(res.statusCode).toBe(204);
+        expect(res2.statusCode).toBe(204);
         expect(await getNumRows('subscriptions')).toEqual(0);
         expect(await getNumRows('feeds')).toEqual(0);
         expect(await getNumRows('posts')).toEqual(0);
@@ -126,8 +126,8 @@ describe('PATCH /subscriptions/rename', () => {
             .send({subscriptionid: id, newName: 'new name'});
         expect(res.statusCode).toBe(204);
         
-        const queryRes = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
-        const subscription = queryRes.rows[0];
+        const query = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
+        const subscription = query.rows[0];
         expect(subscription.name).toBe('new name');
     });
     
@@ -147,15 +147,15 @@ describe('PATCH /subscriptions/rename', () => {
 
 describe('PATCH /subscriptions/rename/folder', () => {
     test('Renaming folder is successful', async () => {
-        const subRes = await addSubscription(agent, serverAddress + '/redditAll.xml', 'old');
-        const id = subRes.body.subscription.id;
-        const res = await agent
+        const res = await addSubscription(agent, serverAddress + '/redditAll.xml', 'old');
+        const id = res.body.subscription.id;
+        const res2 = await agent
             .patch('/subscriptions/rename/folder')
             .send({oldName: 'old', newName: 'new'});
-        expect(res.statusCode).toBe(204);
+        expect(res2.statusCode).toBe(204);
 
-        const queryRes = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
-        const subscription = queryRes.rows[0];
+        const query = await db.query(`SELECT * FROM subscriptions WHERE id = ${id}`);
+        const subscription = query.rows[0];
         expect(subscription.folder).toBe('new');
     }); 
     

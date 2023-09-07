@@ -19,7 +19,7 @@ describe('GET /feed', () => {
         await addSubscription(agent, serverAddress + '/hackerNews.xml', '');
         await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         const res = await agent
-            .get('/feed')
+            .get('/feed');
         expect(res.statusCode).toBe(200);
         expect(res.body.posts.length).toBe(45);
         expect(res.body.oldestPostDate).toBeDefined();
