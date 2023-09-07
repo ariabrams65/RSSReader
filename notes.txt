@@ -151,3 +151,9 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 	-Also xml will always remain the same
 	
 * Using database transactions could allow me to run multiple test suites in parallel even if they use the same database
+
+* remove allFeeds query param from frontend since it is no longer needed
+
+rename test util files. dbHelpers contains functions that arent' related to db for exmaple
+
+*Uploading ompl currently uses real rss feeds. Probably make it use the test feeds

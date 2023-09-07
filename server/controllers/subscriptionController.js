@@ -147,7 +147,13 @@ async function getFeedHeaders(feedurl) {
         },
         timeout: 5000
     });
-    const feed = await parser.parseURL(feedurl);
+    let feed;
+    try {
+        feed = await parser.parseURL(feedurl);
+    } catch (e) {
+        console.log(e);
+        throw e;
+    }
     const headers = {};
     headers.feedurl = feedurl;
     if (feed.image !== undefined) {

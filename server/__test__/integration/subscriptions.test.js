@@ -3,9 +3,11 @@ const db = require('../../db/db');
 const { addSubscription, getNumRows } = require('./utils/dbHelpers');
 
 let agent;
+let serverAddress;
 beforeAll(async () => {     
     await db.resetTables();
     agent = await getLoggedInAgent();
+    serverAddress = agent.get('').url;
 });
 
 beforeEach(async () => {
@@ -14,7 +16,7 @@ beforeEach(async () => {
 
 describe('GET /subscriptions', () => {
     test('Response subscriptions are valid', async () => {
-        await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
+        await addSubscription(agent, serverAddress + '/redditAll.xml', '');
 
         const res = await agent 
             .get('/subscriptions')
@@ -33,7 +35,7 @@ describe('POST /subscriptions', () => {
     test('Subscription should be added', async () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
 
-        const res = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
+        const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(res.statusCode).toBe(201);
         expect(res.headers['content-type']).toMatch(/json/);
         const subscription = res.body.subscription;
@@ -46,6 +48,7 @@ describe('POST /subscriptions', () => {
         
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
     });
 
     test('Invalid feed urls should respond with 400 status code', async () => {
@@ -56,6 +59,7 @@ describe('POST /subscriptions', () => {
         }
         expect(await getNumRows('subscriptions')).toEqual(0);
         expect(await getNumRows('feeds')).toEqual(0);
+        expect(await getNumRows('posts')).toEqual(0);
     });
     
     test('Empty body should respond with 400 status code', async () => {
@@ -65,30 +69,37 @@ describe('POST /subscriptions', () => {
 
         expect(await getNumRows('subscriptions')).toEqual(0);
         expect(await getNumRows('feeds')).toEqual(0);
+        expect(await getNumRows('posts')).toEqual(0);
     });
     
     test('Duplicate subscription should respond with 400', async () => {
-        await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
+        await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(await getNumRows('subscriptions')).toEqual(1);
-        const res = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
+        const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(res.statusCode).toBe(400);
         expect(await getNumRows('subscriptions')).toEqual(1);
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
     });
 });
 
 describe('DELETE /subscriptions', () => {
     test('Subscription deletion is successful', async () => {
-        const subRes = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
+        const subRes = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(await getNumRows('subscriptions')).toEqual(1);
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
 
         const id = subRes.body.subscription.id;
         const res = await agent
             .delete('/subscriptions')    
             .query({subscriptionid: id});
         expect(res.statusCode).toBe(204);
-        
-        
         expect(await getNumRows('subscriptions')).toEqual(0);
+        expect(await getNumRows('feeds')).toEqual(0);
+        expect(await getNumRows('posts')).toEqual(0);
         
     });
     
@@ -108,7 +119,7 @@ describe('DELETE /subscriptions', () => {
 
 describe('PATCH /subscriptions/rename', () => {
     test('Renaming subscription is successful', async () => {
-        const subRes = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', '');
+        const subRes = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         const id = subRes.body.subscription.id;
         const res = await agent
             .patch('/subscriptions/rename')
@@ -123,7 +134,7 @@ describe('PATCH /subscriptions/rename', () => {
     test('Renaming non existant subscription returns 400', async () => {
         const res = await agent
             .patch('/subscriptions/rename')
-            .send({subscriptionid: -1, newNae: 'new name'});
+            .send({subscriptionid: -1, newName: 'new name'});
         expect(res.statusCode).toBe(400);
     })
     
@@ -136,7 +147,7 @@ describe('PATCH /subscriptions/rename', () => {
 
 describe('PATCH /subscriptions/rename/folder', () => {
     test('Renaming folder is successful', async () => {
-        const subRes = await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', 'old');
+        const subRes = await addSubscription(agent, serverAddress + '/redditAll.xml', 'old');
         const id = subRes.body.subscription.id;
         const res = await agent
             .patch('/subscriptions/rename/folder')
@@ -165,9 +176,10 @@ describe('PATCH /subscriptions/rename/folder', () => {
 
 describe('DELETE /folder', () => {
     test('Deleting folder is successful', async () => {
-        await addSubscription(agent, 'https://www.reddit.com/r/all/.rss', 'test');
+        await addSubscription(agent, serverAddress + '/redditAll.xml', 'test');
+        await addSubscription(agent, serverAddress + '/hackerNews.xml', 'test');
         const pre = await db.query('SELECT * FROM subscriptions WHERE folder = \'test\'');
-        expect(pre.rowCount).toBe(1);
+        expect(pre.rowCount).toBe(2);
         const res = await agent
             .delete('/subscriptions/folder') 
             .query({folder: 'test'});

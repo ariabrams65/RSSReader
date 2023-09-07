@@ -13,10 +13,10 @@ db.createTables();
 initializePassport(passport);
 
 const app = express();
-// app.use(express.static('public'));
+app.use(express.static('__test__/integration/testFeeds'));
 app.use(express.urlencoded({ extended: false }));
 // app.use(cors({
-//     origin: "http://localhost:3000",
+//     origin: "http://localhost:5000",
 //     credentials: true
 // }));
 app.use(session({
@@ -33,7 +33,7 @@ app.use('/logout', require('./routes/logout'));
 app.use('/register', require('./routes/register'));
 app.use('/feed', require('./routes/feed'));
 app.use('/subscriptions', require('./routes/subscriptions'));
-app.use('/authenticated', require('./routes/authentication'))
+app.use('/authenticated', require('./routes/authentication'));
 
 app.use((err, req, res, next) => {
     let status;
