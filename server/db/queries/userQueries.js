@@ -31,4 +31,15 @@ async function getUserById(id) {
     return res.rows[0];
 }
 
-module.exports = { createUser, getUserByEmail, getUserById };
+async function userExists(email) {
+    const existsQuery = 
+    `
+    SELECT COUNT(*)
+    FROM users
+    WHERE email = $1;
+    `;
+    const res = await query(existsQuery, [email]);
+    return parseInt(res.rows[0].count);
+}
+
+module.exports = { createUser, getUserByEmail, getUserById, userExists };
