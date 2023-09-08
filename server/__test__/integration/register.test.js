@@ -1,7 +1,7 @@
+const app = require("../../app");
 const db = require("../../db/db");
 const request = require('supertest');
 const { getNumRows } = require("./utils/dbHelpers");
-const app = require("../../app");
 
 beforeEach(async () => {
     await db.resetTables();

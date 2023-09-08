@@ -1,4 +1,3 @@
-require('dotenv').config();
 const db = require('../../../db/db');
 
 async function addSubscription(agent, feed, folder) {

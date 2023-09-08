@@ -1,5 +1,8 @@
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
+if (process.env.NODE_ENV === 'development') {
+    require('dotenv').config({ path: '.env' });
+}
+if (process.env.NODE_ENV === 'test') {
+    require('dotenv').config({ path: '.env.test' });
 }
 const express = require('express');
 const passport = require('passport');

@@ -108,8 +108,6 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 	
 * Should I connect to the db in server.js
 
-* I should be validating query params and body before making requests to database etc. (Make sure they exist)
-
 * Possibly change the name feed to posts ie getFeed should become getPosts
 
 * when clicking on feed, should pass feedid instead of subscriptionid since we are storing that in the selected object
