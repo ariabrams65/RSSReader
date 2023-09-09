@@ -62,6 +62,9 @@ function ImportExportSettings() {
     const [fileUploadText, setFileUploadText] = useState('Select file');
     
     function handleFileSelect(e) {
+        if (e.target.files.length === 0) {
+            return;
+        }
         const fileName = e.target.files[0].name;
         setFileUploadText(fileName);
     }

@@ -149,3 +149,5 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 		at Timeout.scheduleTimeout [as _onTimeout] (/home/ariab/RSSReader/server/node_modules/@breejs/later/lib/index.js:1038:7)
 		at listOnTimeout (node:internal/timers:569:17)
 		at process.processTimers (node:internal/timers:512:7) undefined
+
+* Add border radius for icons
