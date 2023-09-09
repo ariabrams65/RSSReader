@@ -121,4 +121,31 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 
 * remove allFeeds query param from frontend since it is no longer needed
 
-*Uploading ompl currently uses real rss feeds. Probably make it use the test feeds
+* Uploading ompl currently uses real rss feeds. Probably make it use the test feeds
+
+* Add border-radius to images
+
+* When worker has an error, it looks like it never exits and prevents future jobs from running
+
+	Worker for job "updatePosts" had an error {
+	  err: Error: Unclosed root tag
+	  Line: 2097
+	  Column: 14
+	  Char: 
+		  at error (/home/ariab/RSSReader/server/node_modules/sax/lib/sax.js:651:10)
+		  at strictFail (/home/ariab/RSSReader/server/node_modules/sax/lib/sax.js:677:7)
+		  at end (/home/ariab/RSSReader/server/node_modules/sax/lib/sax.js:658:47)
+		  at SAXParser.write (/home/ariab/RSSReader/server/node_modules/sax/lib/sax.js:975:14)
+		  at SAXParser.close (/home/ariab/RSSReader/server/node_modules/sax/lib/sax.js:157:38)
+		  at exports.Parser.Parser.parseString (/home/ariab/RSSReader/server/node_modules/rss-parser/node_modules/xml2js/lib/parser.js:327:42)
+		  at Parser.parseString (/home/ariab/RSSReader/server/node_modules/rss-parser/node_modules/xml2js/lib/parser.js:5:59)
+		  at /home/ariab/RSSReader/server/node_modules/rss-parser/lib/parser.js:33:22
+		  at new Promise (<anonymous>)
+		  at Parser.parseString (/home/ariab/RSSReader/server/node_modules/rss-parser/lib/parser.js:32:16)
+	}
+	Error: Job "updatePosts" is already running
+		at Bree.run (/home/ariab/RSSReader/server/node_modules/bree/src/index.js:366:11)
+		at /home/ariab/RSSReader/server/node_modules/bree/src/index.js:635:40
+		at Timeout.scheduleTimeout [as _onTimeout] (/home/ariab/RSSReader/server/node_modules/@breejs/later/lib/index.js:1038:7)
+		at listOnTimeout (node:internal/timers:569:17)
+		at process.processTimers (node:internal/timers:512:7) undefined

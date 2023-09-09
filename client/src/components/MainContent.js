@@ -1,4 +1,7 @@
-import formatTimeSince from "../utils/formatTime";
+import formatTimeSince from '../utils/formatTime';
+import Modal from './Modal';
+import SettingsModal from './SettingsModal';
+import { useState } from 'react';
 
 function MainContent({ posts, lastPostElementRef }) {
     return (
@@ -13,13 +16,22 @@ function MainContent({ posts, lastPostElementRef }) {
 }
 
 function Topnav() {
+    const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+    
+    function handleButtonClick(e) {
+        setSettingsModalOpen(true);
+        e.stopPropagation();
+    }
+
     return (
         <ul className="topnav">
             <li>
-                <form method="POST" enctype="multipart/form-data" action="/subscriptions/opml">
-                    <input name="opml" type="file" />
-                    <button>Upload</button>
-                </form>
+                <button onClick={handleButtonClick}>
+                    settings
+                </button>
+                <Modal open={settingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
+                    <SettingsModal/>
+                </Modal> 
             </li>
         </ul>
     );

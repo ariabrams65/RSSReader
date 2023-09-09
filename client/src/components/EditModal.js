@@ -65,7 +65,7 @@ function EditModal({ name, subscription, onClose}) {
     }
     
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="edit-modal" onSubmit={handleSubmit}>
             <input 
                 onChange={(e) => setNameInput(e.target.value)} 
                 value={nameInput} 

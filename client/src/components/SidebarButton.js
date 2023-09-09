@@ -19,7 +19,7 @@ function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageErr
             <button className="edit-btn" onClick={handleButtonClick}>
                 <img className="edit-icon" src="/images/edit-icon.png"/>
             </button>}
-            <Modal open={editModalOpen} onClose={(() => setEditModalOpen(false))}>
+            <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)}>
                 <EditModal name={text} subscription={subscription} onClose={() => setEditModalOpen(false)} />
             </Modal>
         </div>
