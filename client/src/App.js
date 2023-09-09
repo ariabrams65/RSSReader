@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoutes from './ProtectedRoutes';
 import { SelectionProvider } from './context/SelectionContext'
+import { SubscriptionProvider } from './context/SubscriptionContext';
 
 function App() {
     return (
@@ -12,7 +13,9 @@ function App() {
             <Route element={<ProtectedRoutes checkAuthenticated={true}/>}>
                 <Route element={
                     <SelectionProvider>
-                        <Home/>
+                        <SubscriptionProvider>
+                            <Home/>
+                        </SubscriptionProvider>
                     </SelectionProvider>
                 } path="/"/>
             </Route>

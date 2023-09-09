@@ -2,8 +2,28 @@ import formatTimeSince from '../utils/formatTime';
 import Modal from './Modal';
 import SettingsModal from './SettingsModal';
 import { useState } from 'react';
+import usePosts from '../hooks/usePosts';
+import { useCallback, useRef } from 'react';
 
-function MainContent({ posts, lastPostElementRef }) {
+function MainContent() {
+    const { posts, loading, hasMore, updatePosts } = usePosts();
+    
+    const observer = useRef();
+    const lastPostElementRef = useCallback(node => {
+        if (loading) return;
+        if (observer.current) {
+            observer.current.disconnect();
+        }
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                updatePosts();
+            }
+        })
+        if (node) {
+            observer.current.observe(node);
+        }
+    }, [loading, hasMore]);
+
     return (
         <div className="main-content">
             <Topnav/>

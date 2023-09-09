@@ -1,9 +1,16 @@
 import { useSubscriptions } from '../context/SubscriptionContext';
 import { useSelection } from '../context/SelectionContext';
+import { useEffect } from 'react';
 import SidebarButton from './SidebarButton';
 
 function SidebarContent() {
     const { allFeedsSelected, selectAllFeeds } = useSelection();
+    const { updateSubscriptions } = useSubscriptions();
+
+    useEffect(() => {
+            updateSubscriptions();
+        }, []);
+
     return (
         <div className="sidebar-content">
             <SidebarButton
