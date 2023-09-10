@@ -12,7 +12,7 @@ function SidebarHeader() {
             <SidebarButton
                 className={styles['add-feed-btn']}
                 selected={false}
-                imageSrc={'/images/add-feed-icon.png'}
+                iconSrc={'/images/add-feed-icon.png'}
                 onClick={() => setAddFeedOpen(prev => !prev)}
                 text={'Add Feed'}
                 editable={false}

@@ -159,3 +159,5 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 	All I want for Christmas is for this idea to get some traction. Hoping to make the time to hack on this myself Q1 of next year.
 
 	[0]: https://github.com/miniflux/v2/issues/1493
+
+* Show the feed url for subscriptions

@@ -49,6 +49,10 @@
     border-radius: 2px;
 }
 
+.icon-rotated {
+    transform: rotate(-90deg);
+}
+
 .btn-text {
     white-space: nowrap;
     overflow: hidden;

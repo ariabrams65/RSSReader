@@ -1,6 +1,6 @@
 import { useSubscriptions } from '../context/SubscriptionContext';
 import { useSelection } from '../context/SelectionContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import SidebarButton from './SidebarButton';
 import styles from './SidebarContent.module.css';
 
@@ -18,7 +18,7 @@ function SidebarContent() {
                 className={styles['all-feeds']}
                 selected={allFeedsSelected}
                 onClick={selectAllFeeds}
-                imageSrc={'/images/all-feeds-icon.png'}
+                iconSrc={'/images/all-feeds-icon.png'}
                 text={'All Feeds'}
                 editable={false}
             />
@@ -46,6 +46,7 @@ function Folders() {
 
 function FeedFolder({ subscriptions }) {
     const { selectedFolder, selectFolder } = useSelection();
+    const [ open, setOpen ] = useState(false);
 
     const feedElements = subscriptions.map(subscription => <SubscribedFeed subscription={subscription}/>); 
     const folderName = subscriptions[0].folder;
@@ -56,8 +57,11 @@ function FeedFolder({ subscriptions }) {
                 onClick={() => selectFolder(folderName)}
                 text={folderName}
                 editable={true}
+                iconSrc={'/images/folder-dropdown-icon.png'}
+                onIconClick={() => setOpen(open => !open)}
+                iconRotated={!open}
             />
-            <ul>{feedElements}</ul>
+            {open && <ul>{feedElements}</ul>}
         </li>
     );
 }
@@ -67,9 +71,10 @@ function SubscribedFeed({ subscription }) {
     return (
         <li key={subscription.id}>
             <SidebarButton
+                className={styles['subscription']}
                 selected={selectedFeed?.id === subscription.id}
                 onClick={() => selectFeed(subscription)}
-                imageSrc={subscription.iconurl || ''}
+                iconSrc={subscription.iconurl || ''}
                 handleImageError={(e) => e.target.src = '/images/default-feed-icon.png'}
                 text={subscription.name}
                 editable={true}
