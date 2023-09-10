@@ -45,16 +45,14 @@ function Topnav() {
     }
 
     return (
-        <ul className={styles['topnav']}>
-            <li>
-                <button onClick={handleButtonClick}>
-                    settings
-                </button>
-                <Modal open={settingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
-                    <SettingsModal/>
-                </Modal> 
-            </li>
-        </ul>
+        <div className={styles['topnav']}>
+            <button className={styles['settings-btn']} onClick={handleButtonClick}>
+                <img className={styles['settings-icon']} src="/images/settings-icon.png"></img>
+            </button>
+            <Modal open={settingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
+                <SettingsModal/>
+            </Modal> 
+        </div>
     );
 }
 

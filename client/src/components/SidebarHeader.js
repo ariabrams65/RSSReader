@@ -8,9 +8,11 @@ function SidebarHeader() {
     const [isAddFeedOpen, setAddFeedOpen] = useState(false);
 
     return (
-        <div className={styles['sidebar-header']}>
+        <div className={`${styles['sidebar-header']} ${isAddFeedOpen ? styles['open'] : ''}`}>
             <SidebarButton
+                className={styles['add-feed-btn']}
                 selected={false}
+                imageSrc={'/images/add-feed-icon.png'}
                 onClick={() => setAddFeedOpen(prev => !prev)}
                 text={'Add Feed'}
                 editable={false}
@@ -66,7 +68,7 @@ function FeedInput({ open }) {
                 value={feedInput} 
                 type="text" 
                 name="feed" 
-                className={`${styles['new-sub-input']} input`}
+                className={`${styles['new-sub-input']} ${styles['input']}`}
                 placeholder="Enter RSS feed URL"
             />
             <input 
@@ -74,7 +76,7 @@ function FeedInput({ open }) {
                 value={folderInput} 
                 type="text" 
                 name="folder" 
-                className={`${styles['folder-input']} input`}
+                className={`${styles['folder-input']} ${styles['input']}`}
                 placeholder="Enter folder (optional)"
             />
             <button type="submit" style={{display: 'none'}}></button>

@@ -7,11 +7,34 @@
 }
 
 .topnav {
+    display: flex;
+    align-items: center; 
     background-color: var(--secondary-color);
     height: 50px;
     flex-shrink: 0;
     width: 100%;
     border-bottom: 1px solid var(--border-color);
+}
+
+.settings-btn {
+    margin-left: auto;
+    margin-right: 10px;
+    height: 35px;
+    width: 35px;
+    border: none;
+    border-radius: 5px;
+    background-color: inherit;
+    padding: 0;
+}
+
+.settings-btn:hover {
+    filter: brightness(80%);
+    cursor: pointer;
+}
+
+.settings-icon {
+    height: 100%;
+    width: 100%;
 }
 
 .item-list {

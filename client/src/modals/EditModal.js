@@ -71,7 +71,6 @@ function EditModal({ name, subscription, onClose}) {
                 onChange={(e) => setNameInput(e.target.value)} 
                 value={nameInput} 
                 type="text" 
-                className="input" 
             />
             <div>
                 <button type="button" onClick={handleDelete}>

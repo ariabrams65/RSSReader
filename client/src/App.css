@@ -1,11 +1,11 @@
 :root {
     --primary-color: #2F383E;
     --secondary-color: #2D353B;
-    --border-color: #000000;
+    --border-color: #292929;
     --text-color: #b8b8b8;
     --selected-button-color: #3A4349;
     --hovered-button-color: #313a41;
-    --input-color: #b8b8b8;
+    --input-color: #3A4349;
 }
 
 * {
@@ -41,16 +41,6 @@ body {
 
 #root {
     display: flex;
-}
-
-.input {
-    width: 100%;
-    font-size: .9em;
-    border-radius: 5px;
-    padding: 5px;
-    background-color: var(--input-color);
-    border: none;
-    font-family: inherit;
 }
 
 ul {
