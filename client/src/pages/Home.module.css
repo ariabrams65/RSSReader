@@ -4,6 +4,6 @@
     height: 100vh;
     flex: 1; 
     min-width: 0;
-    background-color: #2D353B;
-    border-right: 1px solid #000000;
+    background-color: var(--secondary-color);
+    border-right: 1px solid var(--border-color);
 }

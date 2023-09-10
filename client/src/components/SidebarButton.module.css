@@ -8,12 +8,11 @@
     padding: 5px;
     font-size: .9em;
     background-color: inherit;
-    color: #b8b8b8;
     font-family: inherit;
 }
 .sidebar-btn:hover {
-    background-color: #313a41;
-    
+    background-color: var(--hovered-button-color);
+    cursor: pointer; 
 }
 
 .sidebar-btn:hover .edit-btn {
@@ -34,6 +33,7 @@
 
 .edit-btn:hover {
     filter: brightness(80%);
+    cursor: pointer;
 }
 
 .edit-icon {
@@ -56,5 +56,5 @@
 }
 
 .selected {
-    background-color: #3A4349;
+    background-color: var(--selected-button-color); 
 }

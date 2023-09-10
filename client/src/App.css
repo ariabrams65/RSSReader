@@ -1,3 +1,13 @@
+:root {
+    --primary-color: #2F383E;
+    --secondary-color: #2D353B;
+    --border-color: #000000;
+    --text-color: #b8b8b8;
+    --selected-button-color: #3A4349;
+    --hovered-button-color: #313a41;
+    --input-color: #b8b8b8;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -26,276 +36,25 @@ body, html {
 
 body {
     font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--text-color);
 }
 
 #root {
     display: flex;
 }
 
-/* .sidebar{
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    flex: 1; 
-    min-width: 0;
-    background-color: #2D353B;
-    border-right: 1px solid #000000;
-}
-
-.sidebar-header {
-    min-height: 50px;
-    padding: 10px 20px;
-    flex-shrink: 0;
-}
-
-.sidebar-content {
-    padding: 10px 20px;
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-.main-content {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    flex: 3; 
-    background-color: #2F383E;
-}
-
-.topnav {
-    background-color: #2D353B;
-    height: 50px;
-    flex-shrink: 0;
-    width: 100%;
-    border-bottom: 1px solid #000000;
-}
-
-.item-list {
-    overflow-y: auto;
-    flex-grow: 1;
-} */
-
 .input {
     width: 100%;
     font-size: .9em;
     border-radius: 5px;
     padding: 5px;
-    background-color: #b8b8b8;
+    background-color: var(--input-color);
     border: none;
     font-family: inherit;
 }
-
-/* .new-sub-input {
-    margin-bottom: 10px;
-    margin-top: 20px;
-}
-
-.folder-input{
-    margin-bottom: 20px;
-} */
 
 ul {
     padding: 0;
     margin: 0;
     list-style-type: none;
 }
-
-/* .all-feeds {
-    margin-bottom: 20px;
-}
-
-.sidebar-btn {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    text-align: left;
-    border: none;
-    border-radius: 5px;
-    padding: 5px;
-    font-size: .9em;
-    background-color: inherit;
-    color: #b8b8b8;
-    font-family: inherit;
-}
-.sidebar-btn:hover {
-    background-color: #313a41;
-    
-}
-
-.sidebar-btn:hover .edit-btn {
-    opacity: 1;
-}
-
-.folder {
-    margin-bottom: 15px;
-}
-
-.btn-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-.selected {
-    background-color: #3A4349;
-}
-
-.edit-btn {
-    display: flex;
-    opacity: 0;
-    margin-left: auto;
-    border: none;
-    padding: 0;
-    background-color: inherit;
-    border-radius: 5px;
-}
-
-.edit-btn:hover {
-    filter: brightness(80%);
-}
-
-.edit-icon {
-    height: 15px;
-    width: 15px;
-    border-radius: 2px;
-}
-
-.item {
-    width: 50%;
-    margin: auto;
-    min-width: 300px;
-    color: #b8b8b8;
-    word-wrap: break-word;
-    
-    padding: 20px 10px;
-    border-bottom: 1px solid #000000;
-}
-
-.item:hover {
-    background-color: #2D353B;
-}
-
-.item a {
-    display: block;
-    color: #b8b8b8;
-    text-decoration: none;
-}
-
-.item-source {
-    font-size: .8em;
-    display: flex;
-    align-items: center;
-}
-
-.item-title {
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-.item-title:hover {
-    text-decoration: underline;
-}
-
-.item-image {
-    width: 75%;
-    display: block;
-    margin-top: 10px;
-}
-
-.item-comments {
-    font-size: .8em;
-    margin-top: 10px
-}
-
-.item-comments:hover {
-    text-decoration: underline;
-}
-
-.btn-icon {
-    margin-right: 10px;
-    height: 20px;
-    width: 20px;
-    border-radius: 2px;
-}
-
-.item-icon {
-    max-height: 30px;
-}
-
-.item-time {
-    margin: 20px 0 0 0; 
-    font-size: .8em;
-    font-weight: normal;
-}
-
-
-.modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    border-radius: 10px;
-}
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0 ,0, 0, .4);
-    z-index: 1000
-}
-
-.settings-modal {
-    width: 670px;
-    height: 420px;
-    background-color: grey;
-    border-radius: 15px;
-}
-
-.settings-title {
-    border-bottom: 1px solid white;
-    display: flex;
-    padding: 0 20px;
-}
-
-.settings-container {
-    padding: 10px 20px;
-    display: flex;
-}
-
-.settings-sidebar {
-    width: 200px;
-}
-
-.settings-content {
-    padding-left: 20px;
-    width: 100%;
-}
-
-.setting {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid white;
-    padding-bottom: 10px;
-    margin: 20px 0;
-}
-
-.setting-name {
-    margin: 0;
-}
-
-.settings-btn {
-    border: 1px solid black;
-    border-radius: 5px;
-    display: inline-block;
-    margin-left: 5px;
-    padding: 5px 5px;
-    cursor: pointer;
-    background-color: inherit;
-    font-size: .9em;
-    font-family: inherit;
-} */
