@@ -151,3 +151,11 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 		at process.processTimers (node:internal/timers:512:7) undefined
 
 * Add border radius for icons
+
+* Comment from hacker news:
+	I really like miniflux, but I really wish it had a weighted post ordering rather than a simple chronological ordering. I posted a feature request about this earlier this year[0], but the gist is this:
+	If you subscribe to some feeds that post 100+ times a day (like a major news outlet) and others that post only once every couple months or so (like many personal blogs), you'll never catch the latter because those posts are always drowned in a sea of the former. Reddit deals with this problem by weighting posts from each subreddit you subscribe to so that your frontpage contains content from as many of your subs as possible.
+
+	All I want for Christmas is for this idea to get some traction. Hoping to make the time to hack on this myself Q1 of next year.
+
+	[0]: https://github.com/miniflux/v2/issues/1493

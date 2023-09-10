@@ -1,13 +1,9 @@
 .modal {
     position: fixed;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* padding: 10px 50px; */
     z-index: 1000;
-    /* background-color: #21292e; */
-    /* border: 1px solid #252525; */
-    border-radius: 10px;
 }
 
 .overlay {

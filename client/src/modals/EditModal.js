@@ -68,15 +68,17 @@ function EditModal({ name, subscription, onClose}) {
     return (
         <form className={styles['edit-modal']} onSubmit={handleSubmit}>
             <input 
+                className={styles['rename-input']}
                 onChange={(e) => setNameInput(e.target.value)} 
                 value={nameInput} 
                 type="text" 
             />
-            <div>
-                <button type="button" onClick={handleDelete}>
+            <div className={styles['footer']}>
+                <button className={`${styles['button']} ${styles['delete-btn']}`} type="button" onClick={handleDelete}>
                     {isFeed ? 'Unsubscribe' : 'Delete'}
                 </button> 
-                <button type="submit">Save</button>
+                <button className={styles['button']}>Cancel</button>
+                <button className={`${styles['button']} ${styles['save-btn']}`} type="submit">Save</button>
             </div>
         </form>
     );
