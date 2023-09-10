@@ -1,0 +1,60 @@
+.sidebar-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: .9em;
+    background-color: inherit;
+    color: #b8b8b8;
+    font-family: inherit;
+}
+.sidebar-btn:hover {
+    background-color: #313a41;
+    
+}
+
+.sidebar-btn:hover .edit-btn {
+    opacity: 1;
+}
+
+.edit-btn {
+    display: flex;
+    /* align-items: center;
+    justify-content: center; */
+    opacity: 0;
+    margin-left: auto;
+    border: none;
+    padding: 0;
+    background-color: inherit;
+    border-radius: 5px;
+}
+
+.edit-btn:hover {
+    filter: brightness(80%);
+}
+
+.edit-icon {
+    height: 15px;
+    width: 15px;
+    border-radius: 2px;
+}
+
+.btn-icon {
+    margin-right: 10px;
+    height: 20px;
+    width: 20px;
+    border-radius: 2px;
+}
+
+.btn-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected {
+    background-color: #3A4349;
+}

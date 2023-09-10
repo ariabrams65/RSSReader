@@ -1,0 +1,50 @@
+.settings-modal {
+    width: 670px;
+    height: 420px;
+    background-color: grey;
+    border-radius: 15px;
+}
+
+.settings-title {
+    border-bottom: 1px solid white;
+    display: flex;
+    padding: 0 20px;
+}
+
+.settings-container {
+    padding: 10px 20px;
+    display: flex;
+}
+
+.settings-sidebar {
+    width: 200px;
+}
+
+.settings-content {
+    padding-left: 20px;
+    width: 100%;
+}
+
+.setting {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid white;
+    padding-bottom: 10px;
+    margin: 20px 0;
+}
+
+.setting-name {
+    margin: 0;
+}
+
+.settings-btn {
+    border: 1px solid black;
+    border-radius: 5px;
+    display: inline-block;
+    margin-left: 5px;
+    padding: 5px 5px;
+    cursor: pointer;
+    background-color: inherit;
+    font-size: .9em;
+    font-family: inherit;
+}

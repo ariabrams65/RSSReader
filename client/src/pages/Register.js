@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import styles from './Register.module.css';
 
 function Register() {
     const [email, setEmail] = useState('');

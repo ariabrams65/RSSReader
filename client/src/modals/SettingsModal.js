@@ -1,5 +1,6 @@
-import SidebarButton from './SidebarButton';
+import SidebarButton from '../components/SidebarButton';
 import { useState } from 'react';
+import styles from './SettingsModal.module.css';
 
 function SettingsModal() {
     const [selectedSetting, setSelectedSetting] = useState('General');
@@ -15,12 +16,12 @@ function SettingsModal() {
     }
     
     return (
-        <div className="settings-modal">
-            <div className="settings-title">
+        <div className={styles['settings-modal']}>
+            <div className={styles['settings-title']}>
                 <h2>Settings</h2>
             </div>
-            <div className="settings-container">
-                <ul className="settings-sidebar">
+            <div className={styles['settings-container']}>
+                <ul className={styles['settings-sidebar']}>
                     <li><SidebarButton
                         text={'General'}
                         selected={selectedSetting === 'General'}
@@ -37,7 +38,7 @@ function SettingsModal() {
                         onClick={() => setSelectedSetting('Import/Export')}
                     /> </li>
                 </ul> 
-                <div className="settings-content">
+                <div className={styles['settings-content']}>
                     {getSettingComponent()}
                 </div>
             </div>
@@ -73,11 +74,11 @@ function ImportExportSettings() {
         <>
             <Setting name={'import'}>
                 <form method="POST" enctype="multipart/form-data" action="/subscriptions/opml">
-                    <label className="settings-btn">
+                    <label className={styles['settings-btn']}>
                         <input onChange={handleFileSelect} name="opml" type="file" style={{display: 'none'}}/>
                         {fileUploadText}
                     </label>
-                    <button className="settings-btn">Upload</button>
+                    <button className={styles['settings-btn']}>Upload</button>
                 </form>
             </Setting>
             <Setting name={'test title'}>
@@ -89,8 +90,8 @@ function ImportExportSettings() {
 
 function Setting({ name, children }) {  
     return (
-        <div className="setting">
-            <h3 className="setting-name">{name}</h3>
+        <div className={styles['setting']}>
+            <h3 className={styles['setting-name']}>{name}</h3>
             {children}
         </div>
     );

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import Modal from './Modal';
-import EditModal from './EditModal';
+import Modal from '../modals/Modal';
+import EditModal from '../modals/EditModal';
+import styles from './SidebarButton.module.css';
 
 
-function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageError, text, editable, subscription }) {
+function SidebarButton({ className, selected, onClick, imageSrc, handleImageError, text, editable, subscription }) {
     const [editModalOpen, setEditModalOpen] = useState(false);
     
     function handleButtonClick(e) {
@@ -12,12 +13,12 @@ function SidebarButton({ classNames, selected, onClick, imageSrc, handleImageErr
     }
 
     return (
-        <div className={`${classNames ? classNames : ''} sidebar-btn ${selected ? 'selected' : ''}`} onClick={onClick}>
-            {imageSrc !== undefined && <img className="feed-icon" onError={handleImageError} src={imageSrc}/>}
-            <span className="feed-name">{text}</span>
+        <div className={`${className ? className : ''} ${styles['sidebar-btn']} ${selected ? styles['selected'] : ''}`} onClick={onClick}>
+            {imageSrc !== undefined && <img className={styles['btn-icon']} onError={handleImageError} src={imageSrc}/>}
+            <span className={styles['btn-text']}>{text}</span>
             {editable && 
-            <button className="edit-btn" onClick={handleButtonClick}>
-                <img className="edit-icon" src="/images/edit-icon.png"/>
+            <button className={styles['edit-btn']} onClick={handleButtonClick}>
+                <img className={styles['edit-icon']} src="/images/edit-icon.png"/>
             </button>}
             <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)}>
                 <EditModal name={text} subscription={subscription} onClose={() => setEditModalOpen(false)} />

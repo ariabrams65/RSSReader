@@ -2,6 +2,7 @@ import { useSubscriptions } from '../context/SubscriptionContext';
 import { useSelection } from '../context/SelectionContext';
 import { useEffect } from 'react';
 import SidebarButton from './SidebarButton';
+import styles from './SidebarContent.module.css';
 
 function SidebarContent() {
     const { allFeedsSelected, selectAllFeeds } = useSelection();
@@ -12,9 +13,9 @@ function SidebarContent() {
         }, []);
 
     return (
-        <div className="sidebar-content">
+        <div className={styles['sidebar-content']}>
             <SidebarButton
-                classNames={'all-feeds'}
+                className={styles['all-feeds']}
                 selected={allFeedsSelected}
                 onClick={selectAllFeeds}
                 imageSrc={'/images/all-feeds-icon.png'}
@@ -49,7 +50,7 @@ function FeedFolder({ subscriptions }) {
     const feedElements = subscriptions.map(subscription => <SubscribedFeed subscription={subscription}/>); 
     const folderName = subscriptions[0].folder;
     return (
-        <li key={folderName} className="folder">
+        <li key={folderName} className={styles['folder']}>
             <SidebarButton
                 selected={selectedFolder === folderName}
                 onClick={() => selectFolder(folderName)}

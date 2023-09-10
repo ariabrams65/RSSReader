@@ -32,7 +32,7 @@ body {
     display: flex;
 }
 
-.sidebar{
+/* .sidebar{
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -73,7 +73,7 @@ body {
 .item-list {
     overflow-y: auto;
     flex-grow: 1;
-}
+} */
 
 .input {
     width: 100%;
@@ -85,14 +85,14 @@ body {
     font-family: inherit;
 }
 
-.new-sub-input {
+/* .new-sub-input {
     margin-bottom: 10px;
     margin-top: 20px;
 }
 
 .folder-input{
     margin-bottom: 20px;
-}
+} */
 
 ul {
     padding: 0;
@@ -100,7 +100,7 @@ ul {
     list-style-type: none;
 }
 
-.all-feeds {
+/* .all-feeds {
     margin-bottom: 20px;
 }
 
@@ -130,7 +130,7 @@ ul {
     margin-bottom: 15px;
 }
 
-.feed-name {
+.btn-text {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -143,8 +143,6 @@ ul {
 
 .edit-btn {
     display: flex;
-    /* align-items: center;
-    justify-content: center; */
     opacity: 0;
     margin-left: auto;
     border: none;
@@ -171,7 +169,6 @@ ul {
     word-wrap: break-word;
     
     padding: 20px 10px;
-    /* border-bottom: solid 3px #282f35; */
     border-bottom: 1px solid #000000;
 }
 
@@ -215,7 +212,7 @@ ul {
     text-decoration: underline;
 }
 
-.feed-icon {
+.btn-icon {
     margin-right: 10px;
     height: 20px;
     width: 20px;
@@ -238,10 +235,7 @@ ul {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* padding: 10px 50px; */
     z-index: 1000;
-    /* background-color: #21292e; */
-    /* border: 1px solid #252525; */
     border-radius: 10px;
 }
 
@@ -254,9 +248,6 @@ ul {
     background-color: rgba(0 ,0, 0, .4);
     z-index: 1000
 }
-
-/* .edit-modal {
-} */
 
 .settings-modal {
     width: 670px;
@@ -307,4 +298,4 @@ ul {
     background-color: inherit;
     font-size: .9em;
     font-family: inherit;
-}
+} */

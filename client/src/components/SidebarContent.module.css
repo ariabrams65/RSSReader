@@ -1,0 +1,13 @@
+.sidebar-content {
+    padding: 10px 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.all-feeds {
+    margin-bottom: 20px;
+}
+
+.folder {
+    margin-bottom: 15px;
+}

@@ -1,4 +1,5 @@
 import ReactDom from 'react-dom';
+import styles from './Modal.module.css';
 
 function Modal({ open, children, onClose}) {
    
@@ -10,8 +11,8 @@ function Modal({ open, children, onClose}) {
     if (!open) return null;
     return ReactDom.createPortal(
         <>
-        <div className='overlay' onClick={handleClick}/>
-            <div className='modal' onClick={(e) => e.stopPropagation()}>
+        <div className={styles['overlay']} onClick={handleClick}/>
+            <div className={styles['modal']} onClick={(e) => e.stopPropagation()}>
                 {children}
             </div>        
         </>,

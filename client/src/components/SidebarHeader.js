@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useSubscriptions } from '../context/SubscriptionContext';
 import { useSelection } from '../context/SelectionContext';
 import SidebarButton from './SidebarButton';
+import styles from './SidebarHeader.module.css';
 
 function SidebarHeader() {
     const [isAddFeedOpen, setAddFeedOpen] = useState(false);
 
     return (
-        <div className='sidebar-header'>
+        <div className={styles['sidebar-header']}>
             <SidebarButton
                 selected={false}
                 onClick={() => setAddFeedOpen(prev => !prev)}
@@ -65,7 +66,7 @@ function FeedInput({ open }) {
                 value={feedInput} 
                 type="text" 
                 name="feed" 
-                className="input new-sub-input" 
+                className={`${styles['new-sub-input']} input`}
                 placeholder="Enter RSS feed URL"
             />
             <input 
@@ -73,7 +74,7 @@ function FeedInput({ open }) {
                 value={folderInput} 
                 type="text" 
                 name="folder" 
-                className="input folder-input" 
+                className={`${styles['folder-input']} input`}
                 placeholder="Enter folder (optional)"
             />
             <button type="submit" style={{display: 'none'}}></button>

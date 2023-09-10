@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSubscriptions } from '../context/SubscriptionContext';
 import { useSelection } from '../context/SelectionContext';
+import styles from './EditModal.module.css';
 
 function EditModal({ name, subscription, onClose}) {
     const [nameInput, setNameInput] = useState(name);
@@ -65,7 +66,7 @@ function EditModal({ name, subscription, onClose}) {
     }
     
     return (
-        <form className="edit-modal" onSubmit={handleSubmit}>
+        <form className={styles['edit-modal']} onSubmit={handleSubmit}>
             <input 
                 onChange={(e) => setNameInput(e.target.value)} 
                 value={nameInput} 
