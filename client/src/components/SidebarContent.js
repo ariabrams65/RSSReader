@@ -77,7 +77,10 @@ function SubscribedFeed({ subscription }) {
                 selected={selectedFeed?.id === subscription.id}
                 onClick={() => selectFeed(subscription)}
                 iconSrc={subscription.iconurl || ''}
-                handleImageError={(e) => e.target.src = '/images/default-feed-icon.png'}
+                handleImageError={(e) => {
+                    e.target.src = '/images/default-feed-icon.png';
+                    e.target.classList.add('static-icon')
+                }}
                 text={subscription.name}
                 editable={true}
                 subscription={subscription}
