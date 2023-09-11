@@ -19,12 +19,12 @@
 .settings-btn {
     margin-left: auto;
     margin-right: 10px;
-    height: 35px;
-    width: 35px;
+    height: 30px;
+    width: 30px;
     border: none;
     border-radius: 5px;
     background-color: inherit;
-    padding: 0;
+    padding: 5px;
 }
 
 .settings-btn:hover {
@@ -82,6 +82,7 @@
     width: 75%;
     display: block;
     margin-top: 10px;
+    border-radius: 10px;
 }
 
 .item-comments {
@@ -95,6 +96,8 @@
 
 .item-icon {
     max-height: 30px;
+    border-radius: 4px;
+    margin-right: 5px;
 }
 
 .item-time {

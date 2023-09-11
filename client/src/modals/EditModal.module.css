@@ -1,17 +1,17 @@
 .edit-modal {
     background-color: var(--input-color);
     width: 400px;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .rename-input {
     width: 100%;         
     padding: 10px;
     font-size: 1.3em;
-    background-color: inherit;
+    background-color: var(--secondary-color);
     border: 0;
     border-bottom: 1px solid var(--border-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
     outline: 0;
     font-family: inherit;
     color: inherit;
@@ -39,6 +39,11 @@
 
 .delete-btn {
     margin-right: auto;
+    border: 1px solid #ce0606;
+}
+
+.delete-btn:hover {
+    color: #ce0606;
 }
 
 .save-btn {
