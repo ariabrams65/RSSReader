@@ -57,6 +57,19 @@ function FeedFolder({ folder }) {
     const [ open, setOpen ] = useState(false);
 
     const feedElements = folder.subscriptions.map(subscription => <SubscribedFeed key={subscription.id} subscription={subscription}/>); 
+    
+    if (folder.name === '') {
+        return (
+            <li className={styles['folder']}>
+                <SidebarButton
+                    selected={selectedFolder === folder.name}
+                    onClick={() => selectFolder(folder.name)}
+                    text={'feeds'}
+                />
+                <ul>{feedElements}</ul>
+            </li>
+        );
+    }
     return (
         <li className={styles['folder']}>
             <SidebarButton

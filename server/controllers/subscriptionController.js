@@ -20,7 +20,7 @@ async function addSubscription(req, res, next) {
         if (!req.body.feed) {
             throw new ServerError('Missing parameters', 400);
         }
-        const subscription = await saveSubscription(req.user.id, req.body.feed, req.body.folder || 'feeds');
+        const subscription = await saveSubscription(req.user.id, req.body.feed, req.body.folder);
         res.status(201).json({subscription: subscription});
     } catch (e) {
         console.log(e);

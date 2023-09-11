@@ -160,4 +160,6 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 
 * Show the feed url for subscriptions
 
-When changing subscrition name key changes between renders. Is this bad?
+* When changing subscrition name key changes between renders. Is this bad?
+
+* Currently updated the folder input with a useEffect with state dependencies. Idk if this is the correct way to do it
