@@ -77,7 +77,7 @@ function EditModal({ name, subscription, onClose}) {
                 <button className={`${styles['button']} ${styles['delete-btn']}`} type="button" onClick={handleDelete}>
                     {isFeed ? 'Unsubscribe' : 'Delete'}
                 </button> 
-                <button className={styles['button']}>Cancel</button>
+                <button className={styles['button']} type="button" onClick={() => onClose()}>Cancel</button>
                 <button className={`${styles['button']} ${styles['save-btn']}`} type="submit">Save</button>
             </div>
         </form>
