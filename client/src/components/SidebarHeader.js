@@ -13,6 +13,7 @@ function SidebarHeader() {
                 className={styles['add-feed-btn']}
                 selected={false}
                 iconSrc={'/images/add-feed-icon.png'}
+                isStaticIcon={true}
                 onClick={() => setAddFeedOpen(prev => !prev)}
                 text={'Add Feed'}
                 editable={false}

@@ -47,7 +47,7 @@ function Topnav() {
     return (
         <div className={styles['topnav']}>
             <button className={styles['settings-btn']} onClick={handleButtonClick}>
-                <img className={styles['settings-icon']} src="/images/settings-icon.png"></img>
+                <img className={`${styles['settings-icon']} static-icon`} src="/images/settings-icon.png"></img>
             </button>
             <Modal open={settingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
                 <SettingsModal/>

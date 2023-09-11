@@ -6,6 +6,7 @@
     --selected-button-color: #3A4349;
     --hovered-button-color: #313a41;
     --input-color: #3A4349;
+    --icon-color: #ffffff;
 }
 
 * {
@@ -47,4 +48,9 @@ ul {
     padding: 0;
     margin: 0;
     list-style-type: none;
+}
+
+.static-icon {
+    /* filter: opacity(0.5) drop-shadow(0 0 var(--icon-color)) saturate(1000%); */
+    filter: opacity(.3) drop-shadow(0 0 var(--icon-color)) drop-shadow(0 0 var(--icon-color)) drop-shadow(0 0 var(--icon-color));
 }

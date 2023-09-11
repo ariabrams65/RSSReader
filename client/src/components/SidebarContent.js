@@ -19,6 +19,7 @@ function SidebarContent() {
                 selected={allFeedsSelected}
                 onClick={selectAllFeeds}
                 iconSrc={'/images/all-feeds-icon.png'}
+                isStaticIcon={true}
                 text={'All Feeds'}
                 editable={false}
             />
@@ -57,9 +58,10 @@ function FeedFolder({ subscriptions }) {
                 onClick={() => selectFolder(folderName)}
                 text={folderName}
                 editable={true}
-                iconSrc={'/images/folder-dropdown-icon.png'}
+                iconSrc={'/images/chevron-icon.png'}
                 onIconClick={() => setOpen(open => !open)}
                 iconRotated={!open}
+                isStaticIcon={true}
             />
             {open && <ul>{feedElements}</ul>}
         </li>
