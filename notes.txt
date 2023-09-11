@@ -163,3 +163,7 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 * When changing subscrition name key changes between renders. Is this bad?
 
 * Currently updated the folder input with a useEffect with state dependencies. Idk if this is the correct way to do it
+
+* Strip white space from feed and folder name
+
+* Remove suggestions when entering in inputs

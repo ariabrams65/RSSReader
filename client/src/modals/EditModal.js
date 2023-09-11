@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSubscriptions } from '../context/SubscriptionContext';
 import { useSelection } from '../context/SelectionContext';
 import styles from './EditModal.module.css';
@@ -7,6 +7,12 @@ function EditModal({ name, subscription, onClose}) {
     const [nameInput, setNameInput] = useState(name);
     const { updateSubscriptions } = useSubscriptions();
     const { selectedFolder, selectedFeed, selectAllFeeds} = useSelection();
+    const inputRef = useRef();
+    
+    useEffect(() => {
+        inputRef.current.focus();
+        inputRef.current.select();
+    }, []);
     
     const isFeed = (subscription !== undefined);
     
@@ -68,6 +74,7 @@ function EditModal({ name, subscription, onClose}) {
     return (
         <form className={styles['edit-modal']} onSubmit={handleSubmit}>
             <input 
+                ref={inputRef}
                 className={styles['rename-input']}
                 onChange={(e) => setNameInput(e.target.value)} 
                 value={nameInput} 
