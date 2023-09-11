@@ -123,8 +123,6 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 
 * Uploading ompl currently uses real rss feeds. Probably make it use the test feeds
 
-* Add border-radius to images
-
 * When worker has an error, it looks like it never exits and prevents future jobs from running
 
 	Worker for job "updatePosts" had an error {
@@ -161,3 +159,5 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 	[0]: https://github.com/miniflux/v2/issues/1493
 
 * Show the feed url for subscriptions
+
+When changing subscrition name key changes between renders. Is this bad?

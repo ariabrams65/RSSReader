@@ -38,7 +38,7 @@ function Folders() {
         groupedSubscriptions[subscription.folder].push(subscription);
     });
     const folders = Object.values(groupedSubscriptions).map(group => {
-        return <FeedFolder subscriptions={group}/>
+        return <FeedFolder key={group[0].folder} subscriptions={group}/>
     });
     return (
         <ul>{folders}</ul>
@@ -49,10 +49,10 @@ function FeedFolder({ subscriptions }) {
     const { selectedFolder, selectFolder } = useSelection();
     const [ open, setOpen ] = useState(false);
 
-    const feedElements = subscriptions.map(subscription => <SubscribedFeed subscription={subscription}/>); 
+    const feedElements = subscriptions.map(subscription => <SubscribedFeed key={subscription.id} subscription={subscription}/>); 
     const folderName = subscriptions[0].folder;
     return (
-        <li key={folderName} className={styles['folder']}>
+        <li className={styles['folder']}>
             <SidebarButton
                 selected={selectedFolder === folderName}
                 onClick={() => selectFolder(folderName)}
@@ -71,7 +71,7 @@ function FeedFolder({ subscriptions }) {
 function SubscribedFeed({ subscription }) {
     const { selectedFeed, selectFeed } = useSelection();
     return (
-        <li key={subscription.id}>
+        <li>
             <SidebarButton
                 className={styles['subscription']}
                 selected={selectedFeed?.id === subscription.id}
