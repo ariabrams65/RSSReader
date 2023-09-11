@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSubscriptions } from '../context/SubscriptionContext';
 import { useSelection } from '../context/SelectionContext';
 import SidebarButton from './SidebarButton';
@@ -24,11 +24,19 @@ function SidebarHeader() {
 }
 
 function FeedInput({ open }) {
-    const [feedInput, setFeedInput] = useState('');
-    const [folderInput, setFolderInput] = useState('');
     const { selectedFolder, selectedFeed, selectFeed } = useSelection();
     const { updateSubscriptions } = useSubscriptions();
+    const [feedInput, setFeedInput] = useState('');
+    const [folderInput, setFolderInput] = useState('');
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        setFolderInput(getCurrentFolder());
+    }, [selectedFolder, selectedFeed]);
+
+    function getCurrentFolder() {
+        return selectedFolder || selectedFeed?.folder || '';
+    }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -44,7 +52,7 @@ function FeedInput({ open }) {
             },
             body: JSON.stringify({
                 feed: feedInput,
-                folder: folderInput || selectedFolder || selectedFeed?.folder || '' 
+                folder: folderInput 
             })
         });
         const json = await res.json();
@@ -63,8 +71,10 @@ function FeedInput({ open }) {
 
     if (!open) return null;
     return (
-        <form onSubmit={handleSubmit}>
+        <form className={styles['form']} onSubmit={handleSubmit}>
+            <label htmlFor="new-sub-input">Feed</label>
             <input
+                id="new-sub-input"
                 onChange={(e) => setFeedInput(e.target.value)}
                 value={feedInput} 
                 type="text" 
@@ -72,6 +82,7 @@ function FeedInput({ open }) {
                 className={`${styles['new-sub-input']} ${styles['input']}`}
                 placeholder="Enter RSS feed URL"
             />
+            <label htmlFor="folder-input">Folder</label>
             <input 
                 onChange={(e) => setFolderInput(e.target.value)} 
                 value={folderInput} 
