@@ -37,26 +37,32 @@ function Folders() {
         }
         groupedSubscriptions[subscription.folder].push(subscription);
     });
-    const folders = Object.values(groupedSubscriptions).map(group => {
-        return <FeedFolder key={group[0].folder} subscriptions={group}/>
-    });
+    let sortedFolders = [];
+    for (const folder in groupedSubscriptions) {
+        sortedFolders.push({
+            name: folder, 
+            subscriptions: groupedSubscriptions[folder]
+        });
+    }
+    sortedFolders.sort((a, b) => a.name.localeCompare(b.name));
+    const folders = sortedFolders.map(folder => <FeedFolder key={folder.name} folder={folder}/>);
+    
     return (
         <ul>{folders}</ul>
     );
 }
 
-function FeedFolder({ subscriptions }) {
+function FeedFolder({ folder }) {
     const { selectedFolder, selectFolder } = useSelection();
     const [ open, setOpen ] = useState(false);
 
-    const feedElements = subscriptions.map(subscription => <SubscribedFeed key={subscription.id} subscription={subscription}/>); 
-    const folderName = subscriptions[0].folder;
+    const feedElements = folder.subscriptions.map(subscription => <SubscribedFeed key={subscription.id} subscription={subscription}/>); 
     return (
         <li className={styles['folder']}>
             <SidebarButton
-                selected={selectedFolder === folderName}
-                onClick={() => selectFolder(folderName)}
-                text={folderName}
+                selected={selectedFolder === folder.name}
+                onClick={() => selectFolder(folder.name)}
+                text={folder.name}
                 editable={true}
                 iconSrc={'/images/chevron-icon.png'}
                 onIconClick={() => setOpen(open => !open)}
