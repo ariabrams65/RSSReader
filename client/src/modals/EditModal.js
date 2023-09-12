@@ -6,7 +6,7 @@ import styles from './EditModal.module.css';
 function EditModal({ name, subscription, onClose}) {
     const [nameInput, setNameInput] = useState(name);
     const { updateSubscriptions } = useSubscriptions();
-    const { selectedFolder, selectedFeed, selectAllFeeds} = useSelection();
+    const { selectedFolder, selectedFeed, selectAllFeeds, selectFolder, selectFeed } = useSelection();
     const inputRef = useRef();
     
     useEffect(() => {
@@ -34,11 +34,13 @@ function EditModal({ name, subscription, onClose}) {
                 subscriptionid: subscription.id,
                 newName: nameInput
             });
+            selectFeed(subscription);
         } else {
             await sendPatch('/subscriptions/rename/folder', {
                 oldName: name,
                 newName: nameInput
             });
+            selectFolder(nameInput);
         }
         updateSubscriptions();
         onClose();
