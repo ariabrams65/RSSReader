@@ -51,8 +51,8 @@ function FeedInput({ open }) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                feed: feedInput,
-                folder: folderInput 
+                feed: feedInput.trim(),
+                folder: folderInput.trim() 
             })
         });
         const json = await res.json();

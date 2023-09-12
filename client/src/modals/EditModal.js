@@ -29,18 +29,19 @@ function EditModal({ name, subscription, onClose}) {
     async function handleSubmit(e) {
         e.preventDefault();
         
+        const trimmedInput = nameInput.trim();
         if (isFeed) {
             await sendPatch('/subscriptions/rename', {
                 subscriptionid: subscription.id,
-                newName: nameInput
+                newName: trimmedInput 
             });
             selectFeed(subscription);
         } else {
             await sendPatch('/subscriptions/rename/folder', {
                 oldName: name,
-                newName: nameInput
+                newName: trimmedInput 
             });
-            selectFolder(nameInput);
+            selectFolder(trimmedInput);
         }
         updateSubscriptions();
         onClose();
