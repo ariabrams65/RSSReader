@@ -9,11 +9,11 @@ https://stackoverflow.com/questions/1326398/detecting-new-new-items-in-a-rss-fee
 
 TODO:
 
+* Delete unused dependencies
+
 *Add ability to check if add .rss to end of url works in url is invalid
 
 *Don't allow similar duplicates ie https://www.reddit.com/r/cats/.rss vs https://www.reddit.com/r/cats.rss
-
-*strip white space off of urls
 
 *Set timeout for requesting feed url if it takes too long
 
@@ -44,9 +44,6 @@ TODO:
 
 * react query
 
-
-*Ordering of feeds and folders aren't preserved when fetching from db
-
 *Feeds aren't being deleted when unsubscribing
 		^
 		| Probably related
@@ -62,8 +59,6 @@ TODO:
 * change sidebar color to chatgpt sidebar color
 
 
-* posts aren't updated when unsubscribing froma feed
-
 *Adding new feed will always request feed and parse xml
 	No need to do this. First check if feed already exists before doing this
 	
@@ -77,9 +72,6 @@ TODO:
 *Worker thread when does it get removed
 
 No need to pass down some props to SidebarButton if passing down the subscription object
-
-Unsubscribing from feeds in a folder sometimes causes the order of the folders to change
-	usually when there is only 1 feed left in the folder
 	
 * Add loading icon when adding feed
 
@@ -148,8 +140,6 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 		at listOnTimeout (node:internal/timers:569:17)
 		at process.processTimers (node:internal/timers:512:7) undefined
 
-* Add border radius for icons
-
 * Comment from hacker news:
 	I really like miniflux, but I really wish it had a weighted post ordering rather than a simple chronological ordering. I posted a feature request about this earlier this year[0], but the gist is this:
 	If you subscribe to some feeds that post 100+ times a day (like a major news outlet) and others that post only once every couple months or so (like many personal blogs), you'll never catch the latter because those posts are always drowned in a sea of the former. Reddit deals with this problem by weighting posts from each subreddit you subscribe to so that your frontpage contains content from as many of your subs as possible.
@@ -163,7 +153,5 @@ Unsubscribing from feeds in a folder sometimes causes the order of the folders t
 * When changing subscrition name key changes between renders. Is this bad?
 
 * Currently updated the folder input with a useEffect with state dependencies. Idk if this is the correct way to do it
-
-* Strip white space from feed and folder name
 
 * Remove suggestions when entering in inputs

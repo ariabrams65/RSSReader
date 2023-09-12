@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelection } from '../context/SelectionContext';
 
 function usePosts() {
     const [posts, setPosts] = useState([]);
     const [oldestPostDate, setOldestPostDate] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(false);
+    const inUseEffect = useRef(false);
     
     const {
         selectedFolder,
@@ -13,10 +14,18 @@ function usePosts() {
         allFeedsSelected
     } = useSelection();
     
+    
     useEffect(() => {
-        setPosts([]);
-        setOldestPostDate(null);
-        updatePosts(null);
+        if (inUseEffect.current) return;
+        
+        async function updateInitialPosts() {
+            inUseEffect.current = true;
+            setPosts([]);
+            setOldestPostDate(null);
+            await updatePosts(null);
+            inUseEffect.current = false;
+        }
+        updateInitialPosts();
     }, [selectedFolder, selectedFeed, allFeedsSelected]);
 
     async function updatePosts(olderThan=oldestPostDate) {
