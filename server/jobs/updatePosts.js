@@ -62,22 +62,24 @@ function getPosts(feedData, feedid) {
         post.commentsurl = item.comments;
         post.date = item.isoDate;
         post.feedid = feedid;
-        post.identifier = createPostIdentifier(item);
+        post.identifier = createPostIdentifier(item, feedid);
         
         posts.push(post);
     });
     return posts;
 }
 
-function createPostIdentifier(item) {
+function createPostIdentifier(item, feedid) {
+    const prefix = feedid + '_';
+
     if (item.guid !== undefined) {
-        return item.guid;
+        return prefix + item.guid;
     }
     if (item.link !== undefined) {
-        return item.link;
+        return prefix + item.link;
     }
     if (item.title !== undefined) {
-        return item.title;
+        return prefix + item.title;
     }
     return null;
 }
