@@ -1,4 +1,3 @@
-require('dotenv').config();
 const db = require('../db/db');
 const { updateFeedsPosts } = require('../services/postService');
 

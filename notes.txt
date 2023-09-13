@@ -159,3 +159,5 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 * Bree can handle the case where if the job is already running it won't create another worker thread. Look at docs
 
 * Move updateFeedsPosts into a services probably
+
+* Add tests form updatePosts.js
