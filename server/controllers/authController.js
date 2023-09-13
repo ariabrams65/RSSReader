@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { ServerError } = require('../customErrors');
+const { UserError } = require('../customErrors');
 
 function login(req, res, next) {
     passport.authenticate('local', (error, user) => {
@@ -7,7 +7,7 @@ function login(req, res, next) {
             return next(error);
         }
         if (!user) {
-            throw new ServerError('Authentication failed', 401);
+            throw new UserError('Authentication failed', 401);
         }
         req.login(user, (error) => {
             if (error) {
@@ -29,7 +29,7 @@ function isAuthenticated(req, res) {
     if (req.isAuthenticated()) {
         return res.sendStatus(204);
     }
-    throw new ServerError('', 401);
+    res.sendStatus(401);
 }
 
 module.exports = { login, logout, isAuthenticated };

@@ -153,3 +153,7 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 * Add db indexes
 
 * Add ability to import opml into a specific folder. (Will have to flatten the existing folders in the file)
+
+* Instead of using a worker thread for opml imports, use a job queue like BullMQ or pg-boss to make status bar easier as well as more scallable
+
+* Bree can handle the case where if the job is already running it won't create another worker thread. Look at docs

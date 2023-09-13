@@ -5,12 +5,12 @@ class QueryError extends Error {
     }
 }
 
-class ServerError extends Error {
+class UserError extends Error {
     constructor(message, status) {
-        super(message);
-        this.name = 'ServerError';
+        super(message)
+        this.name = 'UserError';
         this.status = status;
     }
 }
 
-module.exports = { QueryError, ServerError };
+module.exports = { QueryError, UserError };

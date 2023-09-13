@@ -1,17 +1,12 @@
-const bcrypt = require('bcrypt');
-const db = require('../db/db');
-const { ServerError } = require('../customErrors');
+const { createUser } = require('../services/registrationService');
+const { UserError } = require('../customErrors');
 
 async function register(req, res, next) {
     try {
         if (!req.body.email || !req.body.password) {
-            throw new ServerError('Missing username and/or password', 400);
+            throw new UserError('Missing username and/or password');
         }
-        if (await db.userExists(req.body.email)) {
-            throw new ServerError('User already exists', 400);
-        }
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        await db.createUser(req.body.email, hashedPassword); 
+        await createUser(req.body.email, req.body.password);
         res.sendStatus(201);
     } catch(e) {
         console.log(e);

@@ -10,7 +10,7 @@ const session = require('express-session');
 const db = require('./db/db');
 const initializePassport = require('./config/passportConfig');
 const cors = require('cors');
-const { ServerError } = require('./customErrors');
+const { UserError } = require('./customErrors');
 
 db.createTables();
 initializePassport(passport);
@@ -39,8 +39,8 @@ app.use('/subscriptions', require('./routes/subscriptions'));
 app.use('/authenticated', require('./routes/authentication'));
 
 app.use((err, req, res, next) => {
-    if (err instanceof ServerError) {
-        return res.status(err.status).json({message: err.message});
+    if (err instanceof UserError) {
+        return res.status(err.status || 400).json({message: err.message});
     }
     next(err);
 });
