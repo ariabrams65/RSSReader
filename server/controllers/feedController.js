@@ -1,4 +1,4 @@
-const { getPosts } = require('../services/feedService');
+const { getPosts } = require('../services/postService');
 
 async function getFeed(req, res, next) {
     try {

@@ -1,7 +1,7 @@
 const db = require('../db/db');
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
-const { updateFeedsPosts } = require('../jobs/updatePosts');
+const { updateFeedsPosts } = require('./postService');
 const { UserError, QueryError } = require('../customErrors');
 const { readFile } = require('fs/promises');
 const xml2js = require('xml2js');
