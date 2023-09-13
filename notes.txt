@@ -19,14 +19,6 @@ TODO:
 
 *capatalization in url. Same url but it is seen as a different one
 
-*currently only inserting posts if there is no identifier conflict between every posts
-	maybe change this to only if there is an identifier conflict with posts from same feed
-
-*subscribe to 2 of the same feeds but with case differenses in url:
-	before: Second feed posts weren't populating due to conflicts
-	make sure conflicts don't happen between different feeds
-
-
 *JSON version of reddit feeds might have upvotes
 	ex. http://www.reddit.com/r/inthemorning/.json
 
@@ -155,3 +147,9 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 * Currently updated the folder input with a useEffect with state dependencies. Idk if this is the correct way to do it
 
 * Remove suggestions when entering in inputs
+
+* Add tests to make sure that when posts are updated, posts that are already in db don't get added (Create test file for posts tests)
+
+* Add db indexes
+
+* Add ability to import opml into a specific folder. (Will have to flatten the existing folders in the file)

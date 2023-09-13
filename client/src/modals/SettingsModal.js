@@ -1,6 +1,7 @@
 import SidebarButton from '../components/SidebarButton';
 import { useState } from 'react';
 import styles from './SettingsModal.module.css';
+import { useNavigate } from 'react-router-dom';
 
 function SettingsModal() {
     const [selectedSetting, setSelectedSetting] = useState('General');
@@ -54,8 +55,17 @@ function GeneralSettings() {
 }
 
 function AccountSettings() {
+    const navigate = useNavigate();
+
+    async function handleLogout() {
+        await fetch('logout', {method: 'DELETE'});
+        navigate('/login');
+    } 
+    
     return (
-        'Account'
+        <Setting name={'Logout'}>
+            <button className={styles['settings-btn']} onClick={handleLogout}>Logout</button>
+        </Setting>
     );
 }
 

@@ -136,7 +136,7 @@ async function importOPML(req, res, next) {
 function getFoldersFromOPML(xml) {
     const folders = {};
     const outlines = xml.opml.body[0].outline;
-    getFoldersR(folders, outlines, 'feeds');
+    getFoldersR(folders, outlines, '');
     return folders;
 }
 
