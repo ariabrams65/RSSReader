@@ -260,5 +260,6 @@ describe('POST /opml', () => {
         expect(await getNumRows('feeds')).toBe(4);
     }, 10000);
     
-    test.todo('Uploading invalid opml file returns error');
+    test.todo('Uploading invalid opml file returns 400');
+    test.todo('Uploading with empty params returns 400');
 });

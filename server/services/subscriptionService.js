@@ -73,6 +73,7 @@ async function importOPML(userid, filePath) {
     const xml = await readFile(filePath, 'utf8');
     const parser = new xml2js.Parser();    
     const opmlObj = await parser.parseStringPromise(xml);
+    console.log('done parsing opml');
 
     const worker = new Worker('./jobs/updateFromOPML', {
         workerData: {

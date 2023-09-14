@@ -161,3 +161,7 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 * Move updateFeedsPosts into a services probably
 
 * Add tests form updatePosts.js
+
+* Validate params of importOPML and wrap in try catch or else server will crash
+
+* Only let users submit .opml (or some file extensions) and only let server accept files of those types

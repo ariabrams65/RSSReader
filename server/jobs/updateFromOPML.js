@@ -13,6 +13,7 @@ async function update() {
         }
     }
     const results = await Promise.allSettled(promises);
+    console.log('done importing subscriptions');
     const rejected = results
         .filter(result => result.status === 'rejected')
         .map(result => result.reason);

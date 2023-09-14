@@ -1,5 +1,5 @@
 import SidebarButton from '../components/SidebarButton';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import styles from './SettingsModal.module.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -71,21 +71,47 @@ function AccountSettings() {
 
 function ImportExportSettings() {
     const [fileUploadText, setFileUploadText] = useState('Select file');
+    const inputRef = useRef();
     
     function handleFileSelect(e) {
         if (e.target.files.length === 0) {
+            setFileUploadText('Select file');
             return;
         }
         const fileName = e.target.files[0].name;
         setFileUploadText(fileName);
     }
+    
+    async function handleFileSubmit(e) {
+        e.preventDefault();
+        
+        if (inputRef.current.files.length === 0) {
+            console.log('No file selected');
+            return
+        }
+       
+        const formData = new FormData();
+        formData.append('opml', inputRef.current.files[0]);
+
+        const res = await fetch('/subscriptions/opml', {
+            method: 'POST',
+            body: formData 
+        });
+        if (!res.ok) {
+            console.log('Import failed');
+        } else {
+            inputRef.current.value = '';
+            setFileUploadText('Select file');
+            window.alert('Subscriptions will be uploaded shortly. Refresh in a little bit');
+        }
+    }
 
     return (
         <>
             <Setting name={'import'}>
-                <form method="POST" enctype="multipart/form-data" action="/subscriptions/opml">
+                <form onSubmit={handleFileSubmit} method="POST" encType="multipart/form-data" action="/subscriptions/opml">
                     <label className={styles['settings-btn']}>
-                        <input onChange={handleFileSelect} name="opml" type="file" style={{display: 'none'}}/>
+                        <input ref={inputRef} onChange={handleFileSelect} name="opml" type="file" style={{display: 'none'}}/>
                         {fileUploadText}
                     </label>
                     <button className={styles['settings-btn']}>Upload</button>
