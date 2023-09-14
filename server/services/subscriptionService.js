@@ -88,12 +88,13 @@ async function getFeedHeaders(feedurl) {
         customFields: {
             feed: ['image', 'icon']
         },
-        timeout: 5000
+        // timeout: 5000
     });
     let feed;
     try {
         feed = await parser.parseURL(feedurl);
     } catch (e) {
+        console.log(feedurl);
         console.log(e);
         throw e;
     }

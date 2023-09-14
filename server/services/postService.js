@@ -18,42 +18,48 @@ async function getPosts(userid, folder, subscriptionid, olderThan, limit) {
 }
 
 async function updateFeedsPosts(feed) {
-    const headers = {};
-    if (feed.lastmodified !== null && feed.lastmodified !== undefined) {
-        headers['If-Modified-Since'] = feed.lastmodified;
-    }
-    if (feed.etag !== null && feed.etag !== undefined) {
-        headers['If-None-Match'] = feed.etag;
-    }
-    const response = await fetch(feed.feedurl, {
-        method: 'GET',
-        headers: headers
-    });
-    if (response.status === 304) {
-        console.log('Already have latest posts');
+    try {
+        const headers = {};
+        if (feed.lastmodified !== null && feed.lastmodified !== undefined) {
+            headers['If-Modified-Since'] = feed.lastmodified;
+        }
+        if (feed.etag !== null && feed.etag !== undefined) {
+            headers['If-None-Match'] = feed.etag;
+        }
+        const response = await fetch(feed.feedurl, {
+            method: 'GET',
+            headers: headers
+        });
+        if (response.status === 304) {
+            console.log('Already have latest posts');
+            return;
+        }
+        if (response.headers.has('Last-Modified')) {
+            await db.updateFeedLastModified(feed.id, response.headers.get('Last-Modified'));
+        }
+        if (response.headers.has('ETag')) {
+            await db.updatefeedETag(feed.id, response.headers.get('ETag'));
+        }
+        const xmlText = await response.text();
+        const parserConfig = {
+            customFields: {
+                item: [
+                    ['media:thumbnail', 'mediaThumbnail'], 
+                    ['media:group', 'mediaGroup'],
+                    ['media:content', 'mediaContent']
+                ] 
+            }
+        };
+        const parser = new Parser(parserConfig);
+        const feedData = await parser.parseString(xmlText);
+        const posts = getPostsFromFeedData(feedData, feed.id);
+        await Promise.all(posts.map(post => db.insertPost(post)));
+        console.log('updated feed: ', feed.title);
+    } catch (e) {
+        console.log(feed.feedurl);
+        console.log(e);
         return;
     }
-    if (response.headers.has('Last-Modified')) {
-        await db.updateFeedLastModified(feed.id, response.headers.get('Last-Modified'));
-    }
-    if (response.headers.has('ETag')) {
-        await db.updatefeedETag(feed.id, response.headers.get('ETag'));
-    }
-    const xmlText = await response.text();
-    const parserConfig = {
-        customFields: {
-            item: [
-                ['media:thumbnail', 'mediaThumbnail'], 
-                ['media:group', 'mediaGroup'],
-                ['media:content', 'mediaContent']
-            ] 
-        }
-    };
-    const parser = new Parser(parserConfig);
-    const feedData = await parser.parseString(xmlText);
-    const posts = getPostsFromFeedData(feedData, feed.id);
-    await Promise.all(posts.map(post => db.insertPost(post)));
-    console.log('updated feed: ', feed.title);
 }
 
 function getPostsFromFeedData(feedData, feedid) {

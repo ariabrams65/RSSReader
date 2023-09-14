@@ -158,10 +158,14 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 
 * Bree can handle the case where if the job is already running it won't create another worker thread. Look at docs
 
-* Move updateFeedsPosts into a services probably
-
-* Add tests form updatePosts.js
+* Add tests for updatePosts.js
 
 * Validate params of importOPML and wrap in try catch or else server will crash
 
 * Only let users submit .opml (or some file extensions) and only let server accept files of those types
+
+* When tables are truncated and browswer isn't refreshed. Click on a subscription. Error occurs on server. Should return 400 instead of 500
+
+* When clicking  on subscriptions. The duration of the fetch alternations from ~20 ms to ~300 ms. IDK why
+
+* WHen initially requesting feed headers, we should be able to update the posts with that data instead of having to request the data again if we need to update the posts
