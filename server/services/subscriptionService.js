@@ -17,8 +17,7 @@ async function saveSubscription(userid, url, folder) {
             const res = await requestFeed(url);
             parsedFeed = await parseFeed(await res.text(), url);
         } catch (e) {
-            console.log(e);
-            throw new UserError('URL is invalid');
+            throw new UserError(`URL ${url} is invalid`);
         }
         feed = await db.addFeed(parsedFeed);
         await updateFeedsPosts(feed.id, parsedFeed.posts); 

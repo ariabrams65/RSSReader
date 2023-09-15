@@ -1,6 +1,7 @@
 const db = require('../db/db');
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
+const e = require('express');
 
 async function getPosts(userid, folder, subscriptionid, olderThan, limit) {
     if (folder) {
@@ -24,15 +25,21 @@ async function updateFeedsPosts(feedid, posts) {
         post.identifier = feedid + '_' + post.identifier;
         db.insertPost(post)
     }));
-    console.log('updated feed: ', feedid);
+    // console.log('updated feed: ', feedid);
 }
 
 async function requestFeed(url, headers) {
-    const res = await fetch(url, {
-        method: 'GET',
-        headers: headers
-    });
-    return res;
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: headers
+        });
+        return res;
+    } catch(e) {
+        console.log(url);
+        console.log(e);
+        throw e;
+    }
 }
 
 async function parseFeed(xml, url) {
@@ -50,6 +57,7 @@ async function parseFeed(xml, url) {
     try {
         feedData = await parser.parseString(xml);
     } catch (e) {
+        console.log(url);
         console.log(e);
         throw e;
     }
@@ -85,7 +93,8 @@ async function parseFeed(xml, url) {
 }
 
 function createPostIdentifier(item) {
-    if (item.guid !== undefined) {
+    //for some reason guid seems to not be a string when it is empty
+    if (item.guid !== undefined && typeof item.guid === 'string') {
         return item.guid;
     }
     if (item.link !== undefined) {

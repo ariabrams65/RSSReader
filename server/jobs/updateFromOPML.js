@@ -17,6 +17,11 @@ async function update() {
     const rejected = results
         .filter(result => result.status === 'rejected')
         .map(result => result.reason);
+
+    rejected.forEach(result => {
+        console.log(result);
+    });
+    console.log(`${results.length - rejected.length}/${results.length}`);
 }
 
 function getFoldersFromOPML(xml) {
