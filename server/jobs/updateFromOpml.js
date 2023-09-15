@@ -4,7 +4,7 @@ const { saveSubscription } = require('../services/subscriptionService');
 update();
 
 async function update() {
-    const folders = getFoldersFromOPML(workerData.opmlObj);
+    const folders = getFoldersFromOpml(workerData.opmlObj);
 
     const promises = [];
     for (const [folder, feeds] of Object.entries(folders)) {
@@ -24,7 +24,7 @@ async function update() {
     console.log(`${results.length - rejected.length}/${results.length}`);
 }
 
-function getFoldersFromOPML(xml) {
+function getFoldersFromOpml(xml) {
     const folders = {};
     const outlines = xml.opml.body[0].outline;
     getFoldersR(folders, outlines, '');

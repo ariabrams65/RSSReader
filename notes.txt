@@ -181,3 +181,5 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 
 * Sometimes a url will redirect. The origional url will be invalid but the redirect one will be valid
 	ex: http://www.patentlyapple.com/patently-apple/rss.xml
+	
+* If a user uploads a feed that is really long (potentially thousands of posts) this will cause the server to lag since it isn't in it's own thread

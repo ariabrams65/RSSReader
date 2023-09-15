@@ -69,13 +69,13 @@ async function deleteFolder(userid, folder) {
     }
 }
 
-async function importOPML(userid, filePath) {
+async function importOpml(userid, filePath) {
     const xml = await readFile(filePath, 'utf8');
     const parser = new xml2js.Parser();    
     const opmlObj = await parser.parseStringPromise(xml);
     console.log('done parsing opml');
 
-    const worker = new Worker('./jobs/updateFromOPML', {
+    const worker = new Worker('./jobs/updateFromOpml', {
         workerData: {
             userid: userid,
             opmlObj: opmlObj
@@ -83,4 +83,4 @@ async function importOPML(userid, filePath) {
     });
 }
 
-module.exports = { saveSubscription, getSubscriptions, deleteSubscription, renameSubscription, renameFolder, deleteFolder, importOPML };
+module.exports = { saveSubscription, getSubscriptions, deleteSubscription, renameSubscription, renameFolder, deleteFolder, importOpml };

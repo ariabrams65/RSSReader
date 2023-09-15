@@ -75,13 +75,13 @@ async function deleteFolder(req, res, next) {
     }
 }
 
-async function importOPML(req, res, next) {
+async function importOpml(req, res, next) {
     try {
-        subscriptionService.importOPML(req.user.id, req.file.path);
+        subscriptionService.importOpml(req.user.id, req.file.path);
         res.sendStatus(202);
     } catch (e) {
         next(e);
     }
 }
 
-module.exports = { getSubscriptions, addSubscription, deleteSubscription, renameSubscription , renameFolder, deleteFolder, importOPML};
+module.exports = { getSubscriptions, addSubscription, deleteSubscription, renameSubscription , renameFolder, deleteFolder, importOpml};
