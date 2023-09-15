@@ -16,7 +16,7 @@ db.createTables();
 initializePassport(passport);
 
 const app = express();
-app.use(express.static('__test__/integration/testFeeds'));
+app.use(express.static('__test__/testFeeds'));
 app.use(express.urlencoded({ extended: false }));
 // app.use(cors({
 //     origin: "http://localhost:5000",

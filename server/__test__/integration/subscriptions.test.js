@@ -88,8 +88,31 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('posts')).toEqual(25);
     });
 
-    test.todo('Same feed can be added to multiple folders');
-    test.todo('Subscribing to feed that is already subscribed to by other users uses already existing feed');
+    test('Same feed can be added to multiple folders', async () => {
+        await addSubscription(agent, serverAddress + '/redditAll.xml', 'folder1');
+
+        expect(await getNumRows('subscriptions')).toEqual(1);
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
+
+        await addSubscription(agent, serverAddress + '/redditAll.xml', 'folder2');
+        expect(await getNumRows('subscriptions')).toEqual(2);
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
+    });
+    test('Subscribing to feed that is already subscribed to by other users uses already existing feed', async () => {
+        await addSubscription(agent, serverAddress + '/redditAll.xml', '');
+
+        expect(await getNumRows('subscriptions')).toEqual(1);
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
+
+        const agent2 = await getLoggedInAgent(2);
+        await addSubscription(agent2, serverAddress + '/redditAll.xml', '');
+        expect(await getNumRows('subscriptions')).toEqual(2);
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
+    });
 });
 
 describe('DELETE /subscriptions', () => {
@@ -123,7 +146,23 @@ describe('DELETE /subscriptions', () => {
         expect(res.statusCode).toBe(400);
     }); 
 
-    test.todo('Deleting subscription that is subscribed by multiple users does not delete feed or posts');
+    test('Deleting subscription that is subscribed by multiple users does not delete feed or posts', async () => {
+        const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
+
+        const agent2 = await getLoggedInAgent(2);
+        await addSubscription(agent2, serverAddress + '/redditAll.xml', '');
+        expect(await getNumRows('subscriptions')).toEqual(2);
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
+        
+         const res2 = await agent
+            .delete('/subscriptions')
+            .query({subscriptionid: res.body.subscription.id});
+        expect(res2.statusCode).toBe(204);
+        expect(await getNumRows('subscriptions')).toEqual(1);
+        expect(await getNumRows('feeds')).toEqual(1);
+        expect(await getNumRows('posts')).toEqual(25);
+    });
 });
 
 describe('PATCH /subscriptions/rename', () => {
