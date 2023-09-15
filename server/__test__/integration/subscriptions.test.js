@@ -89,6 +89,7 @@ describe('POST /subscriptions', () => {
     });
 
     test.todo('Same feed can be added to multiple folders');
+    test.todo('Subscribing to feed that is already subscribed to by other users uses already existing feed');
 });
 
 describe('DELETE /subscriptions', () => {

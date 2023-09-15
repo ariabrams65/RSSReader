@@ -1,28 +1,29 @@
 const db = require('../db/db');
-const Parser = require('rss-parser');
-const removeTrailingSlash = require('../helpers/commonHelpers');
-const { updateFeedsPosts } = require('./postService');
+const { updateFeedsPosts } = require('./feedService');
 const { UserError, QueryError } = require('../customErrors');
 const { readFile } = require('fs/promises');
 const xml2js = require('xml2js');
 const { Worker } = require('node:worker_threads');
+const { parseFeed, requestFeed } = require('../services/feedService');
 
 async function saveSubscription(userid, url, folder) {
     if (await db.subscriptionExists(userid, url, folder)) {
         throw new UserError('Cannot add duplicate subscription');
     }
-    let feedHeaders;
-    try {
-        feedHeaders = await getFeedHeaders(url);
-    } catch {
-        throw new UserError('URL is invalid');
+    let feed = await db.getFeedFromUrl(url);
+    if (feed === undefined) {
+        let parsedFeed;
+        try {
+            const res = await requestFeed(url);
+            parsedFeed = await parseFeed(await res.text(), url);
+        } catch (e) {
+            console.log(e);
+            throw new UserError('URL is invalid');
+        }
+        feed = await db.addFeed(parsedFeed);
+        await updateFeedsPosts(feed.id, parsedFeed.posts); 
     }
-    const subscription = await db.addUserSubscription(userid, feedHeaders, folder);
-    const feed = await db.getFeed(subscription.feedid);
-    if (feed.numposts === 0) {
-        await updateFeedsPosts(feed);
-    }
-    return subscription;
+    return await db.addUserSubscription(userid, feed.id, feed.title, folder);
 }
 
 async function getSubscriptions(userid) {
@@ -81,34 +82,6 @@ async function importOPML(userid, filePath) {
             opmlObj: opmlObj
         } 
     });
-}
-
-async function getFeedHeaders(feedurl) {
-    const parser = new Parser({
-        customFields: {
-            feed: ['image', 'icon']
-        },
-        // timeout: 5000
-    });
-    let feed;
-    try {
-        feed = await parser.parseURL(feedurl);
-    } catch (e) {
-        console.log(feedurl);
-        console.log(e);
-        throw e;
-    }
-    const headers = {};
-    headers.feedurl = feedurl;
-    if (feed.image !== undefined) {
-        headers.iconurl = feed.image.url[0];
-    } else {
-        headers.iconurl = feed.icon;
-    }
-    headers.iconurl = removeTrailingSlash(headers.iconurl);
-    headers.title = feed.title;
-
-    return headers;
 }
 
 module.exports = { saveSubscription, getSubscriptions, deleteSubscription, renameSubscription, renameFolder, deleteFolder, importOPML };

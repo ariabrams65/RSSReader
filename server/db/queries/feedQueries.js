@@ -22,14 +22,19 @@ async function getAllSubscribedFeedIds(userid) {
     return res.rows.map(row => row.feedid);
 }
 
-async function getFeed(id) {
-   const getFeedQuery = 
-   `
-    SELECT id, iconurl, feedurl, title, numposts, etag, TO_CHAR(lastmodified AT TIME ZONE 'GMT', 'Dy, DD Mon YYYY HH24:MI:SS TZ') || 'GMT' as lastmodified
-    FROM feeds
-    WHERE id = $1;
-   `;
-    const res = await query(getFeedQuery, [id]);
+async function addFeed(parsedFeed) {
+    const insertFeedQuery = 
+    `
+    INSERT INTO feeds (feedurl, iconurl, title)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (feedurl) DO NOTHING
+    RETURNING id, title;
+    `;
+    const res = await query(insertFeedQuery, [
+        parsedFeed.feedurl,
+        parsedFeed.iconurl,
+        parsedFeed.title
+    ]);
     return res.rows[0];
 }
 
@@ -55,6 +60,17 @@ async function getFolderFeedIds(id, folder) {
     
 }
 
+async function getFeedFromUrl(url) {
+    const getFeedQuery = 
+    `
+    SELECT id, title
+    FROM feeds
+    WHERE feedurl = $1;
+    `;
+    const res = await query(getFeedQuery, [url]);
+    return res.rows[0];
+}
+
 async function updateFeedLastModified(id, lastmodified) {
     const updateQuery = 
     `
@@ -74,4 +90,4 @@ async function updatefeedETag(id, etag) {
     `;
     await query(updateQuery, [etag, id]);
 }
-module.exports = { getFeedId, getAllSubscribedFeedIds, getFeed, getAllFeeds, getFolderFeedIds, updateFeedLastModified, updatefeedETag};
+module.exports = { getFeedId, getAllSubscribedFeedIds, addFeed, getAllFeeds, getFolderFeedIds, getFeedFromUrl, updateFeedLastModified, updatefeedETag};
