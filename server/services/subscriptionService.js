@@ -6,21 +6,45 @@ const xml2js = require('xml2js');
 const { Worker } = require('node:worker_threads');
 const { parseFeed, requestFeed } = require('../services/feedService');
 
-async function saveSubscription(userid, url, folder) {
-    if (await db.subscriptionExists(userid, url, folder)) {
+//If contentType is html we need check if a feed url is linked in the html
+async function getFeedUrlAndXml(contentType, url, text) {
+    if (contentType.includes('xml')) {
+        return {feedurl: url, xml: text};
+    } else if (contentType.includes('text/html')) {
+        //todo - find feed url in html and get the xml from that feed
+        throw new UserError(`URL ${url} is not a valid feed`); //So tests pass. Remove
+    } else {
+        throw new UserError(`URL ${url} is not a valid feed`);
+    }
+}
+
+async function parseAndAddFeed(xml, feedurl) {
+    let parsedFeed;
+    try {
+        parsedFeed = await parseFeed(xml, feedurl);
+    } catch (e) {
+        throw new UserError(`Error parsing feed ${feedurl}`);
+    }
+    feed = await db.addFeed(parsedFeed);
+    await updateFeedsPosts(feed.id, parsedFeed.posts); 
+    return feed;
+}
+
+async function saveSubscription(userid, url, folder) {  
+    let res;
+    try {
+        res = await requestFeed(url);
+    } catch (e) {
+        throw new UserError(`URL ${url} faild to load`);
+    }
+    const contentType = res.headers.get('Content-Type');
+    const { feedurl, xml } = await getFeedUrlAndXml(contentType, url, await res.text());
+    if (await db.subscriptionExists(userid, feedurl, folder)) {
         throw new UserError('Cannot add duplicate subscription');
     }
-    let feed = await db.getFeedFromUrl(url);
+    let feed = await db.getFeedFromUrl(feedurl);
     if (feed === undefined) {
-        let parsedFeed;
-        try {
-            const res = await requestFeed(url);
-            parsedFeed = await parseFeed(await res.text(), url);
-        } catch (e) {
-            throw new UserError(`URL ${url} is invalid`);
-        }
-        feed = await db.addFeed(parsedFeed);
-        await updateFeedsPosts(feed.id, parsedFeed.posts); 
+        feed = await parseAndAddFeed(xml, feedurl);
     }
     return await db.addUserSubscription(userid, feed.id, feed.title, folder);
 }

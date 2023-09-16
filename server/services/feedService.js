@@ -1,7 +1,6 @@
 const db = require('../db/db');
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
-const e = require('express');
 
 async function getPosts(userid, folder, subscriptionid, olderThan, limit) {
     if (folder) {
@@ -34,6 +33,9 @@ async function requestFeed(url, headers) {
             method: 'GET',
             headers: headers
         });
+        if (!res.ok) {
+            throw new Error(`Error fetching URL ${url}`);
+        }
         return res;
     } catch(e) {
         console.log(url);

@@ -186,3 +186,5 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 
 * Some websites have rss links on them. Some readers are able to find these links from a given website url
 	ex: https://appleworld.today/blog/
+	
+* Sometimes adding /rss to the end of the root of urls is the rss feed
