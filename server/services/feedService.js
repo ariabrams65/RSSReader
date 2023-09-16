@@ -33,9 +33,6 @@ async function requestFeed(url, headers) {
             method: 'GET',
             headers: headers
         });
-        if (!res.ok) {
-            throw new Error(`Error fetching URL ${url}`);
-        }
         return res;
     } catch(e) {
         console.log(url);

@@ -18,8 +18,7 @@ async function updatePosts() {
                 headers['If-None-Match'] = feed.etag;
             }
             const res = await requestFeed(feed.feedurl, headers);
-            //Should be unecessary since requestFeed throws error for any status other than 200-299
-            if (res.status === 304) {
+            if (res.status === 304 || !res.ok) {
                 return;
             }
             if (res.headers.has('Last-Modified')) {

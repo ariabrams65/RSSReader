@@ -5,14 +5,30 @@ const { readFile } = require('fs/promises');
 const xml2js = require('xml2js');
 const { Worker } = require('node:worker_threads');
 const { parseFeed, requestFeed } = require('../services/feedService');
+const  feedFinder = require('@arn4v/feed-finder');
 
 //If contentType is html we need check if a feed url is linked in the html
 async function getFeedUrlAndXml(contentType, url, text) {
     if (contentType.includes('xml')) {
         return {feedurl: url, xml: text};
     } else if (contentType.includes('text/html')) {
-        //todo - find feed url in html and get the xml from that feed
-        throw new UserError(`URL ${url} is not a valid feed`); //So tests pass. Remove
+        let feedUrls
+        try {
+            feedUrls = await feedFinder(url); //Should  try catch prob
+        } catch {
+            throw new UserError(`URL ${url} faild to load`);
+        }
+        if (feedUrls.length === 0) {
+            throw new UserError(`Couldn't find any feeds for ${url}`);
+        }
+        for (const feedUrl of feedUrls) {
+            try {
+                const res = await requestFeed(feedUrl);
+                if (!res.ok || !res.headers.get('Content-Type').includes('xml')) continue;
+                return {feedurl: feedUrl, xml: await res.text()};
+            } catch {}
+        }
+        throw new UserError(`Couldn't find any valid feeds for ${url}`);
     } else {
         throw new UserError(`URL ${url} is not a valid feed`);
     }
@@ -35,10 +51,20 @@ async function saveSubscription(userid, url, folder) {
     try {
         res = await requestFeed(url);
     } catch (e) {
-        throw new UserError(`URL ${url} faild to load`);
+        throw new UserError(`URL ${url} failed to load`);
+    }
+    if (res.status === 429) {
+        //Do something to handle rate limiting
+        throw new UserError(`${url} responded with ${res.status}`);
     }
     const contentType = res.headers.get('Content-Type');
-    const { feedurl, xml } = await getFeedUrlAndXml(contentType, url, await res.text());
+    let text;
+    try {
+        text = await res.text();
+    } catch (e) {
+        throw new UserError(`Couldn't get text content of ${url}`);
+    }
+    const { feedurl, xml } = await getFeedUrlAndXml(contentType, url, text);
     if (await db.subscriptionExists(userid, feedurl, folder)) {
         throw new UserError('Cannot add duplicate subscription');
     }

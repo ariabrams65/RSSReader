@@ -181,6 +181,7 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 
 * Sometimes a url will redirect. The origional url will be invalid but the redirect one will be valid
 	ex: http://www.patentlyapple.com/patently-apple/rss.xml
+	add redirect: 'follow' to fetch headers
 	
 * If a user uploads a feed that is really long (potentially thousands of posts) this will cause the server to lag since it isn't in it's own thread
 
@@ -188,3 +189,15 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 	ex: https://appleworld.today/blog/
 	
 * Sometimes adding /rss to the end of the root of urls is the rss feed
+
+* Test parsing of RDF feeds
+
+* https://www.npmjs.com/package/@arn4v/feed-finder
+
+TEST FEEDS:
+404 with no rss feeds in html: https://www.gadgette.com/feed
+Doesn't load /times out: http://www.asymco.com/feed/
+HTML page that has rss feed in source: https://appleworld.today/blog/amp/?format=RSS
+Error parsing: https://www.macupdate.com/mommy/updates.xml
+HTML feed that doesn't have rss feed in source: https://www.tested.com/feeds/
+redirects to valid feed: http://www.patentlyapple.com/patently-apple/rss.xml

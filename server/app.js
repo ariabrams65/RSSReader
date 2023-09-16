@@ -42,7 +42,7 @@ app.use((err, req, res, next) => {
     if (err instanceof UserError) {
         return res.status(err.status || 400).json({message: err.message});
     }
-    next(err);
+    return res.status(500).json({message: 'Internal Server Error'});
 });
 
 module.exports = app;
