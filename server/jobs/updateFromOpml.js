@@ -1,7 +1,9 @@
 const { workerData } = require('node:worker_threads');
 const { saveSubscription } = require('../services/subscriptionService');
 
-update();
+if (require.main === module) {
+    update();
+}
 
 async function update() {
     const folders = getFoldersFromOpml(workerData.opmlObj);
@@ -24,9 +26,9 @@ async function update() {
     console.log(`${results.length - rejected.length}/${results.length}`);
 }
 
-function getFoldersFromOpml(xml) {
+function getFoldersFromOpml(opmlObj) {
     const folders = {};
-    const outlines = xml.opml.body[0].outline;
+    const outlines = opmlObj.opml.body[0].outline;
     getFoldersR(folders, outlines, '');
     return folders;
 }
@@ -45,3 +47,5 @@ function getFoldersR(folders, outlines, folder) {
         }
     }
 }
+
+module.exports = { getFoldersFromOpml };

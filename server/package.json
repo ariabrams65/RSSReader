@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "devStart": "NODE_ENV=development nodemon server.js",
-    "test": "jest --runInBand --coverage"
+    "test": "jest --runInBand --verbose"
   },
   "author": "",
   "license": "ISC",

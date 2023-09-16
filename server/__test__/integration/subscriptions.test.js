@@ -292,7 +292,7 @@ describe('POST /opml', () => {
 
         const res = await agent
             .post('/subscriptions/opml')
-            .attach("opml", `${__dirname}/test.opml`);
+            .attach("opml", `${__dirname}/../testFeeds/test.opml`);
         expect(res.statusCode).toBe(201);
         expect(res.body).toHaveProperty('rejected');
         

@@ -163,7 +163,7 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 
 * Validate params of importOPML and wrap in try catch or else server will crash
 
-* Only let users submit .opml (or some file extensions) and only let server accept files of those types
+* Only let users submit .opml or .xml (or some other file extensions) and only let server accept files of those types
 
 * When tables are truncated and browswer isn't refreshed. Click on a subscription. Error occurs on server. Should return 400 instead of 500
 
@@ -183,3 +183,6 @@ No need to pass down some props to SidebarButton if passing down the subscriptio
 	ex: http://www.patentlyapple.com/patently-apple/rss.xml
 	
 * If a user uploads a feed that is really long (potentially thousands of posts) this will cause the server to lag since it isn't in it's own thread
+
+* Some websites have rss links on them. Some readers are able to find these links from a given website url
+	ex: https://appleworld.today/blog/

@@ -1,6 +1,11 @@
 const db = require('../db/db');
 const { updateFeedsPosts, parseFeed, requestFeed } = require('../services/feedService');
 
+//When does the worker thread get removed??? 
+if (require.main === module) {
+    updatePosts()
+}
+
 async function updatePosts() {
     const feeds = await db.getAllFeeds();
     await Promise.all(feeds.map(async feed => {
@@ -28,8 +33,4 @@ async function updatePosts() {
             return;
         }
     }));
-}
-//When does the worker thread get removed??? 
-if (require.main === module) {
-    updatePosts()
 }
