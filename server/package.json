@@ -20,6 +20,7 @@
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
     "fast-xml-parser": "^4.2.7",
+    "feed-finder": "^0.2.1",
     "feedparser": "^2.2.10",
     "method-override": "^3.0.0",
     "mongoose": "^7.4.1",

@@ -1,6 +1,7 @@
 const db = require('../db/db');
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../helpers/commonHelpers');
+const { UserError } = require('../customErrors');
 
 async function getPosts(userid, folder, subscriptionid, olderThan, limit) {
     if (folder) {
@@ -37,7 +38,7 @@ async function requestFeed(url, headers) {
     } catch(e) {
         console.log(url);
         console.log(e);
-        throw e;
+        throw new UserError(`URL ${url} failed to load`);
     }
 }
 
