@@ -201,3 +201,9 @@ HTML page that has rss feed in source: https://appleworld.today/blog/amp/?format
 Error parsing: https://www.macupdate.com/mommy/updates.xml
 HTML feed that doesn't have rss feed in source: https://www.tested.com/feeds/
 redirects to valid feed: http://www.patentlyapple.com/patently-apple/rss.xml
+
+* Cureate opml files:
+https://github.com/plenaryapp/awesome-rss-feeds#with-category-and-without-category
+
+* cant parse rdf feeds: 
+http://rss.slashdot.org/Slashdot/slashdot

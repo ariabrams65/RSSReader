@@ -52,6 +52,22 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
     });
+    
+    test('Subscribing to HTML url finds finds linked feed in HTML header and subscribes to it', async () => {
+        const res = await addSubscription(agent, 'https://www.macsparky.com/blog/2020/08/blogging-from-space/?format=rss', '');
+        expect(res.statusCode).toBe(201);
+
+        expect(await getNumRows('subscriptions')).toEqual(1);
+        expect(await getNumRows('feeds')).toEqual(1);
+    });
+
+    test('Subscribing to HTML url finds finds linked feed in HTML body and subscribes to it', async () => {
+        const res = await addSubscription(agent, 'https://www.recode.net/feed/', '');
+        expect(res.statusCode).toBe(201);
+
+        expect(await getNumRows('subscriptions')).toEqual(1);
+        expect(await getNumRows('feeds')).toEqual(1);
+    });
 
     test('Invalid feed urls should respond with 400 status code', async () => {
         const feeds = ['', 'aaa', 'https://www.reddit.com/'];
@@ -62,7 +78,7 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
         expect(await getNumRows('feeds')).toEqual(0);
         expect(await getNumRows('posts')).toEqual(0);
-    });
+    }, 10000);
     
     test('Empty body should respond with 400 status code', async () => {
         const res = await agent 
