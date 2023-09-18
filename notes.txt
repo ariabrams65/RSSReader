@@ -207,3 +207,7 @@ https://github.com/plenaryapp/awesome-rss-feeds#with-category-and-without-catego
 
 * cant parse rdf feeds: 
 http://rss.slashdot.org/Slashdot/slashdot
+
+* Still need to add testing for updatePosts job
+
+* saveSubscription might need to be executed in it's own thread since it couldn't potentially block with lots of parsing

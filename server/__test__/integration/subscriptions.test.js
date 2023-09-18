@@ -59,7 +59,7 @@ describe('POST /subscriptions', () => {
 
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
-    });
+    }, 10000);
 
     test('Subscribing to HTML url finds finds linked feed in HTML body and subscribes to it', async () => {
         const res = await addSubscription(agent, 'https://www.recode.net/feed/', '');
@@ -67,7 +67,7 @@ describe('POST /subscriptions', () => {
 
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
-    });
+    }, 10000);
 
     test('Invalid feed urls should respond with 400 status code', async () => {
         const feeds = ['', 'aaa', 'https://www.reddit.com/'];
