@@ -214,3 +214,4 @@ http://rss.slashdot.org/Slashdot/slashdot
 
 * I may  be able to get away with simply partitioning the parsing of a single feed when a user adds a single subscription
 https://nodejs.org/en/docs/guides/dont-block-the-event-loop
+https://medium.com/dovetail-engineering/keep-the-node-js-event-loop-healthy-c3cae0e0e0f2

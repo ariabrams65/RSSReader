@@ -137,7 +137,6 @@ function getFoldersFromOpml(opmlObj) {
 }
 
 function getFoldersR(folders, outlines, folder) {
-    console.log(JSON.stringify(outlines, null, 2));
     for (const outline of outlines) {
         if (outline['@_type'] === undefined) {
             getFoldersR(folders, outline.outline, outline['@_text']);
@@ -150,27 +149,5 @@ function getFoldersR(folders, outlines, folder) {
         }
     }
 }
-
-// function getFoldersFromOpml(opmlObj) {
-//     const folders = {};
-//     const outlines = opmlObj.opml.body[0].outline;
-//     getFoldersR(folders, outlines, '');
-//     return folders;
-// }
-
-// function getFoldersR(folders, outlines, folder) {
-//     for (const outline of outlines) {
-//         const attrs = outline['$'];
-//         if (attrs.type === undefined) {
-//             getFoldersR(folders, outline.outline, attrs.text);
-//         } else {
-//             const feed = {
-//                 'url': attrs.xmlUrl,
-//                 'name': attrs.text
-//             };
-//             folders[folder] ? folders[folder].push(feed) : folders[folder] = [feed];
-//         }
-//     }
-// }
 
 module.exports = { saveSubscription, getSubscriptions, deleteSubscription, renameSubscription, renameFolder, deleteFolder, importOpml, getFoldersFromOpml };
