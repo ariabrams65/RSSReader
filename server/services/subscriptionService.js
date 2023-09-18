@@ -110,31 +110,45 @@ async function deleteFolder(userid, folder) {
 }
 
 async function importOpml(userid, filePath) {
-    const xml = await readFile(filePath, 'utf8');
-    const parser = new xml2js.Parser();    
-    const opmlObj = await parser.parseStringPromise(xml);
+    let folders;
+    try {
+        const xml = await readFile(filePath, 'utf8');
+        const parser = new xml2js.Parser();    
+        const opmlObj = await parser.parseStringPromise(xml);
+        folders = getFoldersFromOpml(opmlObj);
+    } catch (e) {
+        throw new UserError('OPML file is invalid');
+    }
     console.log('done parsing opml');
-    
-    await runWorker(userid, opmlObj);
-}
 
-async function runWorker(userid, opmlObj) {
-    return new Promise((resolve, reject) => {
-        const worker = new Worker('./jobs/updateFromOpml', {
-            workerData: {
-                userid: userid,
-                opmlObj: opmlObj
-            } 
-        });
-        worker.on('error', reject);
-        worker.on('exit', code => {
-            if (code !== 0) {
-                reject();
-            } else {
-                resolve();
-            }
-        })
+    const worker = new Worker('./jobs/updateFromOpml', {
+        workerData: {
+            userid: userid,
+            folders: folders 
+        } 
     });
 }
 
-module.exports = { saveSubscription, getSubscriptions, deleteSubscription, renameSubscription, renameFolder, deleteFolder, importOpml };
+function getFoldersFromOpml(opmlObj) {
+    const folders = {};
+    const outlines = opmlObj.opml.body[0].outline;
+    getFoldersR(folders, outlines, '');
+    return folders;
+}
+
+function getFoldersR(folders, outlines, folder) {
+    for (const outline of outlines) {
+        const attrs = outline['$'];
+        if (attrs.type === undefined) {
+            getFoldersR(folders, outline.outline, attrs.text);
+        } else {
+            const feed = {
+                'url': attrs.xmlUrl,
+                'name': attrs.text
+            };
+            folders[folder] ? folders[folder].push(feed) : folders[folder] = [feed];
+        }
+    }
+}
+
+module.exports = { saveSubscription, getSubscriptions, deleteSubscription, renameSubscription, renameFolder, deleteFolder, importOpml, getFoldersFromOpml };

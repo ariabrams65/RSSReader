@@ -1,4 +1,4 @@
-const { getFoldersFromOpml } = require('../../../jobs/updateFromOpml');
+const { getFoldersFromOpml } = require('../../../services/subscriptionService');
 const { readFile } = require('fs/promises');
 const xml2js = require('xml2js');
 

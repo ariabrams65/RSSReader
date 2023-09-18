@@ -303,19 +303,29 @@ describe('DELETE /folder', () => {
 });
 
 describe('POST /opml', () => {    
-    test('Uploading opml file is successful', async () => {
-        expect(await getNumRows('subscriptions')).toBe(0);
-
+    test('Uploading valid opml file is successful', async () => {
         const res = await agent
             .post('/subscriptions/opml')
-            .attach("opml", `${__dirname}/../testFeeds/test.opml`);
-        expect(res.statusCode).toBe(201);
-        expect(res.body).toHaveProperty('rejected');
-        
-        expect(await getNumRows('subscriptions')).toBe(4);
-        expect(await getNumRows('feeds')).toBe(4);
-    }, 10000);
+            .attach("opml", `${__dirname}/../../testFeeds/test.opml`);
+        expect(res.statusCode).toBe(202);
+    });
     
-    test.todo('Uploading invalid opml file returns 400');
-    test.todo('Uploading with empty params returns 400');
+    test('Uploading invalid xml file returns 400', async () => {
+        const res = await agent
+            .post('/subscriptions')
+            .attach('opml', `${__dirname}/../../testFeeds/invalidXml.xml`)
+        expect(res.statusCode).toBe(400);
+    });
+    
+    test('Uploading valid xml but invalid opml file returns 400', async () => {
+        const res = await agent
+            .post('/subscriptions')
+            .attach('opml', `${__dirname}/../../testFeeds/hackerNews.xml`);
+        expect(res.statusCode).toBe(400);
+    });
+    test('Uploading with empty params returns 400', async () => {
+        const res = await agent
+            .post('/subscriptions')
+        expect(res.statusCode).toBe(400);
+    });
 });
