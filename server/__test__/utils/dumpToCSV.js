@@ -1,5 +1,5 @@
 require('dotenv').config();
-const db = require('../../../db/db');
+const db = require('../../db/db');
 const fs = require('fs');
 
 if (require.main === module) {

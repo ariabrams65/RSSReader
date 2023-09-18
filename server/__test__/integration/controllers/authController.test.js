@@ -1,7 +1,7 @@
-const app = require("../../app");
+const app = require("../../../app");
 const request = require('supertest');
-const db = require("../../db/db");
-const { getLoggedInAgent } = require("./utils/setup");
+const db = require("../../../db/db");
+const { getLoggedInAgent } = require("../../utils/setup");
 
 beforeEach(async () => {
     await db.resetTables();

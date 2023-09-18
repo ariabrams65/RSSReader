@@ -114,12 +114,26 @@ async function importOpml(userid, filePath) {
     const parser = new xml2js.Parser();    
     const opmlObj = await parser.parseStringPromise(xml);
     console.log('done parsing opml');
+    
+    await runWorker(userid, opmlObj);
+}
 
-    const worker = new Worker('./jobs/updateFromOpml', {
-        workerData: {
-            userid: userid,
-            opmlObj: opmlObj
-        } 
+async function runWorker(userid, opmlObj) {
+    return new Promise((resolve, reject) => {
+        const worker = new Worker('./jobs/updateFromOpml', {
+            workerData: {
+                userid: userid,
+                opmlObj: opmlObj
+            } 
+        });
+        worker.on('error', reject);
+        worker.on('exit', code => {
+            if (code !== 0) {
+                reject();
+            } else {
+                resolve();
+            }
+        })
     });
 }
 

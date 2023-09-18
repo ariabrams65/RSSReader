@@ -1,6 +1,6 @@
-const { getLoggedInAgent } = require('./utils/setup');
-const db = require('../../db/db');
-const { addSubscription } = require('./utils/dbHelpers');
+const { getLoggedInAgent } = require('../../utils/setup');
+const db = require('../../../db/db');
+const { addSubscription } = require('../../utils/dbHelpers');
 
 let agent;
 let serverAddress;
