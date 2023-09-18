@@ -98,7 +98,8 @@ function ImportExportSettings() {
             body: formData 
         });
         if (!res.ok) {
-            console.log('Import failed');
+            const json = await res.json();
+            console.log(json.message);
         } else {
             inputRef.current.value = '';
             setFileUploadText('Select file');

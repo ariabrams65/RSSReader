@@ -77,7 +77,7 @@ async function deleteFolder(req, res, next) {
 
 async function importOpml(req, res, next) {
     try {
-        subscriptionService.importOpml(req.user.id, req.file.path);
+        await subscriptionService.importOpml(req.user.id, req.file.path);
         res.sendStatus(202);
     } catch (e) {
         next(e);

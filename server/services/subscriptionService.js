@@ -2,10 +2,10 @@ const db = require('../db/db');
 const { updateFeedsPosts } = require('./feedService');
 const { UserError, QueryError } = require('../customErrors');
 const { readFile } = require('fs/promises');
-const xml2js = require('xml2js');
 const { Worker } = require('node:worker_threads');
 const { parseFeed, requestFeed } = require('../services/feedService');
 const feedFinder = require('@arn4v/feed-finder');
+const parseXml = require('../utils/parseXml');
 
 async function findFeedInHtml(url) {
     let feedUrls
@@ -113,10 +113,10 @@ async function importOpml(userid, filePath) {
     let folders;
     try {
         const xml = await readFile(filePath, 'utf8');
-        const parser = new xml2js.Parser();    
-        const opmlObj = await parser.parseStringPromise(xml);
+        const opmlObj = await parseXml(xml);
         folders = getFoldersFromOpml(opmlObj);
     } catch (e) {
+        console.log(e);
         throw new UserError('OPML file is invalid');
     }
     console.log('done parsing opml');
@@ -131,24 +131,46 @@ async function importOpml(userid, filePath) {
 
 function getFoldersFromOpml(opmlObj) {
     const folders = {};
-    const outlines = opmlObj.opml.body[0].outline;
+    const outlines = opmlObj.opml.body.outline;
     getFoldersR(folders, outlines, '');
     return folders;
 }
 
 function getFoldersR(folders, outlines, folder) {
+    console.log(JSON.stringify(outlines, null, 2));
     for (const outline of outlines) {
-        const attrs = outline['$'];
-        if (attrs.type === undefined) {
-            getFoldersR(folders, outline.outline, attrs.text);
+        if (outline['@_type'] === undefined) {
+            getFoldersR(folders, outline.outline, outline['@_text']);
         } else {
             const feed = {
-                'url': attrs.xmlUrl,
-                'name': attrs.text
+                'url': outline['@_xmlUrl'],
+                'name': outline['@_text']
             };
             folders[folder] ? folders[folder].push(feed) : folders[folder] = [feed];
         }
     }
 }
+
+// function getFoldersFromOpml(opmlObj) {
+//     const folders = {};
+//     const outlines = opmlObj.opml.body[0].outline;
+//     getFoldersR(folders, outlines, '');
+//     return folders;
+// }
+
+// function getFoldersR(folders, outlines, folder) {
+//     for (const outline of outlines) {
+//         const attrs = outline['$'];
+//         if (attrs.type === undefined) {
+//             getFoldersR(folders, outline.outline, attrs.text);
+//         } else {
+//             const feed = {
+//                 'url': attrs.xmlUrl,
+//                 'name': attrs.text
+//             };
+//             folders[folder] ? folders[folder].push(feed) : folders[folder] = [feed];
+//         }
+//     }
+// }
 
 module.exports = { saveSubscription, getSubscriptions, deleteSubscription, renameSubscription, renameFolder, deleteFolder, importOpml, getFoldersFromOpml };

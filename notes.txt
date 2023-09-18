@@ -211,3 +211,6 @@ http://rss.slashdot.org/Slashdot/slashdot
 * Still need to add testing for updatePosts job
 
 * saveSubscription might need to be executed in it's own thread since it couldn't potentially block with lots of parsing
+
+* I may  be able to get away with simply partitioning the parsing of a single feed when a user adds a single subscription
+https://nodejs.org/en/docs/guides/dont-block-the-event-loop

@@ -1,6 +1,6 @@
 const db = require('../db/db');
 const Parser = require('rss-parser');
-const removeTrailingSlash = require('../helpers/commonHelpers');
+const removeTrailingSlash = require('../utils/commonHelpers');
 const { UserError } = require('../customErrors');
 
 async function getPosts(userid, folder, subscriptionid, olderThan, limit) {

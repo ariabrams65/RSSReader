@@ -1,12 +1,11 @@
 const { getFoldersFromOpml } = require('../../../services/subscriptionService');
 const { readFile } = require('fs/promises');
-const xml2js = require('xml2js');
+const parseXml = require('../../../utils/parseXml');
 
 describe('getFoldersFromOpml tests', () => {
     test('opml object is foldered correctly', async () => {
         const xml = await readFile('./__test__/testFeeds/test.opml' , 'utf8');
-        const parser = new xml2js.Parser();    
-        const opmlObj = await parser.parseStringPromise(xml);
+        const opmlObj = await parseXml(xml);
         
         const folders = getFoldersFromOpml(opmlObj);
         const expectedFolders = {
@@ -38,9 +37,8 @@ describe('getFoldersFromOpml tests', () => {
     
     test('deeply nested folders are flatend', async () => {
         const xml = await readFile('./__test__/testFeeds/deeplyNested.opml' , 'utf8');
-        const parser = new xml2js.Parser();    
-        const opmlObj = await parser.parseStringPromise(xml);
-        
+        const opmlObj = await parseXml(xml);
+
         const folders = getFoldersFromOpml(opmlObj);
         const expectedFolders = {
             '': [
@@ -83,8 +81,7 @@ describe('getFoldersFromOpml tests', () => {
     
     test('Invalid opml throws error', async () => {
         const xml = await readFile('./__test__/testFeeds/hackerNews.xml' , 'utf8');
-        const parser = new xml2js.Parser();    
-        const opmlObj = await parser.parseStringPromise(xml);
+        const opmlObj = await parseXml(xml);
         expect(() => getFoldersFromOpml(opmlObj)).toThrow();
     });
 });
