@@ -2,6 +2,7 @@ const db = require('../db/db');
 const Parser = require('rss-parser');
 const removeTrailingSlash = require('../utils/commonHelpers');
 const { UserError } = require('../customErrors');
+const axios = require('axios');
 
 async function getPosts(userid, folder, subscriptionid, olderThan, limit) {
     if (folder) {
@@ -28,17 +29,16 @@ async function updateFeedsPosts(feedid, posts) {
     // console.log('updated feed: ', feedid);
 }
 
-async function requestFeed(url, headers) {
+async function requestFeed(url, headers={}) {
+    // headers.timeout = 5000;
     try {
-        const res = await fetch(url, {
-            method: 'GET',
-            headers: headers
-        });
+        const res = await axios.get(url, headers);
         return res;
-    } catch(e) {
-        console.log(url);
-        console.log(e);
-        throw new UserError(`URL ${url} failed to load`);
+    } catch (e) {
+        if (!e.response) {
+            throw new UserError(`URL ${url} failed to load`);
+        }
+        return e.response;
     }
 }
 

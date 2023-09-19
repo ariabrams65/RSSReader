@@ -19,7 +19,9 @@ async function update() {
         .map(result => result.reason);
 
     rejected.forEach(result => {
-        console.log(result);
+        if (String(result).includes('failed to load')) {
+            console.log(result);
+        }
     });
     console.log(`${results.length - rejected.length}/${results.length}`);
 }

@@ -20,8 +20,8 @@ async function findFeedInHtml(url) {
     for (const feedUrl of feedUrls) {
         try {
             const res = await requestFeed(feedUrl);
-            if (!res.ok || !res.headers.get('Content-Type').includes('xml')) continue;
-            return [feedUrl, await res.text()];
+            if (res.status >= 300 || !res.headers['content-type'].includes('xml')) continue;
+            return [feedUrl, res.data];
         } catch {}
     }
     throw new UserError(`Couldn't find any valid feeds for ${url}`);
@@ -42,16 +42,12 @@ async function parseAndAddFeed(xml, feedurl) {
 async function saveSubscription(userid, url, folder) {  
     const res = await requestFeed(url);
     let feedurl, xml;
-    const contentType = res.headers.get('Content-Type');
+    const contentType = res.headers['content-type'];
     if (contentType.includes('text/html')) {
         [feedurl, xml] = await findFeedInHtml(url); 
     } else if (contentType.includes('xml')) {
         feedurl = url;
-        try {
-            xml = await res.text();
-        } catch (e) {
-            throw new UserError(`Couldn't get text content of ${url}`);
-        }
+        xml = res.data;
     } else {
         throw new UserError(`URL ${url} is not a valid feed`);
     }

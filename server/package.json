@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@arn4v/feed-finder": "^0.1.1",
+    "axios": "^1.5.0",
     "bcrypt": "^5.1.0",
     "bree": "^9.1.3",
     "cors": "^2.8.5",

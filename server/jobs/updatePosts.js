@@ -18,16 +18,16 @@ async function updatePosts() {
                 headers['If-None-Match'] = feed.etag;
             }
             const res = await requestFeed(feed.feedurl, headers);
-            if (res.status === 304 || !res.ok) {
+            if (res.status >= 300) {
                 return;
             }
-            if (res.headers.has('Last-Modified')) {
-                await db.updateFeedLastModified(feed.id, res.headers.get('Last-Modified'));
+            if ('Last-Modified' in res.headers) {
+                await db.updateFeedLastModified(feed.id, res.headers['Last-Modified']);
             }
-            if (res.headers.has('ETag')) {
-                await db.updatefeedETag(feed.id, res.headers.get('ETag'));
+            if ('ETag' in res.headers) {
+                await db.updatefeedETag(feed.id, res.headers['ETag']);
             }
-            const parsedFeed = await parseFeed(await res.text(), feed.feedurl);
+            const parsedFeed = await parseFeed(res.data, feed.feedurl);
             return await updateFeedsPosts(feed.id, parsedFeed.posts);
         } catch {
             return;
