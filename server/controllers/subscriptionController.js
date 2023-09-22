@@ -1,5 +1,4 @@
-const { UserError } = require('../customErrors');
-const subscriptionService = require('../services/subscriptionService');
+const { UserError } = require('../customErrors'); const subscriptionService = require('../services/subscriptionService');
 
 async function getSubscriptions(req, res, next) {
     try {
@@ -77,8 +76,8 @@ async function deleteFolder(req, res, next) {
 
 async function importOpml(req, res, next) {
     try {
-        await subscriptionService.importOpml(req.user.id, req.file.path);
-        res.sendStatus(202);
+        const jobId = await subscriptionService.importOpml(req.user.id, req.file.path);
+        res.status(202).json({jobId: jobId});
     } catch (e) {
         next(e);
     }

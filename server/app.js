@@ -12,6 +12,10 @@ const initializePassport = require('./config/passportConfig');
 const cors = require('cors');
 const { UserError } = require('./customErrors');
 
+require('./jobs/queues');
+require('./jobs/workers');
+require('./db/dbConn');
+
 db.createTables();
 initializePassport(passport);
 
@@ -30,6 +34,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
+
+//For testing purposes
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`);
+    next();
+});
 
 app.use('/login', require('./routes/login'));
 app.use('/logout', require('./routes/logout'));

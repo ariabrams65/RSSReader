@@ -2,10 +2,10 @@ const db = require('../db/db');
 const { updateFeedsPosts } = require('./feedService');
 const { UserError, QueryError } = require('../customErrors');
 const { readFile } = require('fs/promises');
-const { Worker } = require('node:worker_threads');
 const { parseFeed, requestFeed } = require('../services/feedService');
 const feedFinder = require('@arn4v/feed-finder');
 const parseXml = require('../utils/parseXml');
+const { importQueue } = require('../jobs/queues');
 
 async function findFeedInHtml(url) {
     let feedUrls
@@ -116,13 +116,9 @@ async function importOpml(userid, filePath) {
         throw new UserError('OPML file is invalid');
     }
     console.log('done parsing opml');
-
-    const worker = new Worker('./jobs/updateFromOpml', {
-        workerData: {
-            userid: userid,
-            folders: folders 
-        } 
-    });
+    
+    const job = await importQueue.add('import opml', {userid: userid, folders: folders});
+    return job.id;
 }
 
 function getFoldersFromOpml(opmlObj) {

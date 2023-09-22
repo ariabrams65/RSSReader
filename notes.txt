@@ -215,3 +215,25 @@ http://rss.slashdot.org/Slashdot/slashdot
 * I may  be able to get away with simply partitioning the parsing of a single feed when a user adds a single subscription
 https://nodejs.org/en/docs/guides/dont-block-the-event-loop
 https://medium.com/dovetail-engineering/keep-the-node-js-event-loop-healthy-c3cae0e0e0f2
+
+* I should be using a pool of workers probably
+https://blog.logrocket.com/node-js-multithreading-worker-threads-why-they-matter/#:~:text=You%20can%20share%20memory%20with,are%20discussed%20in%20this%20article.
+You can share memory with Worker threads and pass ArrayBuffer or SharedArrayBuffer objects that are specifically meant for that. Only use them if you need to do CPU-intensive tasks with large amounts of data. Some examples of CPU-intensive tasks with Node workers are discussed in this article. 
+
+* Worker thread pool implementation:
+https://www.npmjs.com/package/piscina
+
+Importing opml pipeline:
+1. Parse opml and return if error
+2. Request each feed one by one from opml
+3. Every time a response for a feed is received, queue it to a thread in a worker pool
+4. Worker pool is solely responsible for parsing xml and returning js object
+5. For each feed object returned, send this to the database to be added.
+
+BullMQ going to production:
+https://docs.bullmq.io/guide/going-to-production
+
+Don't wait for jobs to complete:
+https://blog.taskforce.sh/do-not-wait-for-your-jobs-to-complete/
+
+* Currently bullmq is spawnding new processes since worker threads aren't working for some reason
