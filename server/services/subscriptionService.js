@@ -5,7 +5,7 @@ const { readFile } = require('fs/promises');
 const { parseFeed, requestFeed } = require('../services/feedService');
 const feedFinder = require('@arn4v/feed-finder');
 const parseXml = require('../utils/parseXml');
-const { importQueue } = require('../jobs/queues');
+const importQueue = require('../queues/importQueue');
 
 async function findFeedInHtml(url) {
     let feedUrls
