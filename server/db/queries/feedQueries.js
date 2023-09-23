@@ -38,15 +38,15 @@ async function addFeed(parsedFeed) {
     return res.rows[0];
 }
 
-async function getAllFeeds() {
-    const getAllFeedsQuery = 
-    `
-    SELECT id, iconurl, feedurl, title, numposts, etag, TO_CHAR(lastmodified AT TIME ZONE 'GMT', 'Dy, DD Mon YYYY HH24:MI:SS TZ') || 'GMT' as lastmodified
-    FROM feeds;
-    `;
-    const res = await query(getAllFeedsQuery);
-    return res.rows;
-}
+// async function getAllFeeds() {
+//     const getAllFeedsQuery = 
+//     `
+//     SELECT id, iconurl, feedurl, title, numposts, etag, TO_CHAR(lastmodified AT TIME ZONE 'GMT', 'Dy, DD Mon YYYY HH24:MI:SS TZ') || 'GMT' as lastmodified
+//     FROM feeds;
+//     `;
+//     const res = await query(getAllFeedsQuery);
+//     return res.rows;
+// }
 
 async function getFolderFeedIds(id, folder) {
     const getFeedIdsQuery = 
@@ -90,4 +90,14 @@ async function updatefeedETag(id, etag) {
     `;
     await query(updateQuery, [etag, id]);
 }
-module.exports = { getFeedId, getAllSubscribedFeedIds, addFeed, getAllFeeds, getFolderFeedIds, getFeedFromUrl, updateFeedLastModified, updatefeedETag};
+
+async function deleteFeed(id) {
+    const deleteQuery =
+    `
+    DELETE FROM feeds
+    WHERE id = $1;
+    `;    
+    await query(deleteQuery, [id]);
+}
+
+module.exports = { getFeedId, getAllSubscribedFeedIds, addFeed, getFolderFeedIds, getFeedFromUrl, updateFeedLastModified, updatefeedETag, deleteFeed};

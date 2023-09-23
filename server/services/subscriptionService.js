@@ -5,7 +5,8 @@ const { readFile } = require('fs/promises');
 const { parseFeed, requestFeed } = require('../services/feedService');
 const feedFinder = require('@arn4v/feed-finder');
 const parseXml = require('../utils/parseXml');
-const importQueue = require('../queues/importQueue');
+const importQueue = require('../jobs/queues/importQueue');
+const updatePostsQueue = require('../jobs/queues/updatePostsQueue');
 
 async function findFeedInHtml(url) {
     let feedUrls
@@ -35,6 +36,12 @@ async function parseAndAddFeed(xml, feedurl) {
         throw new UserError(`Error parsing feed ${feedurl}`);
     }
     feed = await db.addFeed(parsedFeed);
+    await updatePostsQueue.add('updatePosts', {feedid: feed.id}, {
+        repeate: {
+            cron: '*/10 * * * *'
+        },
+        jobId: '_' + feed.id.toString()
+    });
     await updateFeedsPosts(feed.id, parsedFeed.posts); 
     return feed;
 }
@@ -68,6 +75,7 @@ async function getSubscriptions(userid) {
 async function deleteSubscription(userid, subscriptionid) {
     try {
         await db.deleteUserSubscription(userid, subscriptionid);
+        await deleteUnsubscribedFeeds();
     } catch (e) {
         if (e instanceof QueryError) {
             throw new UserError('Invalid deletion request');
@@ -98,6 +106,7 @@ async function renameFolder(userid, oldName, newName) {
 async function deleteFolder(userid, folder) {
     try {
         await db.deleteFolder(userid, folder);
+        await deleteUnsubscribedFeeds();
     } catch (e) {
         if (e instanceof QueryError) {
             throw new UserError('Invalid folder delete request');
@@ -139,6 +148,19 @@ function getFoldersR(folders, outlines, folder) {
             };
             folders[folder] ? folders[folder].push(feed) : folders[folder] = [feed];
         }
+    }
+}
+
+async function deleteUnsubscribedFeeds() {
+    const feeds = await db.getUnsubscribedFeeds();
+    for (const feed of feeds) {
+        await updatePostsQueue.removeRepeatable('updatePosts', {
+            repeate: {
+                cron: '*/10 * * * *'
+            },
+            jobId: '_' + feed.id.toString()
+        });
+        await db.deleteFeed(feed.id);
     }
 }
 

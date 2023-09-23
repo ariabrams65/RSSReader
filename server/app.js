@@ -12,8 +12,8 @@ const initializePassport = require('./config/passportConfig');
 const cors = require('cors');
 const { UserError } = require('./customErrors');
 
-require('./queues/index');
-require('./workers/index');
+require('./jobs/queues/index');
+require('./jobs/workers/index');
 require('./db/dbConn');
 
 db.createTables();

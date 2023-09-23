@@ -34,20 +34,20 @@ async function deleteUserSubscription(userid, subscriptionid) {
     if (res.rowCount === 0) {
         throw new QueryError('Deletion unsuccesful');
     }
-    await deleteUnsubscribedFeeds();
 }
 
-async function deleteUnsubscribedFeeds() {
-    //deletes all feeds that aren't subscribed to by any users
-    const deleteFeedsQuery =
+async function getUnsubscribedFeeds() {
+    const getUnsubscribedFeedsQuery =
     `
-    DELETE FROM feeds
+    SELECT id
+    FROM feeds
     WHERE id NOT IN (
         SELECT feedid
         FROM subscriptions
     );
     `;
-    await query(deleteFeedsQuery);
+    const res = await query(getUnsubscribedFeedsQuery);
+    return res.rows;
 }
 
 async function subscriptionExists(userid, feedurl, folder) {
@@ -97,7 +97,6 @@ async function deleteFolder(userid, folder) {
     if (res.rowCount === 0) {
         throw new QueryError('Deletion unsuccesful');
     }
-    deleteUnsubscribedFeeds();
 }
 
-module.exports = { getUserSubscriptions, addUserSubscription, deleteUserSubscription, subscriptionExists, renameSubscription, renameFolder, deleteFolder};
+module.exports = { getUserSubscriptions, addUserSubscription, deleteUserSubscription, getUnsubscribedFeeds, subscriptionExists, renameSubscription, renameFolder, deleteFolder};

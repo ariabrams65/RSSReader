@@ -1,6 +1,6 @@
-const { saveSubscription } = require('../services/subscriptionService');
+const { saveSubscription } = require('../../services/subscriptionService');
 
-async function processImport(job) {
+async function process(job) {
     const promises = [];
     for (const [folder, feeds] of Object.entries(job.data.folders)) {
         for (const feed of feeds) {
@@ -21,4 +21,4 @@ async function processImport(job) {
     console.log(`${results.length - rejected.length}/${results.length}`);
 }
 
-module.exports = processImport;
+module.exports = process;

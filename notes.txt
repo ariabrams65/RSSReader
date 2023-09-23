@@ -237,3 +237,8 @@ Don't wait for jobs to complete:
 https://blog.taskforce.sh/do-not-wait-for-your-jobs-to-complete/
 
 * Currently bullmq is spawnding new processes since worker threads aren't working for some reason
+
+* What happens when a user deletes a feed at the same time that that feed is already queued to be updated. Probably results in a database error since that feed no longer exists
+
+* Read this:
+https://roluquec.medium.com/job-queuing-101-start-using-bull-in-your-node-js-project-part-i-2be3ef36a42d
