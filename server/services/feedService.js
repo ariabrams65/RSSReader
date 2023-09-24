@@ -26,7 +26,7 @@ async function updateFeedsPosts(feedid, posts) {
         post.identifier = feedid + '_' + post.identifier;
         db.insertPost(post)
     }));
-    // console.log('updated feed: ', feedid);
+    console.log('updated feed: ', feedid);
 }
 
 async function requestFeed(url, headers={}) {

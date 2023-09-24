@@ -35,11 +35,14 @@ async function parseAndAddFeed(xml, feedurl) {
     } catch (e) {
         throw new UserError(`Error parsing feed ${feedurl}`);
     }
+    parsedFeed.updatefreq = 600000;
     feed = await db.addFeed(parsedFeed);
     await updatePostsQueue.add('updatePosts', {feedid: feed.id}, {
-        repeate: {
-            cron: '*/10 * * * *'
+        repeat: {
+            every: parsedFeed.updatefreq 
         },
+        removeOnComplete: true,
+        removeOnFail: true,
         jobId: '_' + feed.id.toString()
     });
     await updateFeedsPosts(feed.id, parsedFeed.posts); 
@@ -155,8 +158,8 @@ async function deleteUnsubscribedFeeds() {
     const feeds = await db.getUnsubscribedFeeds();
     for (const feed of feeds) {
         await updatePostsQueue.removeRepeatable('updatePosts', {
-            repeate: {
-                cron: '*/10 * * * *'
+            repeat: {
+                every: feed.updatefreq
             },
             jobId: '_' + feed.id.toString()
         });

@@ -2,7 +2,7 @@ const db = require('../../db/db');
 const { updateFeedsPosts, parseFeed, requestFeed } = require('../../services/feedService');
 
 async function process(job) {
-    const feed = job.data.feed;
+    const feed = await db.getFeedFromId(job.data.feedid);
     const headers = {};
     if (feed.lastmodified) { 
         headers['If-Modified-Since'] = feed.lastmodified;
@@ -25,4 +25,4 @@ async function process(job) {
     
 }
 
-module.expoprts = process;
+module.exports = process;

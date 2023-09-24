@@ -5,6 +5,7 @@ const { addSubscription } = require('../../utils/dbHelpers');
 let agent;
 let serverAddress;
 beforeAll(async () => {
+    db.createTables();
     await db.resetTables();
     agent = await getLoggedInAgent();
     serverAddress = agent.get('').url;

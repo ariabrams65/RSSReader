@@ -242,3 +242,5 @@ https://blog.taskforce.sh/do-not-wait-for-your-jobs-to-complete/
 
 * Read this:
 https://roluquec.medium.com/job-queuing-101-start-using-bull-in-your-node-js-project-part-i-2be3ef36a42d
+
+* Currently we are awaiting deleteUnsubscribedFeeds which isn't necessary since the http request doesn't rely on it

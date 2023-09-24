@@ -1,5 +1,16 @@
 const query = require('../dbConn');
 
+async function getFeedFromId(id) {
+    const getFeedQuery =
+    `
+    SELECT id, feedurl, lastmodified, etag
+    FROM feeds
+    where id = $1;
+    `;
+    const res = await query(getFeedQuery, [id]);
+    return res.rows[0];
+}
+
 async function getFeedId(subscriptionid) {
     const getFeedIdQuery =
     `
@@ -25,28 +36,19 @@ async function getAllSubscribedFeedIds(userid) {
 async function addFeed(parsedFeed) {
     const insertFeedQuery = 
     `
-    INSERT INTO feeds (feedurl, iconurl, title)
-    VALUES ($1, $2, $3)
+    INSERT INTO feeds (feedurl, iconurl, title, updatefreq)
+    VALUES ($1, $2, $3, $4)
     ON CONFLICT (feedurl) DO NOTHING
     RETURNING id, title;
     `;
     const res = await query(insertFeedQuery, [
         parsedFeed.feedurl,
         parsedFeed.iconurl,
-        parsedFeed.title
+        parsedFeed.title,
+        parsedFeed.updatefreq
     ]);
     return res.rows[0];
 }
-
-// async function getAllFeeds() {
-//     const getAllFeedsQuery = 
-//     `
-//     SELECT id, iconurl, feedurl, title, numposts, etag, TO_CHAR(lastmodified AT TIME ZONE 'GMT', 'Dy, DD Mon YYYY HH24:MI:SS TZ') || 'GMT' as lastmodified
-//     FROM feeds;
-//     `;
-//     const res = await query(getAllFeedsQuery);
-//     return res.rows;
-// }
 
 async function getFolderFeedIds(id, folder) {
     const getFeedIdsQuery = 
@@ -100,4 +102,4 @@ async function deleteFeed(id) {
     await query(deleteQuery, [id]);
 }
 
-module.exports = { getFeedId, getAllSubscribedFeedIds, addFeed, getFolderFeedIds, getFeedFromUrl, updateFeedLastModified, updatefeedETag, deleteFeed};
+module.exports = { getFeedFromId, getFeedId, getAllSubscribedFeedIds, addFeed, getFolderFeedIds, getFeedFromUrl, updateFeedLastModified, updatefeedETag, deleteFeed};

@@ -1,7 +1,7 @@
 const { Worker } = require('bullmq');
 const path = require('path');
 
-const worker = new Worker('import', path.join(__dirname, '../processors/updatePostsProcessor.js'), {
+const worker = new Worker('updatePosts', path.join(__dirname, '../processors/updatePostsProcessor.js'), {
     connection: {
         host: process.env.REDISHOST,
         port: process.env.REDISPORT

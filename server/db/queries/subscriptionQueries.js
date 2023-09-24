@@ -39,7 +39,7 @@ async function deleteUserSubscription(userid, subscriptionid) {
 async function getUnsubscribedFeeds() {
     const getUnsubscribedFeedsQuery =
     `
-    SELECT id
+    SELECT id, updatefreq
     FROM feeds
     WHERE id NOT IN (
         SELECT feedid

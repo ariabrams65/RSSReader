@@ -4,6 +4,7 @@ const request = require('supertest');
 const { getNumRows } = require("../../utils/dbHelpers");
 
 beforeEach(async () => {
+    db.createTables();
     await db.resetTables();
 });
 

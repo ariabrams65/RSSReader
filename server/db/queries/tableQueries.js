@@ -14,6 +14,7 @@ async function createTables() {
         feedurl TEXT UNIQUE,
         iconurl TEXT,
         title TEXT,
+        updatefreq INT,
         numposts INT DEFAULT 0,
         lastmodified TIMESTAMPTZ,
         etag TEXT

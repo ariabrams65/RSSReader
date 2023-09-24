@@ -1,1 +1,2 @@
-const importWorker = require('./importWorker.js');
+const importWorker = require('./importWorker');
+const updatePostsWorker = require('./updatePostsWorker');

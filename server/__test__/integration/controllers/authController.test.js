@@ -4,6 +4,7 @@ const db = require("../../../db/db");
 const { getLoggedInAgent } = require("../../utils/setup");
 
 beforeEach(async () => {
+    db.createTables();
     await db.resetTables();
 });
 
