@@ -5,11 +5,12 @@ const worker = new Worker('updatePosts', path.join(__dirname, '../processors/upd
     connection: {
         host: process.env.REDISHOST,
         port: process.env.REDISPORT
-    }
+    },
+    concurrency: 20 
 });
 
 worker.on('failed', (job, err) => {
-  console.log(`${job.id} has failed with ${err.message}`);
+  console.log(`${job.data.feedid} has failed with ${err.message}`);
 });
 
 module.exports = worker;

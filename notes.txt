@@ -244,3 +244,9 @@ https://blog.taskforce.sh/do-not-wait-for-your-jobs-to-complete/
 https://roluquec.medium.com/job-queuing-101-start-using-bull-in-your-node-js-project-part-i-2be3ef36a42d
 
 * Currently we are awaiting deleteUnsubscribedFeeds which isn't necessary since the http request doesn't rely on it
+
+* What happens when a user adds a feed and then posts are updated. What if one of the posts has incoomplete properties like missing title. It looks like the feed and some posts will be added to the database and an error will be returned to the user. Maybe use transactions?
+
+* When redis server stops, all jobs are deleted. Make sure to add jobs on server start
+
+* When testing if jobs were added, make sure to clear redis before each test

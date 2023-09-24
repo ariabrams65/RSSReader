@@ -35,8 +35,8 @@ async function parseAndAddFeed(xml, feedurl) {
     } catch (e) {
         throw new UserError(`Error parsing feed ${feedurl}`);
     }
-    parsedFeed.updatefreq = 600000;
-    feed = await db.addFeed(parsedFeed);
+    parsedFeed.updatefreq = 60000;
+    const feed = await db.addFeed(parsedFeed);
     await updatePostsQueue.add('updatePosts', {feedid: feed.id}, {
         repeat: {
             every: parsedFeed.updatefreq 

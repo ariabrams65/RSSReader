@@ -22,7 +22,6 @@ async function process(job) {
     }
     const parsedFeed = await parseFeed(res.data, feed.feedurl);
     return await updateFeedsPosts(feed.id, parsedFeed.posts);
-    
 }
 
 module.exports = process;
