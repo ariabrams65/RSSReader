@@ -6,7 +6,7 @@ const worker = new Worker('updatePosts', path.join(__dirname, '../processors/upd
         host: process.env.REDISHOST,
         port: process.env.REDISPORT
     },
-    concurrency: 20 
+    concurrency: 5
 });
 
 worker.on('failed', (job, err) => {

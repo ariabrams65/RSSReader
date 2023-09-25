@@ -254,3 +254,7 @@ https://roluquec.medium.com/job-queuing-101-start-using-bull-in-your-node-js-pro
 * Somehow disable updateposts queue during tests
 
 * I might be using UserError and QueryError wrong. They both shouldn't know about http so I could probably just use a single error instead of 2 seperate ones. Maybe just Error
+
+* Should be using a seperate redis db for testing
+
+* Workers are creating a new process for every job which is causing too many clients error. Also figure out a way to have every process use the same db pool
