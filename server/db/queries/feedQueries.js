@@ -39,7 +39,7 @@ async function addFeed(parsedFeed) {
     INSERT INTO feeds (feedurl, iconurl, title, updatefreq)
     VALUES ($1, $2, $3, $4)
     ON CONFLICT (feedurl) DO NOTHING
-    RETURNING id, title;
+    RETURNING id, title, updatefreq;
     `;
     const res = await query(insertFeedQuery, [
         parsedFeed.feedurl,

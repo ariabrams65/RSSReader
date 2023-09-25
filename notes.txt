@@ -250,3 +250,7 @@ https://roluquec.medium.com/job-queuing-101-start-using-bull-in-your-node-js-pro
 * When redis server stops, all jobs are deleted. Make sure to add jobs on server start
 
 * When testing if jobs were added, make sure to clear redis before each test
+
+* Somehow disable updateposts queue during tests
+
+* I might be using UserError and QueryError wrong. They both shouldn't know about http so I could probably just use a single error instead of 2 seperate ones. Maybe just Error

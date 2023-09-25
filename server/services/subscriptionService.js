@@ -35,11 +35,11 @@ async function parseAndAddFeed(xml, feedurl) {
     } catch (e) {
         throw new UserError(`Error parsing feed ${feedurl}`);
     }
-    parsedFeed.updatefreq = 60000;
+    parsedFeed.updatefreq = 600000;
     const feed = await db.addFeed(parsedFeed);
     await updatePostsQueue.add('updatePosts', {feedid: feed.id}, {
         repeat: {
-            every: parsedFeed.updatefreq 
+            every: feed.updatefreq 
         },
         removeOnComplete: true,
         removeOnFail: true,
@@ -156,13 +156,10 @@ function getFoldersR(folders, outlines, folder) {
 
 async function deleteUnsubscribedFeeds() {
     const feeds = await db.getUnsubscribedFeeds();
+    console.log('here');
+    console.log((await updatePostsQueue.getRepeatableJobs())[0].key);
     for (const feed of feeds) {
-        await updatePostsQueue.removeRepeatable('updatePosts', {
-            repeat: {
-                every: feed.updatefreq
-            },
-            jobId: '_' + feed.id.toString()
-        });
+        await updatePostsQueue.removeRepeatableByKey(`updatePosts:_${feed.id}:::${feed.updatefreq}`);
         await db.deleteFeed(feed.id);
     }
 }

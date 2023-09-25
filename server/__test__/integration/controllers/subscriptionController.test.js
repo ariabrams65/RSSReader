@@ -1,6 +1,7 @@
 const { getLoggedInAgent } = require('../../utils/setup');
 const db = require('../../../db/db');
 const { addSubscription, getNumRows } = require('../../utils/dbHelpers');
+const updatePostsQueue = require('../../../jobs/queues/updatePostsQueue'); 
 
 let agent;
 let serverAddress;
@@ -13,6 +14,12 @@ beforeAll(async () => {
 
 beforeEach(async () => {
     await db.resetTables(['subscriptions', 'feeds', 'posts']);
+    
+    const repeatableJobs = await updatePostsQueue.getRepeatableJobs();
+    repeatableJobs.forEach(async job => {
+        await updatePostsQueue.removeRepeatableByKey(job.key);
+    });
+    updatePostsQueue.drain();
 });
 
 describe('GET /subscriptions', () => {
@@ -36,6 +43,7 @@ describe('GET /subscriptions', () => {
 describe('POST /subscriptions', () => {
     test('Subscription should be added', async () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(0);
 
         const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(res.statusCode).toBe(201);
@@ -52,6 +60,7 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
     });
     
     test('Subscribing to HTML url finds finds linked feed in HTML header and subscribes to it', async () => {
@@ -60,6 +69,7 @@ describe('POST /subscriptions', () => {
 
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
     }, 10000);
 
     test('Subscribing to HTML url finds finds linked feed in HTML body and subscribes to it', async () => {
@@ -68,6 +78,7 @@ describe('POST /subscriptions', () => {
 
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
     }, 10000);
 
     test('Invalid feed urls should respond with 400 status code', async () => {
@@ -79,7 +90,8 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
         expect(await getNumRows('feeds')).toEqual(0);
         expect(await getNumRows('posts')).toEqual(0);
-    }, 10000);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(0);
+    }, 15000);
     
     test('Empty body should respond with 400 status code', async () => {
         const res = await agent 
@@ -89,6 +101,7 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
         expect(await getNumRows('feeds')).toEqual(0);
         expect(await getNumRows('posts')).toEqual(0);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(0);
     });
     
     test('Duplicate subscription should respond with 400', async () => {
@@ -97,12 +110,14 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
 
         const res = await addSubscription(agent, serverAddress + '/redditAll.xml', '');
         expect(res.statusCode).toBe(400);
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
     });
 
     test('Same feed can be added to multiple folders', async () => {
@@ -111,11 +126,13 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
 
         await addSubscription(agent, serverAddress + '/redditAll.xml', 'folder2');
         expect(await getNumRows('subscriptions')).toEqual(2);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
     });
     test('Subscribing to feed that is already subscribed to by other users uses already existing feed', async () => {
         await addSubscription(agent, serverAddress + '/redditAll.xml', '');
@@ -123,12 +140,14 @@ describe('POST /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
 
         const agent2 = await getLoggedInAgent(2);
         await addSubscription(agent2, serverAddress + '/redditAll.xml', '');
         expect(await getNumRows('subscriptions')).toEqual(2);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
     });
 });
 
@@ -140,6 +159,7 @@ describe('DELETE /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
 
         const res2 = await agent
             .delete('/subscriptions')    
@@ -148,6 +168,7 @@ describe('DELETE /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(0);
         expect(await getNumRows('feeds')).toEqual(0);
         expect(await getNumRows('posts')).toEqual(0);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(0);
     });
     
     test('Invalid subscription returns 400', async () => {
@@ -171,6 +192,7 @@ describe('DELETE /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(2);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
         
          const res2 = await agent
             .delete('/subscriptions')
@@ -179,6 +201,7 @@ describe('DELETE /subscriptions', () => {
         expect(await getNumRows('subscriptions')).toEqual(1);
         expect(await getNumRows('feeds')).toEqual(1);
         expect(await getNumRows('posts')).toEqual(25);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(1);
     });
 });
 
@@ -279,6 +302,8 @@ describe('DELETE /folder', () => {
 
         const pre = await db.query('SELECT * FROM subscriptions WHERE folder = \'test\'');
         expect(pre.rowCount).toBe(2);
+        expect(await getNumRows('feeds')).toBe(2);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(2);
 
         const res = await agent
             .delete('/subscriptions/folder') 
@@ -287,6 +312,8 @@ describe('DELETE /folder', () => {
 
         const post = await db.query('SELECT * FROM subscriptions WHERE folder = \'test\'');
         expect(post.rowCount).toBe(0);
+        expect(await getNumRows('feeds')).toBe(0);
+        expect((await updatePostsQueue.getRepeatableJobs()).length).toBe(0);
     });  
     
     test('Deleting non existant folder returns 400', async () => {
